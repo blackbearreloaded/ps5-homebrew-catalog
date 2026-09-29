@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99420",
+  "name": "Kodi",
+  "kind": "app",
+  "description": "Unofficial port of the Kodi 22 media center for PS5, with a 4K GPU interface, hardware H.264, HEVC and VP9 decoding and HDR output.",
+  "license": "GPL-2.0",
+  "author": "VivaLaVent",
+  "version": "0.8.1",
+  "source_repo": "https://github.com/VivaLaVent/kodi-ps5",
+  "artifact_url": "https://github.com/VivaLaVent/kodi-ps5/releases/download/0.8.1/kodi-ps5-PPSA99420-0.8.1.zip",
+  "sha256": "2d1a73d684eff318a99094fa6934c07fae24c9f433a428e856b71af2fb16d924",
+  "icon_url": "https://raw.githubusercontent.com/VivaLaVent/kodi-ps5/0.8.1/title/sce_sys/icon0.png"
+}
