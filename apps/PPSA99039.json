@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99039",
+  "name": "EVO Player",
+  "kind": "app",
+  "description": "Media player for PS5 that plays video from USB or internal storage, with hardware decoding up to 4K, 10-bit HDR and surround audio.",
+  "license": "GPL-3.0",
+  "author": "Sain Saji",
+  "version": "0.10.0",
+  "source_repo": "https://github.com/sainsaji/EVO-PLAYER-PS5",
+  "artifact_url": "https://github.com/sainsaji/EVO-PLAYER-PS5/releases/download/v0.10.0/EVOPlayer-v0.10.0-PPSA99039.ffpfsc",
+  "sha256": "a2b14616a2662a5e8401aad9012ba1c0d3df68211e5b70039eedfb9a0845a0be",
+  "icon_url": "https://raw.githubusercontent.com/sainsaji/EVO-PLAYER-PS5/v0.10.0/projects/evoplayer/sce_sys/icon0.png"
+}
