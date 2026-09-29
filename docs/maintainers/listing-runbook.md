@@ -28,19 +28,29 @@ release, and they keep control of it (see [After the merge](#after-the-merge)).
 
 Start from what the maintainer gave you: a repository, an account, or a list.
 
-```sh
-# All public repositories of an account, newest activity first
-gh repo list <owner> --visibility public --limit 200 --json nameWithOwner,description,pushedAt \
-  --jq 'sort_by(.pushedAt) | reverse | .[] | "\(.nameWithOwner)\t\(.description)"'
+For an account, check every public, non-fork, non-archived repository for a
+release and a `sce_sys/param.json`. Don't rely on GitHub code search: it often
+misses repositories (it found none of SvenGDK's three native apps).
 
-# Which of them contain a native PS5 title (a sce_sys/param.json with a PPSA title ID)
-gh search code '"titleId": "PPSA' --owner <owner> --filename param.json --json repository,path \
-  --jq '.[] | "\(.repository.nameWithOwner)\t\(.path)"'
+```sh
+owner=<owner>
+gh repo list "$owner" --visibility public --limit 200 --no-archived --source \
+  --json nameWithOwner --jq '.[].nameWithOwner' |
+while read -r repo; do
+  release=$(gh api "repos/$repo/releases?per_page=5" \
+    --jq '[.[] | select(.draft | not)][0] | if . == null then "none" else "\(.tag_name) files=\([.assets[].name] | join(","))" end')
+  branch=$(gh api "repos/$repo" --jq .default_branch)
+  params=$(gh api "repos/$repo/git/trees/$branch?recursive=1" \
+    --jq '[.tree[].path | select(endswith("sce_sys/param.json"))] | join(",")')
+  printf '%s\n  release: %s\n  param.json: %s\n' "$repo" "${release:-none}" "${params:-none}"
+done
 ```
 
 A repository is a candidate only when it has a published GitHub release **and**
-a `sce_sys/param.json`. Skip templates, SDKs, libraries, drivers, research and
-test projects: the catalog lists apps people install and use.
+a `sce_sys/param.json` at its root (or in the folder its README says is the
+app). Skip templates, SDKs whose `param.json` files belong to samples,
+libraries, drivers, payloads (`.elf` releases), desktop tools, research and
+test projects: the catalog lists native apps people install on the console.
 
 ## 2. Draft the record
 
@@ -145,6 +155,7 @@ Report these to the maintainer instead of opening a pull request:
 | The title ID is already listed by a different project | Title IDs are first come, first served; a maintainer decides. |
 | The repository is a fork or repackage of another developer's app | Provenance must be the original developer. |
 | The app is obviously for piracy, contains commercial content, or the README asks not to be redistributed | Refused by the review policy. |
+| The only file that would be listed ships emulators or files that look extracted from commercial games | Commercial content can't be linked. Backup managers themselves are in scope: list only the app's own file (use `--asset`), never a companion pack, and say so in the pull request. |
 | The repository is archived with no recent release | Probably abandoned; a maintainer decides. |
 | `check`, `verify` or the tests report errors | The record isn't valid. |
 

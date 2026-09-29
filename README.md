@@ -158,7 +158,9 @@ lawful to distribute and use. This catalog only links to files the developers
 host in their own GitHub Releases; it doesn't host, modify or distribute them.
 Listings, the website and the feed are provided as-is, without warranty of any
 kind, and the maintainers accept no liability for listed apps or their content.
-Use homebrew at your own risk.
+Some apps need extra setup, such as a payload, configuration or additional
+files: always read each app's release notes and documentation, linked from its
+page, before installing. Use homebrew at your own risk.
 
 If a listing infringes your rights or includes illegal content, report it
 through an [issue](https://github.com/blackbearreloaded/ps5-homebrew-catalog/issues/new/choose)
