@@ -153,6 +153,7 @@ python3 -m catalog verify [TITLEID ...]    # online checks for some or all recor
 python3 -m catalog digest <artifact_url>   # sha256 as reported by GitHub
 python3 -m catalog health [--slice today]  # what the daily job runs (default: all)
 python3 -m catalog updates [TITLEID ...]   # newer releases that would be proposed
+python3 -m catalog draft <owner>/<repo>     # draft a listing (see maintainers/listing-runbook.md)
 python3 -m unittest discover -s tests
 ```
 

@@ -291,6 +291,25 @@ def cmd_updates(args) -> int:
     return report.emit("Update check", f"{len(found)} update(s) found.")
 
 
+def cmd_draft(args) -> int:
+    from .draft import draft_record, render_draft
+    from .updates import render
+    try:
+        draft = draft_record(args.repository, GitHub(), APPS, tag=args.tag, asset_name=args.asset)
+    except (ValueError, GitHubError) as error:
+        print(f"draft failed: {error}", file=sys.stderr)
+        return 1
+    print(render_draft(draft))
+    if args.write and not draft.blockers and draft.record["titleid"]:
+        target = APPS / f"{draft.record['titleid']}.json"
+        if target.exists():
+            print(f"not written: {target.relative_to(ROOT)} already exists", file=sys.stderr)
+            return 1
+        target.write_text(render(draft.record), encoding="utf-8", newline="\n")
+        print(f"written: {target.relative_to(ROOT)} (fill the empty fields, then run check and verify)")
+    return 1 if draft.blockers else 0
+
+
 def cmd_build(args) -> int:
     from .site import build_site
     report = Report()
@@ -352,6 +371,13 @@ def main(argv: list[str] | None = None) -> int:
     build.add_argument("--no-icons", action="store_true", help="skip fetching icons (placeholders)")
     build.add_argument("--icon-cache", help="directory that keeps fetched icons between builds")
     build.set_defaults(func=cmd_build)
+
+    draft = commands.add_parser("draft", help="draft a record for a repository (no downloads, no writes to GitHub)")
+    draft.add_argument("repository", help="owner/repository or GitHub URL")
+    draft.add_argument("--tag", help="release tag (default: newest release, pre-releases included)")
+    draft.add_argument("--asset", help="release file to list when there are several")
+    draft.add_argument("--write", action="store_true", help="write apps/<TITLEID>.json with the drafted values")
+    draft.set_defaults(func=cmd_draft)
 
     updates = commands.add_parser("updates", help="find newer upstream releases (and open PRs in CI)")
     updates.add_argument("titleids", nargs="*", help="title IDs to check (default: all)")

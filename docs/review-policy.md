@@ -9,7 +9,10 @@ An app is listed when:
 1. every automated check passes (see [Automation](automation.md)), and
 2. a maintainer has reviewed the submission as described below.
 
-A listing is **not** a security audit of the app's code. The catalog guarantees
+A listing is **not** a security audit of the app's code, and it doesn't
+make the maintainers responsible for the app. Each developer alone is
+responsible for their app's licensing and content, including anything it
+bundles or downloads. The catalog guarantees
 that users receive exactly the reviewed bytes from the stated source repository,
 under the stated title ID and publisher.
 
@@ -24,12 +27,21 @@ Before merging a submission, a maintainer confirms:
   listed without the original developer's consent.
 - **Honesty.** The name, description, kind and icon describe the app accurately
   and don't imitate another listing or an official product.
-- **Scope.** The app is PS5 homebrew. Pirated commercial content, tools whose
+- **Scope.** The app is native PS5 homebrew: built for the PS5 and installed
+  as its own title (`eboot.bin`, `sce_sys/`). ELF payloads, PS4 packages,
+  backports, emulator ROMs and web pages are out of scope. Pirated commercial content, tools whose
   main purpose is piracy, malware and apps that exfiltrate user data are refused.
 - **License.** The license allows redistribution of the published build.
 
 Maintainers may ask questions on the pull request and decline submissions that
 don't meet this policy.
+
+Maintainers may also list a public native app on its developer's behalf,
+following the [listing runbook](maintainers/listing-runbook.md), which people
+and AI agents can use. The same review applies. The listing points at the
+developer's own release, the developer keeps ownership of it (updates and
+corrections by pull request), and they can ask for it to be withdrawn at any
+time.
 
 ## Title IDs
 

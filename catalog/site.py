@@ -345,8 +345,8 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
         toolbar=theme_obj.render("toolbar.html", dict(shared, chips="".join(chips), format_options=format_options)),
     )
     write_page(root / "index.html", title="PS5 Homebrew Store — community apps, games and tools",
-               description=f"Browse {total} PS5 homebrew apps, games and tools. Every download comes from "
-                           "the developer's GitHub release and is pinned by SHA-256.",
+               description=f"Browse {total} native PS5 homebrew apps, games and tools. Every download comes "
+                           "from the developer's GitHub release and is pinned by SHA-256.",
                canonical=site_url + base, body=index_body, page_class="page-home")
 
     # App pages.

@@ -5,9 +5,9 @@
   "description": "Unofficial Moonlight game streaming port for PS5.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",
-  "version": "01.000.060",
+  "version": "01.000.062",
   "source_repo": "https://github.com/blackbearreloaded/ProsperoLight",
-  "artifact_url": "https://github.com/blackbearreloaded/ProsperoLight/releases/download/01.000.060/PPSA99002.zip",
-  "sha256": "26ed8bea5915ee68139fe29b203c23792cf6bd322a883666c67b7a61feb993af",
-  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ProsperoLight/01.000.060/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/blackbearreloaded/ProsperoLight/releases/download/01.000.062/PPSA99002.zip",
+  "sha256": "2ebc76e00fe6ecc741c7465bed8da194e0f8ac99970585bddd24dfdbf07a1503",
+  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ProsperoLight/01.000.062/sce_sys/icon0.png"
 }

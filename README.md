@@ -3,9 +3,13 @@
 [![CI](https://github.com/blackbearreloaded/ps5-homebrew-catalog/actions/workflows/ci.yml/badge.svg)](https://github.com/blackbearreloaded/ps5-homebrew-catalog/actions/workflows/ci.yml)
 [![Catalog health](https://github.com/blackbearreloaded/ps5-homebrew-catalog/actions/workflows/health.yml/badge.svg)](https://github.com/blackbearreloaded/ps5-homebrew-catalog/actions/workflows/health.yml)
 
-A community-maintained index of PS5 homebrew. Each app is one small JSON record
-that points to a release file its developer hosts in their own GitHub Releases.
-This repository stores no binaries.
+A community-maintained index of **native PS5 homebrew apps**. Each app is one
+small JSON record that points to a release file its developer hosts in their
+own GitHub Releases. This repository stores no binaries.
+
+**Native apps only.** Every listing is an application built for the PS5 that
+installs as a title with its own title ID (`eboot.bin` and `sce_sys/`). ELF
+payloads, PS4 packages, backports, emulator ROMs and web pages aren't listed.
 
 The records here are the source of the [PS5 homebrew website](https://homebrew.page/ps5/),
 and they will feed a console-side store that can install listed apps.
@@ -146,6 +150,21 @@ Report a broken or incorrect listing with an
 Report a malicious or compromised app privately as described in
 [SECURITY.md](SECURITY.md).
 
+## Disclaimer
+
+Each app is published by its own developer, who alone is responsible for it:
+its licensing, its content, what it includes or downloads, and whether it is
+lawful to distribute and use. This catalog only links to files the developers
+host in their own GitHub Releases; it doesn't host, modify or distribute them.
+Listings, the website and the feed are provided as-is, without warranty of any
+kind, and the maintainers accept no liability for listed apps or their content.
+Use homebrew at your own risk.
+
+If a listing infringes your rights or includes illegal content, report it
+through an [issue](https://github.com/blackbearreloaded/ps5-homebrew-catalog/issues/new/choose)
+or privately as described in [SECURITY.md](SECURITY.md); it will be withdrawn
+(see the [review policy](docs/review-policy.md#withdrawals)).
+
 ## Repository layout
 
 ```text
@@ -154,7 +173,8 @@ catalog/              Checker, verifier and site generator (Python standard libr
 site/                 Website themes, templates and shared assets
 tests/                Unit and end-to-end tests for the checker
 docs/                 Submission guide, formats, policy, automation, website
-.github/workflows/    Submission check, CI and deploy, daily health check
+docs/maintainers/     Maintainer runbooks (listing a developer's app, for people and AI agents)
+.github/workflows/    Submission check, CI and deploy, daily health check, release updates
 ```
 
 ## Run the checks locally

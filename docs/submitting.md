@@ -6,6 +6,9 @@ then reviews and merges it.
 
 ## Requirements
 
+- A **native PS5 app**: built for the PS5 and installed as a title with its own
+  title ID (`eboot.bin` and `sce_sys/param.json`). ELF payloads, PS4 packages,
+  backports, emulator ROMs and web pages aren't listed.
 - A **public GitHub repository** for the app, with a license GitHub can detect.
 - A **release artifact** (`.zip`, `.ffpfsc` or `.ffpkg`, see
   [artifact formats](artifact-formats.md)) attached to a published release of
