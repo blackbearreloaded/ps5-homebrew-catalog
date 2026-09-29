@@ -5,9 +5,9 @@
   "description": "Native OpenGL graphics showcase for PS5.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "source_repo": "https://github.com/blackbearreloaded/ps5-opengl",
-  "artifact_url": "https://github.com/blackbearreloaded/ps5-opengl/releases/download/v0.5.0/ps5-opengl-showcase-0.5.0-PPSA99005.zip",
-  "sha256": "52768ce26c3d547eeab658019ae0abe14f123678cc672e15e21aca04fcfc6421",
+  "artifact_url": "https://github.com/blackbearreloaded/ps5-opengl/releases/download/v0.6.0/ps5-opengl-showcase-0.6.0-PPSA99005.zip",
+  "sha256": "7fe9d9e1300dcde456296956aef16a27ffc8233b9b7c1837573680cc73f75e2b",
   "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ps5-opengl/464be47c711db2034712f94f4d822f1b18c79ed3/examples/core46-showcase/sce_sys/icon0.png"
 }
