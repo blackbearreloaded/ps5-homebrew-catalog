@@ -24,7 +24,9 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.base.ref }}
           fetch-depth: 0
-          persist-credentials: false
+          # The checker fetches the PR head as data; that needs credentials when the
+          # repository is private. The token is read-only and no PR code ever runs.
+          persist-credentials: true
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.13'
