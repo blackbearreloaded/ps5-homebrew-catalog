@@ -9,7 +9,10 @@ An app is listed when:
 1. every automated check passes (see [Automation](automation.md)), and
 2. a maintainer has reviewed the submission as described below.
 
-A listing is **not** a security audit of the app's code. The catalog guarantees
+A listing is **not** a security audit of the app's code, and it doesn't
+make the maintainers responsible for the app. Each developer alone is
+responsible for their app's licensing and content, including anything it
+bundles or downloads. The catalog guarantees
 that users receive exactly the reviewed bytes from the stated source repository,
 under the stated title ID and publisher.
 

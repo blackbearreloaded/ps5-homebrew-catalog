@@ -14,7 +14,9 @@ release, and they keep control of it (see [After the merge](#after-the-merge)).
   API: the file's SHA-256 is GitHub's digest, and "native" is judged from the
   repository's `sce_sys/param.json`.
 - **Never contact the developer**, comment on their repository, or open issues
-  there. Only a maintainer decides whether to reach out.
+  there. Developers aren't notified: listed projects and releases are already
+  public, and the developer stays responsible for their app's licensing and
+  content (see the [README disclaimer](../../README.md#disclaimer)).
 - **Never merge.** Open the pull request and stop; a maintainer reviews it.
 - **One app per pull request**, on its own branch.
 - **Stop and report** instead of guessing when a [stop condition](#stop-conditions)
