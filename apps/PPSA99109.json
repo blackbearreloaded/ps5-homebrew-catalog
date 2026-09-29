@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99109",
+  "name": "Prospero Explorer",
+  "kind": "tool",
+  "description": "File explorer for PS5 that manages files and archives, plays media, edits text, installs packages and serves files over the network.",
+  "license": "GPL-3.0",
+  "author": "SvenGDK",
+  "version": "1.0",
+  "source_repo": "https://github.com/SvenGDK/Prospero-Explorer",
+  "artifact_url": "https://github.com/SvenGDK/Prospero-Explorer/releases/download/v1.0/ProsperoExplorer-v1.zip",
+  "sha256": "3eaee706e8aca772fce734b494e56729ddedec218597ab9baf940094a0cdfc7e",
+  "icon_url": "https://raw.githubusercontent.com/SvenGDK/Prospero-Explorer/v1.0/sce_sys/icon0.png"
+}
