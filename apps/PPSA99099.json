@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99099",
+  "name": "LibProsperoPKG",
+  "kind": "app",
+  "description": "Library for creating, inspecting, and modifying PS5 PKG, GP5, PFS, and related files.",
+  "license": "GPL-3.0",
+  "author": "SvenGDK",
+  "version": "2.5",
+  "source_repo": "https://github.com/SvenGDK/LibProsperoPKG",
+  "artifact_url": "https://github.com/SvenGDK/LibProsperoPKG/releases/download/v2.5/libprosperopkg-linux-arm64.zip",
+  "sha256": "79af4444e2126e0500da4a0767f5356573ac8dd5dfa1d761ca4838b29b710715",
+  "icon_url": "https://raw.githubusercontent.com/SvenGDK/LibProsperoPKG/v2.5/src/HomebrewTest/sce_sys/icon0.png"
+}
