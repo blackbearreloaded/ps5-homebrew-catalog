@@ -5,9 +5,9 @@
   "description": "Native RetroArch port for PS5 with cores for NES, SNES, GBA, Genesis, arcade, PSP, GameCube/Wii and PS2.",
   "license": "GPL-3.0-or-later",
   "author": "Mihawk",
-  "version": "0.5.0-alpha.5",
+  "version": "0.5.5-alpha.5",
   "source_repo": "https://github.com/mihawk-99/PS5_RetroArch",
-  "artifact_url": "https://github.com/mihawk-99/PS5_RetroArch/releases/download/v0.5.0-alpha.5/PS5_RetroArch-v0.5.0-alpha.5.zip",
-  "sha256": "aa85d74e224bab3f0dc414c1176f3aa04ddf02b5d86d522b218d6c9c30e769de",
-  "icon_url": "https://raw.githubusercontent.com/mihawk-99/PS5_RetroArch/v0.5.0-alpha.5/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/mihawk-99/PS5_RetroArch/releases/download/v0.5.5-alpha.5/PS5_RetroArch-v0.5.5-alpha.5.zip",
+  "sha256": "6c6e4c2462499b5d962f07fcb385c3d01e6a76ed91d6912addd3e537f3077c1e",
+  "icon_url": "https://raw.githubusercontent.com/mihawk-99/PS5_RetroArch/v0.5.5-alpha.5/sce_sys/icon0.png"
 }
