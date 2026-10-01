@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99009",
+  "name": "ProsperoLichess",
+  "kind": "game",
+  "description": "Native Lichess client for PS5: play online chess with the controller.",
+  "license": null,
+  "author": "BlackBearReloaded",
+  "version": null,
+  "source_repo": null,
+  "artifact_url": null,
+  "sha256": null,
+  "icon_url": null
+}
