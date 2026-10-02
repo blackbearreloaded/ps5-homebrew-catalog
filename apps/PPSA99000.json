@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99000",
+  "name": "ProsperoStore",
+  "kind": "app",
+  "description": "Native app store for PS5 homebrew: browse this catalog, install apps and keep them up to date.",
+  "license": null,
+  "author": "BlackBearReloaded",
+  "version": null,
+  "source_repo": null,
+  "artifact_url": null,
+  "sha256": null,
+  "icon_url": null
+}
