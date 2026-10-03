@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99050",
+  "name": "Homebrew UI Lab",
+  "kind": "app",
+  "description": "A gallery of 21 complete, working interface designs for PS5 homebrew, drawn with OpenGL, with 30 themes and a reusable widget kit. Switch designs with L1 and R1.",
+  "license": "GPL-3.0",
+  "author": "BlackBearReloaded",
+  "version": "01.000.000",
+  "source_repo": "https://github.com/blackbearreloaded/ps5-homebrew-ui",
+  "artifact_url": "https://github.com/blackbearreloaded/ps5-homebrew-ui/releases/download/01.000.000/PPSA99050.zip",
+  "sha256": "a875f47ccda43710565b3fa809513cbbc74f4d35124cf0c686e63e81b3a3aa70",
+  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ps5-homebrew-ui/01.000.000/sce_sys/icon0.png"
+}
