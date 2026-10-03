@@ -7,7 +7,7 @@
   "author": "Sain Saji",
   "version": "0.10.0",
   "source_repo": "https://github.com/sainsaji/EVO-PLAYER-PS5",
-  "artifact_url": "https://github.com/sainsaji/EVO-PLAYER-PS5/releases/download/v0.10.0/EVOPlayer-v0.10.0-PPSA99039.ffpfsc",
-  "sha256": "a2b14616a2662a5e8401aad9012ba1c0d3df68211e5b70039eedfb9a0845a0be",
+  "artifact_url": "https://github.com/sainsaji/EVO-PLAYER-PS5/releases/download/v0.10.0/EVOPlayer-v0.10.0-PPSA99039.zip",
+  "sha256": "dd7d80dcfbf27af377f4014df4e88ea412988d169785912b10a162e3060cb011",
   "icon_url": "https://raw.githubusercontent.com/sainsaji/EVO-PLAYER-PS5/v0.10.0/projects/evoplayer/sce_sys/icon0.png"
 }
