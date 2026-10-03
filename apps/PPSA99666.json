@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99666",
+  "name": "DOOM Native Port",
+  "kind": "game",
+  "description": "id Software's original DOOM source running natively on the PS5, with the shareware episode included and an importer for your own DOOM, DOOM II and Final DOOM files.",
+  "license": "GPL-2.0",
+  "author": "lowbit",
+  "version": "1.0.1",
+  "source_repo": "https://github.com/lowbit/ps5-doom",
+  "artifact_url": "https://github.com/lowbit/ps5-doom/releases/download/v1.0.1/PPSA99666.zip",
+  "sha256": "f90814a6d8cd9c127400a83dac00976decc2eaa172f8994d56cec2aae053783b",
+  "icon_url": "https://raw.githubusercontent.com/lowbit/ps5-doom/v1.0.1/sce_sys/icon0.png"
+}
