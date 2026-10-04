@@ -2,7 +2,7 @@
   "titleid": "PPSA99666",
   "name": "DOOM Native Port",
   "kind": "game",
-  "description": "id Software's original DOOM source running natively on the PS5, with the shareware episode included. Add your own DOOM, DOOM II and Final DOOM files from a PC or phone browser, a link or a folder on the console.",
+  "description": "id Software's original DOOM source running natively on the PS5, with the shareware episode. Add your own DOOM, DOOM II and Final DOOM files from a PC or phone browser, a link or FTP.",
   "license": "GPL-2.0",
   "author": "lowbit",
   "version": "1.1.0",
