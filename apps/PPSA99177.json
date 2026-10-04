@@ -5,9 +5,9 @@
   "description": "Native VR video player for PS VR2 on jailbroken PS5: 8K, 180/360, 3D, spatial audio",
   "license": "GPL-3.0",
   "author": "Husam Osman",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "source_repo": "https://github.com/theghostonline/PS5VR",
-  "artifact_url": "https://github.com/theghostonline/PS5VR/releases/download/v1.0.0/PS5VR-1.0.0-PPSA99177.zip",
-  "sha256": "3bbd8f7716d6b0057393771d4bf93b4f51ba16f75cfbd2f25e44fffaadcf1534",
-  "icon_url": "https://raw.githubusercontent.com/theghostonline/PS5VR/v1.0.0/app/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/theghostonline/PS5VR/releases/download/v1.2.0/PS5VR-1.2.0-PPSA99177.zip",
+  "sha256": "8e39a7ecb8fa2519291e892600dda43b85325c52a9ff7ab029bb78c38a16765d",
+  "icon_url": "https://raw.githubusercontent.com/theghostonline/PS5VR/v1.2.0/app/sce_sys/icon0.png"
 }
