@@ -5,9 +5,9 @@
   "description": "Internet radio player for PS5.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",
-  "version": "01.000.005",
+  "version": "01.000.010",
   "source_repo": "https://github.com/blackbearreloaded/ProsperoRadio",
-  "artifact_url": "https://github.com/blackbearreloaded/ProsperoRadio/releases/download/01.000.005/PPSA99001.zip",
-  "sha256": "2432640a5dc4a4cb57ffcdb2ce347329a687ddff526f6e19d0495f1efd136317",
-  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ProsperoRadio/01.000.005/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/blackbearreloaded/ProsperoRadio/releases/download/01.000.010/PPSA99001.zip",
+  "sha256": "413011fcaf2cee3b1ce796388f3c9b13d3a0ac2e1a1a2b5bc5bba1adcd0fc020",
+  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ProsperoRadio/01.000.010/sce_sys/icon0.png"
 }
