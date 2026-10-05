@@ -3,11 +3,11 @@
   "name": "ProsperoStore",
   "kind": "app",
   "description": "Native app store for PS5 homebrew: browse this catalog, install apps and keep them up to date.",
-  "license": null,
+  "license": "GPL-3.0",
   "author": "BlackBearReloaded",
-  "version": null,
-  "source_repo": null,
-  "artifact_url": null,
-  "sha256": null,
-  "icon_url": null
+  "version": "1.000.000",
+  "source_repo": "https://github.com/blackbearreloaded/ProsperoStore",
+  "artifact_url": "https://github.com/blackbearreloaded/ProsperoStore/releases/download/v1.000.000/PPSA99000.zip",
+  "sha256": "dc8a244ab8477e15a0d280cddd7802e93a9d4d8e68df2d68d4239d400fdcb342",
+  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ProsperoStore/v1.000.000/sce_sys/icon0.png"
 }
