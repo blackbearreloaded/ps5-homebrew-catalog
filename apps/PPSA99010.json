@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99010",
+  "name": "vkQuake",
+  "kind": "game",
+  "description": "Native PS5 port of vkQuake, the Vulkan Quake engine, at up to 120 FPS and 4K with DualSense input. Needs your own Quake game data.",
+  "license": "GPL-3.0-or-later",
+  "author": "Mihawk",
+  "version": "1.0",
+  "source_repo": "https://github.com/mihawk-99/PS5_vkQuake",
+  "artifact_url": "https://github.com/mihawk-99/PS5_vkQuake/releases/download/1.0/PPSA99010.zip",
+  "sha256": "aeabf17512eada3e96c18fb2d842b7e077ffea2fbb65caf93276cc0b2797b0e6",
+  "icon_url": "https://raw.githubusercontent.com/mihawk-99/PS5_vkQuake/1.0/sce_sys/icon0.png"
+}
