@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99702",
+  "name": "OpenRCT2",
+  "kind": "game",
+  "description": "Native PS5 port of OpenRCT2 (RollerCoaster Tycoon 2): 1080p, ~60 FPS, DualSense cursor controls. Early but playable. Bring your own game files.",
+  "license": "GPL-3.0",
+  "author": "Alec Puente",
+  "version": "0.1.0",
+  "source_repo": "https://github.com/icepuente/rct2-ps5",
+  "artifact_url": "https://github.com/icepuente/rct2-ps5/releases/download/v0.1.0/OpenRCT2-PS5-v0.1.0.zip",
+  "sha256": "f4d6ae6df0b678071f9f60f8a732fc8f03c41f55e1b4a894b4940e4a2f33d9a4",
+  "icon_url": "https://raw.githubusercontent.com/icepuente/rct2-ps5/v0.1.0/ps5/sce_sys/icon0.png"
+}
