@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA92280",
+  "name": "Capy Mobile",
+  "kind": "app",
+  "description": "Java phone games (J2ME) on the PS5: a native homebrew emulator app",
+  "license": "GPL-3.0",
+  "author": "Khalifa Al-Khatri",
+  "version": "0.5.0",
+  "source_repo": "https://github.com/khalifa007/CapyMobile",
+  "artifact_url": "https://github.com/khalifa007/CapyMobile/releases/download/v0.5.0/CapyMobile-00.005.000.zip",
+  "sha256": "80b14507838cd835fca794a493cde6b4cf0e7ca923afafaa1bc37c08f8fca6ec",
+  "icon_url": "https://raw.githubusercontent.com/khalifa007/CapyMobile/v0.5.0/sce_sys/icon0.png"
+}
