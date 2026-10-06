@@ -5,9 +5,9 @@
   "description": "id Software's original DOOM source running natively on the PS5, with the shareware episode. Add your own DOOM, DOOM II and Final DOOM files from a PC or phone browser, a link or FTP.",
   "license": "GPL-2.0",
   "author": "lowbit",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "source_repo": "https://github.com/lowbit/ps5-doom",
-  "artifact_url": "https://github.com/lowbit/ps5-doom/releases/download/v1.1.0/PPSA99666.zip",
-  "sha256": "71f79585e0e0abf16750c8501d4a686b06621777d2c2725134cd879b7cf19d6b",
-  "icon_url": "https://raw.githubusercontent.com/lowbit/ps5-doom/v1.1.0/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/lowbit/ps5-doom/releases/download/v1.1.1/PPSA99666.zip",
+  "sha256": "4d8e5b785b61696fbf1988c2d0d87c5c977734ff60b1ce11cc49134b0e711b5f",
+  "icon_url": "https://raw.githubusercontent.com/lowbit/ps5-doom/v1.1.1/sce_sys/icon0.png"
 }
