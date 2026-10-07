@@ -5,9 +5,9 @@
   "description": "Tracker music radio in FastTracker II style, streaming MOD, XM, S3M and IT from The Mod Archive.",
   "license": "GPL-3.0-or-later",
   "author": "Marice",
-  "version": "01.000.002",
+  "version": "02.000.001",
   "source_repo": "https://github.com/Marice/OliSePlayer",
-  "artifact_url": "https://github.com/Marice/OliSePlayer/releases/download/01.000.002/PPSA01153.zip",
-  "sha256": "20d10904ba3c02c6465c05861010c40855bf015159ada0d05bd89de157267063",
-  "icon_url": "https://raw.githubusercontent.com/Marice/OliSePlayer/01.000.002/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/Marice/OliSePlayer/releases/download/02.000.001/PPSA01153.zip",
+  "sha256": "c351a996249b2a905d69b3b52f5ad00a32cc6fc07f2bfe18ee47e2d9f5b2e93c",
+  "icon_url": "https://raw.githubusercontent.com/Marice/OliSePlayer/02.000.001/sce_sys/icon0.png"
 }
