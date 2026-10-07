@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA59322",
+  "name": "ccleste",
+  "kind": "game",
+  "description": "This is a C source port of the original celeste (Celeste classic) for the PICO-8, designed to be portable. Now you can enjoy the port on your PS5.",
+  "license": "MIT",
+  "author": "AngelXex",
+  "version": "1.0.0",
+  "source_repo": "https://github.com/darkxex/PS5_Celeste",
+  "artifact_url": "https://github.com/darkxex/PS5_Celeste/releases/download/1.00/PPSA59322.zip",
+  "sha256": "96861b81c1fbaac818080d1bf958b575e6b44d2c258684e1931f2940cee2fb43",
+  "icon_url": "hhttps://raw.githubusercontent.com/darkxex/PS5_Celeste/master/dist/PPSA59322/sce_sys/icon0.png"
+}
