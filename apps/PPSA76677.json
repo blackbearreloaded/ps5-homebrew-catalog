@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA76677",
+  "name": "RommPS",
+  "kind": "app",
+  "description": "Syncs your emulator saves and states with a RomM server and downloads games from your RomM library.",
+  "license": "GPL-3.0",
+  "author": "s0liton",
+  "version": null,
+  "source_repo": null,
+  "artifact_url": null,
+  "sha256": null,
+  "icon_url": null
+}
