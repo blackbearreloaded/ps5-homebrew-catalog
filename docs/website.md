@@ -197,6 +197,15 @@ access to this repository.
   and the project's `*.pages.dev` name. Keep WHOIS privacy on for the domain;
   Cloudflare Registrar redacts owner details by default.
 
+### API mirror
+
+After the site is uploaded, the same job builds the store API once more for
+this repository's GitHub Pages address, signs it, and a second job publishes
+it there. It exists for consoles whose network blocks the main site
+([Store API: mirror](api.md#mirror)). Only the API is published; the mirror's
+front page is one static file, `site/mirror/index.html`. GitHub Pages must be
+enabled for the repository with "GitHub Actions" as its source.
+
 ### Fallback deploy
 
 When GitHub's hosted runners are down, merges reach `main` but the site stays

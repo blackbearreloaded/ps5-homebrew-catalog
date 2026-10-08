@@ -133,6 +133,13 @@ class SiteBuildTests(unittest.TestCase):
         self.assertIsInstance(manifest["sequence"], int)
         self.assertFalse((api / "manifest.sig").exists())
 
+    def test_a_mirror_of_the_api_links_pages_to_the_website(self):
+        self.build(site_url="https://owner.github.io", base="/catalog/", pages_url="https://homebrew.page/")
+        app = json.loads((self.out / "catalog" / "api" / "v1" / "apps" / "PPSA01234.json").read_text(encoding="utf-8"))
+        self.assertEqual(app["page"], "https://homebrew.page/app/PPSA01234/")
+        index = json.loads((self.out / "catalog" / "api" / "v1" / "index.json").read_text(encoding="utf-8"))
+        self.assertEqual(index["count"], 3)
+
     def test_safety_labels_come_from_scan_summaries(self):
         from catalog import facts as facts_module
         from catalog import scan as scan_module

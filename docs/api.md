@@ -370,6 +370,35 @@ opaque string; only equality matters.
 A client that keeps no fingerprints can still send `If-None-Match` for each
 icon, as for any other file, at the cost of one request per icon.
 
+## Mirror
+
+The whole API is published a second time at
+
+```
+https://blackbearreloaded.github.io/ps5-homebrew-catalog/api/v1/
+```
+
+for consoles on networks that can't reach `homebrew.page`. It is rebuilt and
+signed by the same deploy, a moment after the main site.
+
+- **Same files, same meaning.** `index.json`, `versions.json`, `apps/<TITLEID>.json`,
+  the icons, `manifest.json` and `manifest.sig` are all there, under the same paths.
+- **Icon addresses name the mirror.** `icon` and `icon_small` point at the mirror,
+  so a client that can only reach the mirror can still fetch icons. `page` still
+  names the website. Everything else is identical.
+- **Its own manifest and signature,** made with the same keys. Because the icon
+  addresses differ, the mirror's files have different hashes: verify a mirror
+  file against the mirror's manifest, never against the main site's. `sequence`
+  is the same number on both.
+- **Use it only as a fallback.** Ask `homebrew.page` first; use the mirror when
+  that fails. A client must accept exactly this host and path prefix, not any
+  `github.io` address.
+- **Only the API is mirrored.** There are no app pages there.
+
+GitHub Pages sets its own cache lifetime (about ten minutes) and ignores the
+site's header rules, so the [Requests](#requests) notes on caching describe the
+main site.
+
 ## Requests
 
 - **HTTPS only**, `GET` only. No key, no account, no rate limit to negotiate;

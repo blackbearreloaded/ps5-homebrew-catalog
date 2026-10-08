@@ -161,3 +161,48 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           WRANGLER_SEND_METRICS: 'false'
+      # The mirror: the store API once more, built for this repository's GitHub Pages address, for
+      # consoles on networks that can't reach the main site. Only the API is published there (JSON,
+      # icons, signature); its `page` links name the website. Its files differ from the main
+      # site's (icon addresses), so it has a manifest and a signature of its own, from the same key.
+      - name: Build the API mirror
+        run: >-
+          python3 -m catalog build --out mirror --icon-cache .icon-cache --scans scans
+          --site-url "https://${OWNER}.github.io" --base "/${REPOSITORY}/" --pages-url https://homebrew.page/
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          OWNER: ${{ github.repository_owner }}
+          REPOSITORY: ${{ github.event.repository.name }}
+      - name: Sign the mirror's API
+        run: python3 -m catalog sign --out mirror --base "/${REPOSITORY}/" --require
+        env:
+          CATALOG_SIGNING_KEY: ${{ secrets.CATALOG_SIGNING_KEY }}
+          REPOSITORY: ${{ github.event.repository.name }}
+      - name: Keep only the API for the mirror
+        run: |
+          mkdir pages
+          cp -r "mirror/${REPOSITORY}/api" pages/api
+          cp site/mirror/index.html pages/index.html
+          touch pages/.nojekyll
+        env:
+          REPOSITORY: ${{ github.event.repository.name }}
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: pages
+
+  mirror:
+    name: Publish the API mirror to GitHub Pages
+    # Publishes what the deploy job built and signed; it holds no secrets itself.
+    needs: deploy
+    if: needs.deploy.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.pages.outputs.page_url }}
+    steps:
+      - id: pages
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
