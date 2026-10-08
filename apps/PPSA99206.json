@@ -5,9 +5,9 @@
   "description": "A port of PCSX2 for PS5N64",
   "license": "GPL-3.0",
   "author": "GameMaster",
-  "version": "release",
+  "version": "releasev7",
   "source_repo": "https://github.com/Globaleliteee/PS5N64",
-  "artifact_url": "https://github.com/Globaleliteee/PS5N64/releases/download/release/PPSA99206.zip",
-  "sha256": "325246218f5b10573c8e4a1280f76a5c23c357018c13a3fe99d814f76e9e3ef4",
-  "icon_url": "https://raw.githubusercontent.com/Globaleliteee/PS5N64/release/n64/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/Globaleliteee/PS5N64/releases/download/releasev7/PPSA99206.zip",
+  "sha256": "278ff37b8efca37e6b2a25346e215571810f08e1fe4a8ecf019196478f363f42",
+  "icon_url": "https://raw.githubusercontent.com/Globaleliteee/PS5N64/releasev7/n64/sce_sys/icon0.png"
 }

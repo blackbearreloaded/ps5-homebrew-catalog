@@ -5,9 +5,9 @@
   "description": "Native IPTV client for PS5.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",
-  "version": "01.000.020",
+  "version": "01.000.030",
   "source_repo": "https://github.com/blackbearreloaded/ProsperoTV",
-  "artifact_url": "https://github.com/blackbearreloaded/ProsperoTV/releases/download/01.000.020/PPSA99003.zip",
-  "sha256": "d7ea6a099a2719ae5c61a956a0ff8e55d59f6a6caa7600fd505dccabc6806dbd",
-  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ProsperoTV/01.000.020/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/blackbearreloaded/ProsperoTV/releases/download/01.000.030/PPSA99003.zip",
+  "sha256": "a2fa4b370c228cbcbef176cb4582dde4d2d9dfb36824b86f0b6dbeb74323b106",
+  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ProsperoTV/01.000.030/sce_sys/icon0.png"
 }
