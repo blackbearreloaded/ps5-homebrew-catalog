@@ -25,6 +25,8 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.13'
+      # Only the release scan's tests use these; without them those tests are skipped.
+      - run: python3 -m pip install --disable-pip-version-check -r requirements-scan.txt
       - run: python3 -m unittest discover -s tests
       - run: python3 -m catalog check
       - name: Build the website (placeholder icons)
@@ -50,12 +52,44 @@ jobs:
           AFTER: ${{ github.sha }}
           GITHUB_TOKEN: ${{ github.token }}
 
+  scan:
+    name: Scan listed releases
+    # Writes a small summary per listed release for the site's safety labels. It downloads and
+    # reads files nobody has reviewed, so it has no secrets, and the deploy job reads its output
+    # only as data. A release is scanned once: summaries are kept by the file's sha256.
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    needs: tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      - run: python3 -m pip install --disable-pip-version-check -r requirements-scan.txt
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: .scan-cache
+          key: scans-${{ hashFiles('apps/*.json', 'catalog/scan.py', 'catalog/scan_rules.yar') }}
+          restore-keys: scans-
+      - run: python3 -m catalog scan-all --cache .scan-cache --out scans
+        env:
+          GH_TOKEN: ${{ github.token }}   # read-only: `gh attestation verify` needs one
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: scans
+          path: scans
+          retention-days: 7
+
   deploy:
     name: Deploy website to Cloudflare Pages
     # Only trusted code on main reaches this job: it never runs for pull requests.
     # deploy-fallback.yml repeats these steps for an Actions outage: change both together.
     # It is skipped until the CLOUDFLARE_PAGES_PROJECT repository variable exists.
-    needs: [tests, verify]
+    # The scan job may fail or be skipped: the site is then built without safety labels.
+    needs: [tests, verify, scan]
     if: >-
       always() && github.ref == 'refs/heads/main'
       && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
@@ -86,7 +120,14 @@ jobs:
           path: .icon-cache
           key: icons-${{ hashFiles('apps/*.json') }}
           restore-keys: icons-
-      - run: python3 -m catalog build --out dist --icon-cache .icon-cache
+      - name: Fetch the scan summaries
+        if: needs.scan.result == 'success'
+        continue-on-error: true
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: scans
+          path: scans
+      - run: python3 -m catalog build --out dist --icon-cache .icon-cache --scans scans
         env:
           GITHUB_TOKEN: ${{ github.token }}   # read-only: raises the API rate limit for release facts
       - name: Sign the store API

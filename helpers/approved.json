@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "about": "Payloads (helpers that run outside the PS5 sandbox) a maintainer has read and accepted, by SHA-256. The release scan flags any payload that is not here. See docs/automation.md, Approved helpers.",
+  "helpers": [
+    {
+      "sha256": "0befacdcdfd5f3ee0910115fa48543649589558f2a41f22299133d92f95f9200",
+      "name": "ProsperoStore: lapy.elf",
+      "titleid": "PPSA99000",
+      "version": "1.000.040",
+      "source": "https://github.com/blackbearreloaded/ProsperoStore"
+    },
+    {
+      "sha256": "8623bcc755704d1225ddf6cc1f9243aa7fd0142b2bea14f87ba71a5bf436cb7f",
+      "name": "ProsperoStore: self-updater.elf",
+      "titleid": "PPSA99000",
+      "version": "1.000.040",
+      "source": "https://github.com/blackbearreloaded/ProsperoStore"
+    },
+    {
+      "sha256": "ac615cd58dac98a020c44cf98811ad9b15791843fb809e32ae446bc813547a57",
+      "name": "ProsperoStore: store-worker.elf",
+      "titleid": "PPSA99000",
+      "version": "1.000.040",
+      "source": "https://github.com/blackbearreloaded/ProsperoStore"
+    },
+    {
+      "sha256": "85f957a3fbe7f8bdd0dbeefcc9e675b0ad53f4e29ff41b5f36abe1fbb38381a8",
+      "name": "ProsperoRadio: self-updater.elf",
+      "titleid": "PPSA99001",
+      "version": "01.000.010",
+      "source": "https://github.com/blackbearreloaded/ProsperoRadio"
+    },
+    {
+      "sha256": "f168399b149b0db5b4f68883dee154b9cde10fbd7571fad3b3d87177a1ce3253",
+      "name": "ProsperoRadio: lapy.elf",
+      "titleid": "PPSA99001",
+      "version": "01.000.010",
+      "source": "https://github.com/blackbearreloaded/ProsperoRadio"
+    },
+    {
+      "sha256": "cd92ee7902c7ffe510fcd9c1b899cc48f52b8caa57834a92a18b4add5262de59",
+      "name": "ProsperoLight: lapy.elf",
+      "titleid": "PPSA99002",
+      "version": "01.000.090",
+      "source": "https://github.com/blackbearreloaded/ProsperoLight"
+    },
+    {
+      "sha256": "20bbe0720a7e53e8e117ec3b6b1bc73f808c79ab3b0db43b33056faba3c0c806",
+      "name": "ProsperoLight: self-updater.elf",
+      "titleid": "PPSA99002",
+      "version": "01.000.090",
+      "source": "https://github.com/blackbearreloaded/ProsperoLight"
+    },
+    {
+      "sha256": "c70e997c6d184d46cc829662c0a5d3fd22ee79235979b273b72a7b0f3aff5833",
+      "name": "ProsperoTV: lapy.elf",
+      "titleid": "PPSA99003",
+      "version": "01.000.020",
+      "source": "https://github.com/blackbearreloaded/ProsperoTV"
+    },
+    {
+      "sha256": "413c064a86fe1aa7841fbfbe5ac28462782c671b98787df1801b8817ac1a7504",
+      "name": "ProsperoTV: self-updater.elf",
+      "titleid": "PPSA99003",
+      "version": "01.000.020",
+      "source": "https://github.com/blackbearreloaded/ProsperoTV"
+    },
+    {
+      "sha256": "00b9b33d75503aaa297e7aa645c9c4b7817fc655a5f194d4850130548c46005a",
+      "name": "ProsperoEden: lapy.elf",
+      "titleid": "PPSA99008",
+      "version": "1.000.080",
+      "source": "https://github.com/blackbearreloaded/ProsperoEden"
+    },
+    {
+      "sha256": "eee2cd079b99f5c3982716ac811c5574e3e3b5ff56a84c1a40e506159a522520",
+      "name": "ProsperoEden: self-updater.elf",
+      "titleid": "PPSA99008",
+      "version": "1.000.080",
+      "source": "https://github.com/blackbearreloaded/ProsperoEden"
+    }
+  ]
+}

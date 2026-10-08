@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA19111",
+  "name": "XashPS5",
+  "kind": "game",
+  "description": "Native PS5 port of Xash3D FWGS: Half-Life, Opposing Force and Blue Shift up to 4K at 60 FPS with DualSense input. Needs your own Half-Life game data.",
+  "license": "GPL-3.0",
+  "author": "GordonProsperoMan",
+  "version": "1.2",
+  "source_repo": "https://github.com/GordonProsperoMan/xash3d-ps5",
+  "artifact_url": "https://github.com/GordonProsperoMan/xash3d-ps5/releases/download/v1.2/PPSA19111.zip",
+  "sha256": "2d7ad259a86ece821978ebe69a0955b43a8c225066a58d3392f14d26efc893c6",
+  "icon_url": "https://raw.githubusercontent.com/GordonProsperoMan/xash3d-ps5/v1.2/sce_sys/icon0.png"
+}

@@ -1,0 +1,44 @@
+name: Scan the catalog
+
+# Manual: scans listed releases again and writes one report, with an overview table and the full
+# findings for each app, in the run's summary. Use it to see where every app stands, or after
+# the scanner or the approved helper list changes. It changes nothing: the labels on the site
+# come from the "Scan listed releases" job of CI (run CI by hand to refresh those).
+#
+# Like the other scan jobs it reads files nobody has reviewed, so it has no secrets and a
+# read-only token, used only to ask GitHub for build attestations. Nothing from an archive is run.
+on:
+  workflow_dispatch:
+    inputs:
+      titleids:
+        description: 'Title IDs to scan, separated by spaces; leave empty for every listed app'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: scan-catalog
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    name: Scan and report
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      - run: python3 -m pip install --disable-pip-version-check -r requirements-scan.txt
+      - name: Scan
+        # The input is passed through the environment and split by the shell into separate
+        # arguments; the command accepts only title IDs it finds in the catalog.
+        run: python3 -m catalog scan $TITLEIDS
+        env:
+          TITLEIDS: ${{ inputs.titleids }}
+          GH_TOKEN: ${{ github.token }}   # read-only: `gh attestation verify` needs one

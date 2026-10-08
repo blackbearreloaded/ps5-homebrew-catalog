@@ -34,3 +34,28 @@ jobs:
         run: python3 -m catalog pr
         env:
           GITHUB_TOKEN: ${{ github.token }}
+
+  scan:
+    name: Scan the release
+    # Downloads and reads files nobody has reviewed, with libraries that parse them. So this job
+    # gets nothing worth taking: no secrets, no credentials in the checkout, and a read-only
+    # token that is used only to ask GitHub for a release's build attestation. It runs the base branch's scanner; the pull request's files are data.
+    # Nothing from an archive is executed. Only an archive that is unsafe to unpack fails it.
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      - run: python3 -m pip install --disable-pip-version-check -r requirements-scan.txt
+      - name: Scan the listed release for ways out of the sandbox
+        run: python3 -m catalog scan-pr
+        env:
+          GH_TOKEN: ${{ github.token }}   # read-only: `gh attestation verify` needs one

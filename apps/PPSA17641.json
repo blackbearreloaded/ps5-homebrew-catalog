@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA17641",
+  "name": "SymphonyStation5",
+  "kind": "app",
+  "description": "A native Navidrome music client for the PlayStation 5.",
+  "license": "GPL-3.0",
+  "author": "TsvetomirGT",
+  "version": "v0.1.0",
+  "source_repo": "https://github.com/TsvetomirGT/SymphonyStation5",
+  "artifact_url": "https://github.com/TsvetomirGT/SymphonyStation5/releases/download/v0.1.0/SymphonyStation5-v0.1.0.zip",
+  "sha256": "5327e36b9a57776a7bb7a32a16865d54b28be3b1622280c4dbc9e6ee469e2993",
+  "icon_url": "https://raw.githubusercontent.com/TsvetomirGT/SymphonyStation5/refs/heads/main/sce_sys/icon0.png"
+}

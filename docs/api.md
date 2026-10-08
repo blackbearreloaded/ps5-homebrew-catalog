@@ -55,6 +55,7 @@ still published and unchanged; new clients should use the API.
   "release_url": "https://github.com/sainsaji/EVO-PLAYER-PS5/releases/tag/v0.10.0",
   "release_notes": "EVO is a real PS5 app now. It runs as a game-category app module, …\n\nA Real Application\n- Game-category app module (PPSA99039). …",
   "release_notes_truncated": true,
+  "safety": {"sandbox": "leaves", "routes": ["service"], "helpers": 0, "helpers_unapproved": 0, "network": true, "build": "developer", "build_workflow": null},
   "updated": "2026-09-29T17:20:37Z",
   "page": "https://homebrew.page/app/PPSA99039/",
   "icon": "https://homebrew.page/api/v1/icons/PPSA99039.png?v=5b0c1e7a9d3f4a26",
@@ -79,6 +80,7 @@ The first eleven fields after `schema` are the app's record, exactly as in
 | `prerelease` | boolean or null | Whether the developer marked the release as a pre-release. The catalog lists an app's newest release, pre-releases included. |
 | `release_url` | string or null | The release's page on GitHub, with the developer's notes. |
 | `release_notes` | string or null | What the developer wrote on the listed release, as plain text: at most 4,000 characters, lines separated by `\n`, list items starting with `- `, and a blank line before each heading or new paragraph. `null` when the release has no notes (empty, or only GitHub's generated changelog link) and for `coming_soon` apps. See [Release notes](#release-notes). |
+| `safety` | object or null | What an automatic scan of the release file found; `null` when the release wasn't scanned. See [Safety](#safety). |
 | `release_notes_truncated` | boolean or null | `true` when the notes were longer than the limit and were cut at the end of a block; the rest is at `release_url`. `null` when `release_notes` is. |
 | `updated` | string or null | When the app's record last changed in the catalog. |
 | `page` | string | The app's page on the website. |
@@ -132,6 +134,33 @@ update screen. It is only in this file, not in the index or the version map.
   characters, emoji included; draw what the font has and skip the rest.
 - **It is often more than a list of changes.** Many releases also carry install
   steps or requirements, and a first release usually describes the app.
+
+### Safety
+
+`safety` tells a store what it can say about an app before the user installs
+it. It comes from a scan that reads the release file and never runs it
+([Release scan](automation.md#release-scan)).
+
+| Field | Type | Meaning |
+| --- | --- | --- |
+| `sandbox` | string | `stays`: no way out of the PS5's sandbox was found. `leaves`: the app can get full access to the console. `unclear`: weak signs only. |
+| `routes` | array of strings | How it leaves: `loader` (connects to the payload loader), `service` (asks a resident jailbreak service), `payload` (ships a helper that runs outside the sandbox). Empty for `stays`. |
+| `helpers` | integer | Helper programs in the release that run outside the sandbox. |
+| `helpers_unapproved` | integer | How many of them the catalog's maintainers have not reviewed. |
+| `network` | boolean | Whether any executable imports network functions. |
+| `build` | string or null | `attested`: GitHub holds a verified statement that a workflow of the app's repository built this exact file. `workflow`: a workflow attached the file to the release. `developer`: uploaded by hand. `null`: unknown. |
+| `build_workflow` | string or null | For `attested`, the workflow that built it. |
+
+How to use it:
+
+- **It is advice, not a guarantee.** The scan sees what honest code does; code
+  can hide from it. Say "no way out of the sandbox was found", not "safe".
+- **`leaves` is common and often fine.** Many apps elevate to read and write
+  `/data`. It is the fact a user should know before trusting a developer.
+- **Treat a missing object as unknown,** not as `stays`.
+
+`index.json` carries `sandbox` alone (the same three values, or `null`), for a
+badge in lists.
 
 ## The list: `index.json`
 
@@ -384,6 +413,7 @@ icon, as for any other file, at the cost of one request per icon.
 | 1 | 2026-10-02 | First version: `versions.json`, `index.json`, `apps/<TITLEID>.json`, PNG icons. |
 | 2 | 2026-10-02 | Added `icon_hash` to app files and index entries, so clients can cache icons without requests. |
 | 3 | 2026-10-02 | Added `manifest.json` and `manifest.sig`: the catalog is signed. |
+| 3 | 2026-10-07 | Added `safety` to app files and `sandbox` to index entries: what the release scan found. `schema` stays 3. |
 | 3 | 2026-10-07 | `icon` and `icon_small` end in `?v=<icon_hash>`, so an icon's address changes with its picture. No field was added or renamed. |
 | 3 | 2026-10-05 | Added `release_notes` and `release_notes_truncated` to app files. `schema` stays 3: a released store accepts only that exact number, so it is raised with the next change that store has been prepared for. Test for the field, not for the number. |
 

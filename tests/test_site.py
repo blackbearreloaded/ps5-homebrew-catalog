@@ -133,6 +133,38 @@ class SiteBuildTests(unittest.TestCase):
         self.assertIsInstance(manifest["sequence"], int)
         self.assertFalse((api / "manifest.sig").exists())
 
+    def test_safety_labels_come_from_scan_summaries(self):
+        from catalog import facts as facts_module
+        from catalog import scan as scan_module
+        sha = "a" * 64
+        summary = {"scanner": scan_module.SCANNER, "sha256": sha, "titleid": "PPSA01234", "sandbox": "leaves",
+                   "routes": ["payload"], "payloads": [{"path": "PPSA01234/helper.elf", "sha256": "b" * 64}],
+                   "network": True, "attested": False, "workflow": None}
+        scans = self.out.parent / "scans"
+        scans.mkdir()
+        (scans / f"{sha}.json").write_text(json.dumps(summary), encoding="utf-8")
+        (scans / f"{'c' * 64}.json").write_text("not json", encoding="utf-8")
+        known = facts_module.Facts(uploader="actions")
+        with mock.patch.object(facts_module, "cached", lambda record, github, cache, fetch=None: (known, None)):
+            self.build(scans=scans)
+        api = self.out / "api" / "v1"
+        app = json.loads((api / "apps" / "PPSA01234.json").read_text(encoding="utf-8"))
+        self.assertEqual(app["safety"], {"sandbox": "leaves", "routes": ["payload"], "helpers": 1,
+                                         "helpers_unapproved": 1, "network": True, "build": "workflow",
+                                         "build_workflow": None})
+        index = json.loads((api / "index.json").read_text(encoding="utf-8"))
+        self.assertEqual([a["sandbox"] for a in index["apps"]], ["leaves", None, None])
+        page = (self.out / "app" / "PPSA01234" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('<h2 id="safety-title">Safety</h2>', page)
+        self.assertIn("Leaves the sandbox", page)
+        self.assertIn("1 helper(s) not reviewed", page)
+        self.assertIn("Released by a workflow", page)
+        # Without summaries nothing is claimed.
+        self.build()
+        app = json.loads((self.out / "api" / "v1" / "apps" / "PPSA01234.json").read_text(encoding="utf-8"))
+        self.assertIsNone(app["safety"])
+        self.assertNotIn("safety-title", (self.out / "app" / "PPSA01234" / "index.html").read_text(encoding="utf-8"))
+
     def test_api_release_facts_and_icons(self):
         from catalog import facts as facts_module
         known = facts_module.Facts(size=4096, released="2026-09-01T10:00:00Z", prerelease=False,

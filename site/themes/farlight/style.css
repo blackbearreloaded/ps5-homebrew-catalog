@@ -365,6 +365,12 @@ html:not(.js) .sort { display: none; }
 .notes li { margin: 0 0 calc(6 * var(--u)); }
 .notes code { font-size: 0.92em; }
 .notes__source { margin-top: calc(12 * var(--u)); font-size: 0.9em; color: rgba(244, 239, 230, 0.62); }
+/* Safety: what the release scan found, as labels with a sentence each. */
+.safety { display: flex; flex-wrap: wrap; gap: calc(12 * var(--u)); margin: 0 0 calc(16 * var(--u)); padding: 0; list-style: none; }
+.safety__chip { display: grid; place-items: center; height: calc(42 * var(--u)); min-height: 30px; padding: 0 calc(18 * var(--u)); border: 1.5px solid rgba(244, 239, 230, 0.22); border-radius: 999px; font: 600 calc(20 * var(--u))/1 var(--body); }
+.safety__chip--good { border-color: rgba(126, 211, 160, 0.6); color: #a5e6c0; }
+.safety__chip--care { border-color: rgba(255, 209, 102, 0.7); color: var(--accent); }
+.safety__text p { margin: 0 0 calc(10 * var(--u)); }
 .steps { margin: 0; padding: 0; list-style: none; counter-reset: step; }
 .steps li { position: relative; margin: 0 0 calc(14 * var(--u)); padding-left: calc(52 * var(--u)); min-height: calc(34 * var(--u)); counter-increment: step; }
 .steps li::before { content: counter(step); position: absolute; left: 0; top: 0.08em; display: grid; place-items: center; width: calc(34 * var(--u)); height: calc(34 * var(--u)); min-width: 24px; min-height: 24px; border: 2px solid var(--accent); border-radius: 50%; color: var(--accent); font: 600 calc(17 * var(--u))/1 var(--body); }

@@ -394,9 +394,48 @@ def _write_json(path: Path, value) -> None:
     path.write_text(json.dumps(value, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
 
 
+def load_scans(directory: Path | None, records: list[Record]) -> dict[str, dict]:
+    """Scan summaries by title ID, from the files a scan job wrote (one per release, named by sha256)."""
+    from .scan import read_summary
+    found: dict[str, dict] = {}
+    if not directory or not directory.is_dir():
+        return found
+    for record in records:
+        if record.reserved:
+            continue
+        entry = directory / f"{record.data['sha256']}.json"
+        try:
+            # Checked field by field: the job that wrote it handles files nobody has reviewed.
+            data = read_summary(json.loads(entry.read_text(encoding="utf-8")), record.data["sha256"])
+        except (OSError, ValueError):
+            data = None
+        if data:
+            found[record.titleid] = data
+    return found
+
+
+def safety_facts(summary: dict | None, uploader: str | None, approved: dict) -> dict | None:
+    """What the API says about a release's safety scan; None when the release wasn't scanned."""
+    if not summary or summary["sandbox"] == "unreadable":
+        return None
+    payloads = summary["payloads"]
+    return {
+        "sandbox": summary["sandbox"],                 # "stays", "leaves" or "unclear"
+        "routes": summary["routes"],                   # how it leaves: "loader", "service", "payload"
+        "helpers": len(payloads),
+        "helpers_unapproved": sum(1 for p in payloads if p["sha256"] not in approved),
+        "network": summary["network"],
+        # "attested": GitHub holds a verified statement that a workflow built this exact file.
+        # "workflow": a workflow attached the file to the release (it may have built it elsewhere).
+        "build": "attested" if summary["attested"] else "workflow" if uploader == "actions" else
+                 "developer" if uploader == "developer" else None,
+        "build_workflow": summary["workflow"],
+    }
+
+
 def write_api(root: Path, url: str, records: list[Record], report: Report, *, updated: dict[str, str], page,
               icons: dict[str, dict[int, bytes]], icon_hashes: dict[str, str], commit: str, github=None,
-              cache: Path | None = None, known: dict | None = None) -> None:
+              cache: Path | None = None, known: dict | None = None, safety: dict | None = None) -> None:
     """The store API (docs/api.md): one file per app, a browse index and a version map, plus PNG icons.
 
     Per-app files and the version map hold nothing that changes between builds
@@ -442,6 +481,8 @@ def write_api(root: Path, url: str, records: list[Record], report: Report, *, up
             # The developer's own words, as plain text; the full notes are at release_url.
             "release_notes": notes_text,
             "release_notes_truncated": notes_cut if notes_text else None,
+            # What the release scan found (docs/api.md, Safety); null when the release wasn't scanned.
+            "safety": (safety or {}).get(titleid),
             "updated": _utc(updated.get(record.path.name)),
             "page": page(record),
             "icon": icon.get(large),
@@ -452,7 +493,8 @@ def write_api(root: Path, url: str, records: list[Record], report: Report, *, up
         _write_json(root / "apps" / f"{titleid}.json", app)
         index.append({key: app[key] for key in (
             "titleid", "status", "name", "kind", "author", "version", "content_version", "format", "size",
-            "released", "updated", "icon_small", "icon_hash")})
+            "released", "updated", "icon_small", "icon_hash")}
+            | {"sandbox": ((safety or {}).get(titleid) or {}).get("sandbox")})
         if not record.reserved:
             versions[titleid] = {"content_version": facts.content_version, "version": d["version"]}
     _write_json(root / "index.json", {
@@ -468,7 +510,8 @@ def write_api(root: Path, url: str, records: list[Record], report: Report, *, up
 
 def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BASE,
                site_url: str = DEFAULT_SITE_URL, fetch_icons: bool = True,
-               theme: str = DEFAULT_THEME, icon_cache: Path | None = None, github=None) -> int:
+               theme: str = DEFAULT_THEME, icon_cache: Path | None = None, github=None,
+               scans: Path | None = None) -> int:
     """Build the site. With `github`, release facts for the API are looked up (and kept in the cache)."""
     theme_obj = Theme(theme)
     records = load_catalog(apps_dir, report)
@@ -546,6 +589,52 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
     from . import facts as release_facts
     from . import notes as release_notes
     known = {r.titleid: release_facts.cached(r, github, icon_cache) for r in records}
+    from .scan import load_approved
+    approved = load_approved()
+    summaries = load_scans(scans, records)
+    safety = {r.titleid: safety_facts(summaries.get(r.titleid), known[r.titleid][0].uploader, approved)
+              for r in records if not r.reserved}
+
+    def safety_section(record: Record) -> str:
+        """The "Safety" part of an app's page; nothing when the release wasn't scanned."""
+        facts = safety.get(record.titleid)
+        if not facts:
+            return ""
+        sandbox = {"stays": ("good", "Stays in the sandbox", "The scan found no way for this app to reach beyond "
+                             "its own files: no payload, no connection to the payload loader, no request to a "
+                             "jailbreak service."),
+                   "leaves": ("care", "Leaves the sandbox", "This app can get full access to the console, usually "
+                              "to read and write files outside its own folder. Install it only if you trust its "
+                              "developer."),
+                   "unclear": ("care", "Sandbox: unclear", "The scan found weak signs that this app may reach the "
+                               "payload loader, and could not settle it.")}[facts["sandbox"]]
+        chips = [f'<li class="safety__chip safety__chip--{sandbox[0]}">{sandbox[1]}</li>']
+        lines = [sandbox[2]]
+        if facts["helpers"]:
+            if facts["helpers_unapproved"]:
+                chips.append(f'<li class="safety__chip safety__chip--care">{facts["helpers_unapproved"]} helper(s) not reviewed</li>')
+                lines.append(f"It ships {facts['helpers']} helper program(s) that run outside the sandbox; "
+                             f"{facts['helpers_unapproved']} of them the catalog's maintainers have not read.")
+            else:
+                chips.append('<li class="safety__chip safety__chip--good">Helpers reviewed</li>')
+                lines.append(f"It ships {facts['helpers']} helper program(s) that run outside the sandbox, all "
+                             "on the catalog's list of reviewed helpers.")
+        build = {"attested": ("good", "Built by GitHub Actions", "GitHub holds a signed statement that a workflow of "
+                              "the app's repository built exactly this file."),
+                 "workflow": ("plain", "Released by a workflow", "A workflow of the app's repository attached this "
+                              "file to the release. Nothing proves where it was built."),
+                 "developer": ("plain", "Built by the developer", "The developer built and uploaded this file by "
+                               "hand. Nothing ties it to the published source.")}.get(facts["build"])
+        if build:
+            chips.append(f'<li class="safety__chip safety__chip--{build[0]}">{build[1]}</li>')
+            lines.append(build[2])
+        text = "".join(f"<p>{e(line)}</p>" for line in lines)
+        return ('<h2 id="safety-title">Safety</h2>\n'
+                f'<ul class="safety" aria-label="Scan results">{"".join(chips)}</ul>\n'
+                f'<div class="safety__text">{text}<p class="notes__source">From an automatic scan of the release '
+                'file, which is read and never run. It can miss things: it is not a guarantee. '
+                '<a href="https://github.com/blackbearreloaded/ps5-homebrew-catalog/blob/main/docs/automation.md#release-scan">'
+                'How the scan works</a></p></div>')
 
     def notes_section(record: Record, release_url: str) -> str:
         """The "Release notes" part of an app's page; nothing when the release has no notes."""
@@ -584,6 +673,7 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
                 version_label=e(version_label(d["version"])),
                 release_url=e(f"{d['source_repo']}/releases/tag/{d['artifact_url'].split('/releases/download/')[1].split('/')[0]}"),
                 tag=e(record.tag),
+                safety=safety_section(record),
                 notes=notes_section(
                     record, f"{d['source_repo']}/releases/tag/{d['artifact_url'].split('/releases/download/')[1].split('/')[0]}"),
             )
@@ -737,7 +827,7 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
     write_api(root / "api" / API_VERSION, f"{site_url}{base}api/{API_VERSION}/", records, report,
               updated=updated, page=lambda r: site_url + page_url(r), icons=api_icons, icon_hashes=icon_hashes,
               commit=commit,
-              github=github, cache=icon_cache, known=known)
+              github=github, cache=icon_cache, known=known, safety=safety)
 
     # Cloudflare Pages configuration.
     csp = ("default-src 'self'; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com; "

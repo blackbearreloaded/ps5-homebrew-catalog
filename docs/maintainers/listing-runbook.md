@@ -10,6 +10,10 @@ release, and they keep control of it (see [After the merge](#after-the-merge)).
 
 ## Rules for agents
 
+- **Read the release scan.** The pull request's "Scan the release" job
+  downloads the ZIP in an isolated job and reports whether the app can leave
+  the sandbox and how ([Release scan](../automation.md#release-scan)). Say in
+  the pull request what it found.
 - **Never download or run release files.** Everything comes from the GitHub
   API: the file's SHA-256 is GitHub's digest, and "native" is judged from the
   repository's `sce_sys/param.json`.

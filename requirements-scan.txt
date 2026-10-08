@@ -1,0 +1,5 @@
+# Used only by the release scan (python3 -m catalog scan, catalog/scan.py).
+# The checker and the website build don't need these.
+pyelftools==0.33
+capstone==5.0.9
+yara-python==4.5.4

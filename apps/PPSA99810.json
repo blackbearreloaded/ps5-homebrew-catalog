@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99810",
+  "name": "PSBox Cloud Gaming",
+  "kind": "app",
+  "description": "Unofficial Xbox Cloud Gaming client: browse the cloud catalog and stream games at 1080p60 with sound, using the DualSense as an Xbox controller.",
+  "license": "GPL-3.0",
+  "author": "RafaelNGP",
+  "version": "0.4.0",
+  "source_repo": "https://github.com/RafaelNGP/xbox-cloud-gaming-ps5",
+  "artifact_url": "https://github.com/RafaelNGP/xbox-cloud-gaming-ps5/releases/download/v0.4.0/PPSA99810.zip",
+  "sha256": "8a89f17c257f9c8dc10632fda1bf55ef4213051d27c8b85ab2fad1b37ee6bff5",
+  "icon_url": "https://raw.githubusercontent.com/RafaelNGP/xbox-cloud-gaming-ps5/v0.4.0/ps5/sce_sys/icon0.png"
+}

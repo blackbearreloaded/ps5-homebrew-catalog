@@ -5,9 +5,10 @@ library and run by four workflows.
 
 | Workflow | Trigger | Runs |
 | --- | --- | --- |
-| [Submission check](../.github/workflows/pull-request.yml) | Pull requests (`pull_request_target`) | `python3 -m catalog pr` |
+| [Submission check](../.github/workflows/pull-request.yml) | Pull requests (`pull_request_target`) | `python3 -m catalog pr`, and in a second job the [release scan](#release-scan), `python3 -m catalog scan-pr` |
 | [CI](../.github/workflows/ci.yml) | Pull requests and pushes to `main` | Tests, `catalog check` and a website build; on `main` also `catalog push`, then the [website deployment](website.md#deployment) |
 | [Deploy fallback](../.github/workflows/deploy-fallback.yml) | Manual only, by the repository owner | The same deploy on the maintainer's own runner, for an Actions outage; see [Fallback deploy](website.md#fallback-deploy) |
+| [Scan the catalog](../.github/workflows/scan-catalog.yml) | Manual only | `catalog scan`: one report on every listed app, or on the title IDs given; see [Release scan](#release-scan) |
 | [Catalog health](../.github/workflows/health.yml) | Daily 06:17 UTC and manual | `catalog health --slice today` |
 | [Release updates](../.github/workflows/updates.yml) | Daily 07:37 UTC and manual | `catalog updates --open-prs` |
 | [Discovery](../.github/workflows/discovery.yml) | Daily 06:53 UTC and manual | `catalog discover --open-prs --issue` |
@@ -41,8 +42,9 @@ For a pull request the checker:
 5. **Verifies the bytes without downloading them.** GitHub computes a SHA-256
    digest for every release asset and reports it in the API. The check requires
    it to equal `sha256`. If the asset is ever replaced, GitHub's digest changes
-   and the listing stops matching. Artifacts are never downloaded, opened or
-   executed (see [artifact formats](artifact-formats.md)). The format check
+   and the listing stops matching. This job never downloads, opens or
+   executes an artifact (see [artifact formats](artifact-formats.md)); the
+   separate [release scan](#release-scan) downloads and reads it. The format check
    still recognises `.ffpkg` and `.ffpfsc` names, so that a listing made before
    ZIP became the only accepted format keeps validating; that a new listing or
    a new release is a `.zip` is checked in review.
@@ -60,12 +62,137 @@ The workflow uses `pull_request_target`, so it runs the **base branch's**
 workflow and checker, never the pull request's. It checks out `main`, fetches the
 PR head as a git ref, and reads the changed records with `git show` as plain
 data. PR code is never checked out or executed, so a submission can't alter the
-rules it is judged by. The token is read-only, no secrets are used, artifacts
-are never downloaded, and the only file fetched (the icon) is size-bounded. Actions are pinned to commit SHAs and kept current by
+rules it is judged by. The token is read-only, no secrets are used, this job
+downloads no artifact, and the only file it fetches (the icon) is size-bounded. Actions are pinned to commit SHAs and kept current by
 Dependabot.
 
 The CI workflow does run PR code (tests), with the standard read-only
 `pull_request` token and no secrets.
+
+## Release scan
+
+A second job of the submission check, **Scan the release**, downloads the ZIP a
+pull request lists and reads it without running anything
+(`python3 -m catalog scan-pr`, `catalog/scan.py`). It answers one question for
+the reviewer: **can this app leave the PS5's sandbox, and how?** A title that
+stays inside can crash itself; one that reaches the payload loader or ships a
+payload can reach the kernel, and with it everything on the console.
+
+The report is in the job's summary, with its warnings as annotations:
+
+| It looks at | And reports |
+| --- | --- |
+| The archive | Entries that would unpack outside the app's folder, links and encrypted entries (these fail the check); where the app's folder is; Windows or macOS programs, scripts, and disk images it can't look inside |
+| Every executable (`eboot.bin`, modules, payloads, libraries) | The system libraries it links to, and which functions on a watch list it imports: network, loading code at run time, making memory executable, processes, system state, installing titles, accounts. PS5 executables name imports by a hash (the NID), so the scan hashes the watch list and compares |
+| Ways out of the sandbox | The payload loader's address (127.0.0.1, port 9021 or 9020) held as data or built in code; a request file for a resident jailbreak service (`elevate_proc`, `etahen_jailbreak`); payload files, with their SHA-256; executables hidden inside other files |
+| Code | System call instructions the title makes itself, with their numbers (a full table of them is a statically linked system library and is reported as such); code that is packed or encrypted |
+| Patterns ([`catalog/scan_rules.yar`](../catalog/scan_rules.yar)) | The payload SDK's kernel read and write routines, credential patching, raw memory, flash and disk devices, system folders, mounting |
+
+How to read it:
+
+- **"This app can leave the sandbox"** is common and not an accusation: half of
+  the catalog elevates, usually to reach `/data`. It tells the reviewer where
+  to look: the payload files and what they contain.
+- **"It is unclear whether this app leaves the sandbox"** means only weak
+  evidence was found, such as the loader's port number as a constant in code
+  that can also connect to 127.0.0.1. Several apps share a library with such a
+  constant; the source settles it.
+- **"No sign that this app leaves the sandbox"** means none of the known routes
+  was found. It is not proof. Code can build an address at run time or unpack a
+  payload from data, and a scan of this kind won't see it.
+- Only an archive that is unsafe to unpack, or unreadable, fails the check.
+  Everything else is information.
+
+### Approved helpers
+
+A payload is the part of an app that runs outside the sandbox, so it is the
+part worth reading. [`helpers/approved.json`](../helpers/approved.json) lists
+the payloads a maintainer has read and accepted, each by its SHA-256. The scan
+compares every payload in a release with that list:
+
+- on the list: a note naming the entry;
+- not on the list: a warning, with the payload's SHA-256.
+
+A hash matches one exact file, and a helper is usually rebuilt for every
+release, so a new release of an app that elevates is flagged until a
+maintainer has looked at it. That is the intent: nothing reaches the kernel
+unread. To approve, read the helper's source at the release tag, then add the
+entries this prints to the list, on `main`:
+
+```sh
+python3 -m catalog scan --helpers PPSA12345
+```
+
+The pull request's check uses the list on `main`, so a pull request can't
+approve its own helper.
+
+### What changed since the listed release
+
+When a pull request updates an app, the scan also downloads the release that
+is listed now and reports the differences: a changed verdict, a new way out of
+the sandbox, new or changed payloads, system functions and libraries the
+executable did not use before, hosts it did not name before, and large changes
+in size. A trusted app turning hostile shows up here first.
+
+### Built by GitHub Actions?
+
+The scan asks GitHub whether a workflow of the app's repository built exactly
+this file (`gh attestation verify`, which checks the signature and the file's
+digest). A developer gets this by building the release in GitHub Actions with
+[`actions/attest-build-provenance`](https://github.com/actions/attest-build-provenance).
+The result is one of:
+
+- **attested**: a signed statement ties this file to a workflow run and a commit;
+- **released by a workflow**: a workflow attached the file to the release, which
+  shows less, since it may have been built elsewhere;
+- **built by the developer**: uploaded by hand; nothing ties it to the source.
+
+### Labels on the website and in the API
+
+After each merge a second job, **Scan listed releases**, writes a small summary
+per listed release (kept by the file's SHA-256, so a release is scanned once).
+The site build reads those summaries as data and shows them on each app's page
+under **Safety**, and publishes them in the store API as `safety`
+([Store API](api.md#safety)). If that job fails, the site is built without the
+labels rather than not at all.
+
+### One report for the whole catalog
+
+**Scan the catalog** is a manual workflow (Actions → Scan the catalog → Run
+workflow). It scans every listed release again, or only the title IDs you give
+it, and writes one report in the run's summary: an overview table (sandbox
+verdict, how the app leaves it, helpers, helpers not reviewed, build
+attestation) followed by the full findings for each app. It changes nothing.
+Use it after changing the scanner or the approved helper list, or to see where
+apps listed before the scan existed stand.
+
+The labels on the site are refreshed by CI's **Scan listed releases** job, not
+by this one; run CI by hand to refresh them without a merge.
+
+### Isolation
+
+The jobs are isolated because they handle files nobody has reviewed, with
+libraries that parse them: no secrets, no credentials in the checkout, and a
+read-only token used only to ask GitHub for build attestations.
+
+Like the submission check, the pull request's scan runs the base branch's code,
+so a pull request can't change the scanner that reads it. The deploy job, which
+holds the signing key, never runs the scanner: it only reads the summaries, and
+checks each field.
+
+It uses three libraries, pinned in [`requirements-scan.txt`](../requirements-scan.txt)
+and needed by nothing else: pyelftools (ELF files), Capstone (disassembly) and
+yara-python (pattern rules). Without one of them, that part of the scan is
+skipped and the report says so.
+
+To scan by hand:
+
+```sh
+python3 -m pip install -r requirements-scan.txt
+python3 -m catalog scan PPSA99000            # download and scan a listed release
+python3 -m catalog scan                      # every listed release (about 2 GB of downloads)
+python3 -m catalog scan --zip app.zip PPSA12345
+```
 
 ## Push to `main`
 

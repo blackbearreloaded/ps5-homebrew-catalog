@@ -5,9 +5,9 @@
   "description": "A native GameCube and Wii emulator for jailbroken PS5, powered by Dolphin. Cover-flow library, box art, memory cards, original music.",
   "license": "GPL-3.0",
   "author": "Ruben Ripalda",
-  "version": "2.1",
+  "version": "2.5",
   "source_repo": "https://github.com/elripalda/Porpoise-Dolphin-Emulator-for-PS5",
-  "artifact_url": "https://github.com/elripalda/Porpoise-Dolphin-Emulator-for-PS5/releases/download/v2.1/Porpoise-2.1.zip",
-  "sha256": "c4b2424825e1d045a7d5eacb17be4c7b9565923a88c471d0aa173e8c4d2d9988",
-  "icon_url": "https://raw.githubusercontent.com/elripalda/Porpoise-Dolphin-Emulator-for-PS5/v2.1/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/elripalda/Porpoise-Dolphin-Emulator-for-PS5/releases/download/v2.5/Porpoise-2.5.zip",
+  "sha256": "a6de0af1d2b427cad5f69a32203407115d91b71e8291f92acf2545a5850a7600",
+  "icon_url": "https://raw.githubusercontent.com/elripalda/Porpoise-Dolphin-Emulator-for-PS5/v2.5/sce_sys/icon0.png"
 }

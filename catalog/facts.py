@@ -48,6 +48,7 @@ class Facts:
     content_version: str | None = None     # param.json contentVersion at the tag
     param_path: str | None = None          # where it was read from ("version" when taken from the record)
     notes: str | None = None               # the release's notes as the developer wrote them (GitHub Markdown)
+    uploader: str | None = None            # who attached the file: "actions" (a workflow) or "developer"
 
 
 def content_version_key(value: str | None) -> tuple[int, int, int] | None:
@@ -103,9 +104,11 @@ def lookup(record: Record, github: GitHub, fetch=None) -> Facts:
     asset = next((a for a in release.get("assets", []) if a.get("name") == record.asset_name), {})
     content_version, where = find_content_version(record, github, fetch)
     body = release.get("body")
+    login = (asset.get("uploader") or {}).get("login")
+    uploader = None if not login else "actions" if login == "github-actions[bot]" else "developer"
     return Facts(size=asset.get("size"), released=release.get("published_at"),
                  prerelease=release.get("prerelease"), content_version=content_version, param_path=where,
-                 notes=body[:MAX_NOTES] if isinstance(body, str) and body.strip() else None)
+                 notes=body[:MAX_NOTES] if isinstance(body, str) and body.strip() else None, uploader=uploader)
 
 
 def cached(record: Record, github: GitHub | None, cache: Path | None, fetch=None) -> tuple[Facts, str | None]:
@@ -117,8 +120,8 @@ def cached(record: Record, github: GitHub | None, cache: Path | None, fetch=None
     if entry and entry.is_file():
         try:
             saved = json.loads(entry.read_text(encoding="utf-8"))
-            # An entry without "notes" was written before notes were read.
-            if saved.pop("icon_url", None) == record.data["icon_url"] and "notes" in saved:
+            # An entry without "notes" or "uploader" was written before they were read.
+            if saved.pop("icon_url", None) == record.data["icon_url"] and "notes" in saved and "uploader" in saved:
                 older = Facts(**saved)
                 if github is None or time.time() - entry.stat().st_mtime < FRESH_SECONDS:
                     return older, None

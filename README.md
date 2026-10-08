@@ -220,6 +220,8 @@ check and may be released. Details are in
 | GitHub's digest of the asset matches `sha256` (nothing downloaded) | ✓ | ✓ | ✓ |
 | Icon is a reachable PNG, JPEG or WebP image | ✓ | ✓ | ✓ |
 | Content version (`contentVersion`) readable and raised; warning only | ✓ | ✓ | ✓ |
+| Release scan: the ZIP is read, never run, for ways out of the sandbox, unreviewed helpers and changes since the listed release; report for the reviewer | ✓ | | |
+| Release scan summaries for the site's Safety labels and the API | | ✓ | |
 | Newer upstream release: daily pull request with the update | | | ✓ |
 | Unlisted native apps on GitHub: daily listing pull requests to review | | | ✓ |
 
