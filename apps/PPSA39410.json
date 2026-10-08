@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA39410",
+  "name": "VITA5",
+  "kind": "app",
+  "description": "Play a PS Vita on the PS5 over one USB cable.",
+  "license": "GPL-3.0",
+  "author": "StonedModder",
+  "version": "1.0.0",
+  "source_repo": "https://github.com/StonedModder/VITA5",
+  "artifact_url": "https://github.com/StonedModder/VITA5/releases/download/v1.0.0/PPSA17035.zip",
+  "sha256": "d4e23aa6e511c2d9b7905174b11f0a4a70cf7d0a457ec0a1772b02d5d7e6ea09",
+  "icon_url": "https://raw.githubusercontent.com/StonedModder/VITA5/v1.0.0/sce_sys/icon0.png"
+}
