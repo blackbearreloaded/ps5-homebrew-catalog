@@ -5,9 +5,9 @@
   "description": "A port of PCSX2 for PS5NES",
   "license": "GPL-3.0",
   "author": "GameMaster",
-  "version": "release",
+  "version": "1.0.0.8",
   "source_repo": "https://github.com/Globaleliteee/PS5NES",
-  "artifact_url": "https://github.com/Globaleliteee/PS5NES/releases/download/release/PS5NES-v7-by-YAHBALLON.zip",
-  "sha256": "3c1dce0ec8c4f92531d335a9fbc38ac5b7bf29dd76935d5a3b0086ecae37ed5f",
-  "icon_url": "https://raw.githubusercontent.com/Globaleliteee/PS5NES/release/nes/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/Globaleliteee/PS5NES/releases/download/1.0.0.8/PPSA99204.zip",
+  "sha256": "f1226e8db42b37cab75b4d6ec10854f85961611c238af27072e3f6961861a54e",
+  "icon_url": "https://raw.githubusercontent.com/Globaleliteee/PS5NES/1.0.0.8/nes/sce_sys/icon0.png"
 }

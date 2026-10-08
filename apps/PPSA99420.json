@@ -5,9 +5,9 @@
   "description": "PS5MC, an unofficial port of the Kodi 22 media center for PS5, with a 4K GPU interface, hardware H.264, HEVC and VP9 decoding and HDR output.",
   "license": "GPL-2.0-or-later",
   "author": "VivaLaVent",
-  "version": "1.1",
+  "version": "1.2",
   "source_repo": "https://github.com/VivaLaVent/PS5MC",
-  "artifact_url": "https://github.com/VivaLaVent/PS5MC/releases/download/1.1/PS5MC-1.1-kodi22-PPSA99420.zip",
-  "sha256": "85fb3eb19a5476d6d4c3fd656fc93326b88c56118c058c75348ab064c4db773f",
-  "icon_url": "https://raw.githubusercontent.com/VivaLaVent/PS5MC/1.1/ps5/title/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/VivaLaVent/PS5MC/releases/download/1.2/PS5MC-1.2-kodi22-PPSA99420.zip",
+  "sha256": "5a9eeff4a0024a341a4924b8d283fe65b4ff94d7f5dbea446c8a677c4db157b6",
+  "icon_url": "https://raw.githubusercontent.com/VivaLaVent/PS5MC/1.2/ps5/title/sce_sys/icon0.png"
 }
