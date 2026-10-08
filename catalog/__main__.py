@@ -631,7 +631,7 @@ def cmd_build(args) -> int:
                        fetch_icons=not args.no_icons, theme=args.theme,
                        icon_cache=Path(args.icon_cache) if args.icon_cache else None,
                        github=None if args.no_icons else GitHub(),
-                       scans=Path(args.scans) if args.scans else None)
+                       scans=Path(args.scans) if args.scans else None, pages_url=args.pages_url)
     return report.emit("Site build", f"Built {count} app page(s) into {args.out}.")
 
 
@@ -709,6 +709,7 @@ def main(argv: list[str] | None = None) -> int:
     build.add_argument("--theme", default=DEFAULT_THEME, choices=sorted(THEMES))
     build.add_argument("--no-icons", action="store_true", help="offline build: no icons (placeholders) and no release facts in the API")
     build.add_argument("--icon-cache", help="directory that keeps fetched icons and release facts between builds")
+    build.add_argument("--pages-url", help="for a mirror of the API: the website whose app pages the API's `page` links name")
     build.add_argument("--scans", help="directory of release scan summaries (catalog scan-all --out), for the safety labels")
     build.set_defaults(func=cmd_build)
 

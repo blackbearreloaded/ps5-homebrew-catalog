@@ -511,7 +511,7 @@ def write_api(root: Path, url: str, records: list[Record], report: Report, *, up
 def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BASE,
                site_url: str = DEFAULT_SITE_URL, fetch_icons: bool = True,
                theme: str = DEFAULT_THEME, icon_cache: Path | None = None, github=None,
-               scans: Path | None = None) -> int:
+               scans: Path | None = None, pages_url: str | None = None) -> int:
     """Build the site. With `github`, release facts for the API are looked up (and kept in the cache)."""
     theme_obj = Theme(theme)
     records = load_catalog(apps_dir, report)
@@ -825,7 +825,9 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
         json.dumps(feed, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
 
     write_api(root / "api" / API_VERSION, f"{site_url}{base}api/{API_VERSION}/", records, report,
-              updated=updated, page=lambda r: site_url + page_url(r), icons=api_icons, icon_hashes=icon_hashes,
+              updated=updated, icons=api_icons, icon_hashes=icon_hashes,
+              # A mirror of the API has no pages of its own: its `page` links go to the website.
+              page=lambda r: (pages_url.rstrip("/") + f"/app/{r.titleid}/") if pages_url else site_url + page_url(r),
               commit=commit,
               github=github, cache=icon_cache, known=known, safety=safety)
 
