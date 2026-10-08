@@ -8,6 +8,6 @@
   "version": "1.0.0",
   "source_repo": "https://github.com/darkxex/SwanStationPS5",
   "artifact_url": "https://github.com/darkxex/SwanStationPS5/releases/download/1.0.0/PPSA98510.zip",
-  "sha256": 218339c4bdb1ae0792b48b218d8e5b6f07758fd450d545ade8c49213a50c7cbf",
+  "sha256": "218339c4bdb1ae0792b48b218d8e5b6f07758fd450d545ade8c49213a50c7cbf",
   "icon_url": "https://raw.githubusercontent.com/darkxex/SwanStationPS5/master/sce_sys/icon0.png"
 }
