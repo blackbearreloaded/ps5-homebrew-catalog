@@ -3,7 +3,7 @@
   "name": "SwanStationPS5",
   "kind": "app",
   "description": "SwanStationPS5 is a PlayStation 1 emulator that installs as an app on the PS5 home screen. It is a fork of PSXS5 created by SynoPiia that runs all games using SwanStation core.",
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-or-later",
   "author": "AngelXex",
   "version": "1.0.0",
   "source_repo": "https://github.com/darkxex/SwanStationPS5",
