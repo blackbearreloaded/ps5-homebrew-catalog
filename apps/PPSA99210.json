@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99210",
+  "name": "PS5GBC",
+  "kind": "game",
+  "description": "Game Boy and Game Boy Color on your PS5",
+  "license": "GPL-3.0",
+  "author": "GameMaster",
+  "version": "1.0.0.3",
+  "source_repo": "https://github.com/Globaleliteee/PS5GBC",
+  "artifact_url": "https://github.com/Globaleliteee/PS5GBC/releases/download/v1.0.0.3/PPSA99210.zip",
+  "sha256": "871e2fd831b62cd7275e92f564c7ec7bc7691986a562d13fb0ec2f36165ca368",
+  "icon_url": "https://raw.githubusercontent.com/Globaleliteee/PS5GBC/v1.0.0.3/sce_sys/icon0.png"
+}
