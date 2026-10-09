@@ -2,12 +2,12 @@
   "titleid": "PPSA85300",
   "name": "VLC",
   "kind": "app",
-  "description": "VLC media player for PS5: videos, music, photos, subtitles, USB drives, SMB and DLNA shares, network streams, free TV and radio.",
+  "description": "VLC media player for PS5: videos, music, photos, subtitles, DVD images, USB drives, SMB and DLNA shares, network streams, IPTV and radio lists.",
   "license": "GPL-3.0",
   "author": "AZiZ",
-  "version": "0.1",
+  "version": "0.2",
   "source_repo": "https://github.com/ZiZc3/VLC",
-  "artifact_url": "https://github.com/ZiZc3/VLC/releases/download/v0.1/PPSA85300.zip",
-  "sha256": "815d8490767f3f1443526a6575aeb109cd564f466594ea2e1a0ffab6c9ca1da7",
-  "icon_url": "https://raw.githubusercontent.com/ZiZc3/VLC/v0.1/ps5/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/ZiZc3/VLC/releases/download/v0.2/PPSA85300.zip",
+  "sha256": "de3a59d42e7969ef08156568f536dc0041a434e819a53e099256022d26f4b804",
+  "icon_url": "https://raw.githubusercontent.com/ZiZc3/VLC/v0.2/ps5/sce_sys/icon0.png"
 }
