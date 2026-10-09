@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA97358",
+  "name": "XPSemu",
+  "kind": "app",
+  "description": "Original Xbox emulator for PS5, based on xemu.",
+  "license": "GPL-2.0",
+  "author": "AZiZ",
+  "version": "Alpha-2",
+  "source_repo": "https://github.com/ZiZc3/XPSemu",
+  "artifact_url": "https://github.com/ZiZc3/XPSemu/releases/download/Alpha-2/PPSA97358.zip",
+  "sha256": "66260113cd7806426689ec19489a4f2c363ee6b99db50d43766d109ba94ce7e6",
+  "icon_url": "https://raw.githubusercontent.com/ZiZc3/XPSemu/Alpha-2/ps5/sce_sys/icon0.png"
+}
