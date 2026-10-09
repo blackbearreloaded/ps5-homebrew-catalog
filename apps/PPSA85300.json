@@ -2,7 +2,7 @@
   "titleid": "PPSA85300",
   "name": "VLC",
   "kind": "app",
-  "description": "VLC media player for PS5: videos, music, photos, subtitles, DVD images, USB drives, SMB and DLNA shares, network streams, IPTV and radio lists.",
+  "description": "VLC media player for PS5: videos, music, photos, subtitles, DVD images and more",
   "license": "GPL-3.0",
   "author": "AZiZ",
   "version": "0.2",
