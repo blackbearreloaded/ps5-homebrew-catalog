@@ -5,9 +5,9 @@
   "description": "Nuvio TV for a jailbroken PS5, with EVO native playback and the interface served by the console itself.",
   "license": "GPL-3.0",
   "author": "Bilawal Riaz",
-  "version": "0.1.0-alpha.4",
+  "version": "0.1.0-alpha.5",
   "source_repo": "https://github.com/bilawalriaz/nuvio-ps5-homebrew",
-  "artifact_url": "https://github.com/bilawalriaz/nuvio-ps5-homebrew/releases/download/v0.1.0-alpha.4/PPSA99997.zip",
-  "sha256": "7173168bded10ebf703502b3db7db99b5a3f2717c6c18ef23456e435eae79e94",
-  "icon_url": "https://raw.githubusercontent.com/bilawalriaz/nuvio-ps5-homebrew/v0.1.0-alpha.4/assets/icon.png"
+  "artifact_url": "https://github.com/bilawalriaz/nuvio-ps5-homebrew/releases/download/v0.1.0-alpha.5/PPSA99997.zip",
+  "sha256": "15310094f8c65dcca45a0714e8c94316898f9afe83412e2438be1a072f4bf486",
+  "icon_url": "https://raw.githubusercontent.com/bilawalriaz/nuvio-ps5-homebrew/v0.1.0-alpha.5/assets/icon.png"
 }
