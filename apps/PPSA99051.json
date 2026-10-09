@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99051",
+  "name": "Surround Sound Studio",
+  "kind": "app",
+  "description": "Sends Dolby Digital, Dolby Digital Plus, DTS, AAC and TrueHD to your receiver untouched over HDMI, plus a speaker test lab with a 3D sound field.",
+  "license": "GPL-3.0",
+  "author": "sain.saji",
+  "version": "01.000.003",
+  "source_repo": "https://github.com/sainsaji/PS5-Audio-Passthrough-Research",
+  "artifact_url": "https://github.com/sainsaji/PS5-Audio-Passthrough-Research/releases/download/01.000.003/PPSA99051.zip",
+  "sha256": "fcb4e3cb794d36b30b9dee9ed86f0eea317e7c0071d193c18d9a07734e7beb69",
+  "icon_url": "https://raw.githubusercontent.com/sainsaji/PS5-Audio-Passthrough-Research/01.000.003/sample-app/sce_sys/icon0.png"
+}
