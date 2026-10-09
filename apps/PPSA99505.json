@@ -5,9 +5,9 @@
   "description": "A native Jellyfin client for jailbroken PS5: its own liquid-glass interface, hardware-decoded 4K HDR",
   "license": "GPL-3.0",
   "author": "02dnot",
-  "version": "0.5.0",
+  "version": "0.6.1",
   "source_repo": "https://github.com/02dnot/Jelly5",
-  "artifact_url": "https://github.com/02dnot/Jelly5/releases/download/v0.5.0/Jelly5-00.005.000.zip",
-  "sha256": "89c2a701d5a6bba75358922d4b0d6c1c7191284d70d22ba49e6d5160c2ff9d2a",
-  "icon_url": "https://raw.githubusercontent.com/02dnot/Jelly5/v0.5.0/app/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/02dnot/Jelly5/releases/download/v0.6.1/Jelly5-00.006.001.zip",
+  "sha256": "8c952d9d422531cbb003ef8900eb083ff3365418fa281bebdb9e1bbffc09719d",
+  "icon_url": "https://raw.githubusercontent.com/02dnot/Jelly5/v0.6.1/app/sce_sys/icon0.png"
 }
