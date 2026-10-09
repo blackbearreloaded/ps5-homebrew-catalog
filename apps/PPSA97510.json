@@ -5,9 +5,9 @@
   "description": "PSXS5 (PlayStation X Super 5): a PlayStation 1 emulator running natively on jailbroken PS5, based on PCSX-ReARMed. Cover-flow shelf, xBR upscaling, RetroAchievements, cheats.",
   "license": "GPL-3.0",
   "author": "SynoPiia",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "source_repo": "https://github.com/SynoPiia/PSXS5",
-  "artifact_url": "https://github.com/SynoPiia/PSXS5/releases/download/v2.1.1/PSXS5-v2.1.1.zip",
-  "sha256": "669a69db7f7a647d7b1b4265418225188de475d0529b1efd99184dc41dcf512c",
-  "icon_url": "https://raw.githubusercontent.com/SynoPiia/PSXS5/v2.1.1/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/SynoPiia/PSXS5/releases/download/v2.2.0/PSXS5-v2.2.0.zip",
+  "sha256": "8904a734f99ecd837071f78167214cb2fa867870936afe996f6f3c95f7b4af60",
+  "icon_url": "https://raw.githubusercontent.com/SynoPiia/PSXS5/v2.2.0/sce_sys/icon0.png"
 }
