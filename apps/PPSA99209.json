@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99209",
+  "name": "PS5GBA",
+  "kind": "game",
+  "description": "GBA Games on your PS5",
+  "license": "GPL-3.0",
+  "author": "GameMaster",
+  "version": "v.1.0.0.3",
+  "source_repo": "https://github.com/Globaleliteee/PS5GBA",
+  "artifact_url": "https://github.com/Globaleliteee/PS5GBA/releases/download/v.1.0.0.3/PPSA99209.zip",
+  "sha256": "af4520b010919eec5eb42f02038758b775bfc9bfb3fdc3d580aa8fabac5d1a7a",
+  "icon_url": "https://raw.githubusercontent.com/Globaleliteee/PS5GBA/v.1.0.0.3/gba/sce_sys/icon0.png"
+}
