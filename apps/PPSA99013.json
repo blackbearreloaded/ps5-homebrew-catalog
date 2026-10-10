@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99013",
+  "name": "NES FCEUmm PS5",
+  "kind": "app",
+  "description": "Port of FCEUmm for PS5",
+  "license": "GPL-2.0",
+  "author": "Mr.Temaki",
+  "version": "1.0",
+  "source_repo": "https://github.com/MisterTemaki/fceummPS5",
+  "artifact_url": "https://github.com/MisterTemaki/fceummPS5/releases/download/v1.0/fceumm-ps5-v1.0-src.zip",
+  "sha256": "766d1f1e7585e6f2c9da3edcd33b7da493d455a31f204aaf8fd6aa9fbaa4a587",
+  "icon_url": "https://raw.githubusercontent.com/MisterTemaki/fceummPS5/v1.0/ps5/app/sce_sys/icon0.png"
+}
