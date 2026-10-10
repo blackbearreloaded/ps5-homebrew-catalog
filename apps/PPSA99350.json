@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99350",
+  "name": "Steam Remote Play",
+  "kind": "app",
+  "description": "An unofficial Steam Remote Play client for PS5.",
+  "license": "GPL-3.0",
+  "author": "jmelovich",
+  "version": "1.0.0",
+  "source_repo": "https://github.com/jmelovich/Steam-Link-PS5",
+  "artifact_url": "https://github.com/jmelovich/Steam-Link-PS5/releases/download/v1.0.0/PPSA99350.zip",
+  "sha256": "a955665b3b14a70e43fd55c9f333f4fd81854bb09155245e2e2593cb6e95fcd2",
+  "icon_url": "https://raw.githubusercontent.com/jmelovich/Steam-Link-PS5/v1.0.0/sce_sys/icon0.png"
+}
