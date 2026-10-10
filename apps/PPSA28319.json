@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA28319",
+  "name": "Middle Ages Ping Pong",
+  "kind": "game",
+  "description": "Classic ping pong in a medieval setting: play against the computer or a friend on the same console.",
+  "license": "MIT",
+  "author": "STL1te",
+  "version": "01.000.000",
+  "source_repo": "https://github.com/STL1te/MedievalTennis",
+  "artifact_url": "https://github.com/STL1te/MedievalTennis/releases/download/01.000.000/PPSA28319.zip",
+  "sha256": "6426468091b42f6512a456004e47a0807ae83fc2af82a4408bef8a51103fbd48",
+  "icon_url": "https://raw.githubusercontent.com/STL1te/MedievalTennis/01.000.000/Assets/Art/Icons/Art/game_icon_en.png"
+}
