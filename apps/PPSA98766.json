@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA98766",
+  "name": "DriftCheck",
+  "kind": "tool",
+  "description": "Controller tester: live sticks with circularity, a rest test that measures stick drift and suggests a deadzone, triggers, buttons, touchpad and motion sensors.",
+  "license": "GPL-3.0",
+  "author": "Felipe Melchior",
+  "version": "01.000.000",
+  "source_repo": "https://github.com/felipemelchior/driftcheck5",
+  "artifact_url": "https://github.com/felipemelchior/driftcheck5/releases/download/01.000.000/PPSA98766.zip",
+  "sha256": "06fa838c0747ea25075876e28df9c684d17988938b82707c9592f1d2c217c86c",
+  "icon_url": "https://raw.githubusercontent.com/felipemelchior/driftcheck5/01.000.000/sce_sys/icon0.png"
+}
