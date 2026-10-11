@@ -5,9 +5,9 @@
   "description": "Dusklight for PlayStation 5: a homebrew port on RADV (Aurora, Dawn WebGPU, SDL3). Bring your own disc image.",
   "license": "GPL-3.0",
   "author": "Gary Riches",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "source_repo": "https://github.com/griches/PS5_Dusklight",
-  "artifact_url": "https://github.com/griches/PS5_Dusklight/releases/download/v0.1.1/Dusklight-PS5-v0.1.1.zip",
-  "sha256": "83377ec3199ef626753057334a05bb35d665e5508022f87e03b89c62983a998d",
-  "icon_url": "https://raw.githubusercontent.com/griches/PS5_Dusklight/v0.1.1/ps5/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/griches/PS5_Dusklight/releases/download/v0.2.0/Dusklight-PS5-v0.2.0.zip",
+  "sha256": "41d9e3f1b6ac1ec282cc98aeb6aaf219f6081be3c4eeb024a378ebd50cb3c496",
+  "icon_url": "https://raw.githubusercontent.com/griches/PS5_Dusklight/v0.2.0/ps5/sce_sys/icon0.png"
 }
