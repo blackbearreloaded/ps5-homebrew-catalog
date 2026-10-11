@@ -132,6 +132,25 @@ def last_updated(apps_dir: Path) -> dict[str, str]:
     return dates
 
 
+def first_listed(apps_dir: Path) -> dict[str, str]:
+    """Map record filename to the ISO commit date of the first commit that had it: when the catalog listed it."""
+    try:
+        relative = apps_dir.resolve().relative_to(ROOT).as_posix()
+    except ValueError:
+        return {}
+    if (_git("rev-parse", "--is-shallow-repository") or "").strip() == "true":
+        _git("fetch", "--quiet", "--unshallow")
+    output = _git("log", "--format=%x00%cI", "--name-only", "--no-renames", "--", relative)
+    dates: dict[str, str] = {}
+    date = None
+    for line in (output or "").splitlines():
+        if line.startswith("\0"):
+            date = line[1:]
+        elif line and date:
+            dates[Path(line).name] = date   # the log runs newest first: the last one seen is the oldest
+    return dates
+
+
 def display_date(iso: str) -> str:
     months = ("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
     year, month, day = iso[:10].split("-")
@@ -435,7 +454,8 @@ def safety_facts(summary: dict | None, uploader: str | None, approved: dict) -> 
 
 def write_api(root: Path, url: str, records: list[Record], report: Report, *, updated: dict[str, str], page,
               icons: dict[str, dict[int, bytes]], icon_hashes: dict[str, str], commit: str, github=None,
-              cache: Path | None = None, known: dict | None = None, safety: dict | None = None) -> None:
+              cache: Path | None = None, known: dict | None = None, safety: dict | None = None,
+              added: dict[str, str] | None = None, news: list[dict] | None = None) -> None:
     """The store API (docs/api.md): one file per app, a browse index and a version map, plus PNG icons.
 
     Per-app files and the version map hold nothing that changes between builds
@@ -484,6 +504,8 @@ def write_api(root: Path, url: str, records: list[Record], report: Report, *, up
             # What the release scan found (docs/api.md, Safety); null when the release wasn't scanned.
             "safety": (safety or {}).get(titleid),
             "updated": _utc(updated.get(record.path.name)),
+            # When the catalog first listed the record; null when the history can't say.
+            "added": _utc((added or {}).get(record.path.name)),
             "page": page(record),
             "icon": icon.get(large),
             "icon_small": icon.get(small) or icon.get(large),
@@ -493,7 +515,7 @@ def write_api(root: Path, url: str, records: list[Record], report: Report, *, up
         _write_json(root / "apps" / f"{titleid}.json", app)
         index.append({key: app[key] for key in (
             "titleid", "status", "name", "kind", "author", "version", "content_version", "format", "size",
-            "released", "updated", "icon_small", "icon_hash")}
+            "released", "updated", "added", "icon_small", "icon_hash")}
             | {"sandbox": ((safety or {}).get(titleid) or {}).get("sandbox")})
         if not record.reserved:
             versions[titleid] = {"content_version": facts.content_version, "version": d["version"]}
@@ -501,6 +523,9 @@ def write_api(root: Path, url: str, records: list[Record], report: Report, *, up
         "schema": API_SCHEMA, "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "commit": commit, "count": len(index), "apps": index})
     _write_json(root / "versions.json", {"schema": API_SCHEMA, "apps": versions})
+    # The news is signed by itself and stays out of the manifest (catalog/news.py).
+    from . import news as catalog_news
+    _write_json(root / catalog_news.FILE, {"schema": API_SCHEMA, "news": (news or [])[:catalog_news.PUBLISHED]})
     # Hashes of everything above, for the deploy to sign (catalog/signing.py).
     from . import signing
     signing.write_manifest(root, API_SCHEMA, source_sequence(), commit)
@@ -585,6 +610,9 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
     kinds = {kind: [r for r in records if r.data["kind"] == kind] for kind in KINDS}
     total = len(records)
     updated = last_updated(apps_dir)
+    added = first_listed(apps_dir)
+    from . import news as catalog_news
+    news_items = catalog_news.load(ROOT / catalog_news.FILE, report)
     # Release facts (size, dates), asked once: the pages show the size, the API publishes all.
     from . import facts as release_facts
     from . import notes as release_notes
@@ -829,7 +857,8 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
               # A mirror of the API has no pages of its own: its `page` links go to the website.
               page=lambda r: (pages_url.rstrip("/") + f"/app/{r.titleid}/") if pages_url else site_url + page_url(r),
               commit=commit,
-              github=github, cache=icon_cache, known=known, safety=safety)
+              github=github, cache=icon_cache, known=known, safety=safety,
+              added=added, news=news_items)
 
     # Cloudflare Pages configuration.
     csp = ("default-src 'self'; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com; "
@@ -854,6 +883,9 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
   Cache-Control: public, max-age=300, must-revalidate
 
 {base}api/*/manifest.sig
+  Content-Type: application/octet-stream
+
+{base}api/*/news.sig
   Content-Type: application/octet-stream
 """, encoding="utf-8")
     redirects = [f"/ {base} 302", f"{base.rstrip('/')} {base} 301"] if base != "/" else []

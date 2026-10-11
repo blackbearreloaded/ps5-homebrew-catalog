@@ -116,6 +116,13 @@ class SiteBuildTests(unittest.TestCase):
         self.assertEqual((index["schema"], index["count"], index["commit"]), (3, 3, "abc1234def"))
         self.assertEqual([a["titleid"] for a in index["apps"]], ["PPSA01234", "PPSA04321", "PPSA05555"])
         self.assertNotIn("description", index["apps"][0])
+        # When the catalog listed each app (null here: the test records have no git history).
+        self.assertIn("added", index["apps"][0])
+        self.assertIn("added", app)
+        # The news is published beside the catalog and stays out of the manifest (asserted below).
+        self.assertEqual(json.loads((api / "news.json").read_text(encoding="utf-8"))["schema"], 3)
+        self.assertIn("/api/*/news.sig\n  Content-Type: application/octet-stream",
+                      (self.out / "_headers").read_text(encoding="utf-8"))
         versions = json.loads((api / "versions.json").read_text(encoding="utf-8"))
         self.assertEqual(versions, {"schema": 3, "apps": {
             "PPSA01234": {"content_version": None, "version": "01.000.000"},
