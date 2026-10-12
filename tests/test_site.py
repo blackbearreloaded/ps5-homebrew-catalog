@@ -83,6 +83,11 @@ class SiteBuildTests(unittest.TestCase):
         redirects = (self.out / "_redirects").read_text(encoding="utf-8")
         self.assertIn("/app/PPSA09999/ / 302", redirects)
         self.assertIn("/app/PPSA09999 / 302", redirects)
+        # Its API file says so, and the signed manifest doesn't name it.
+        api = self.out / "api" / "v1"
+        self.assertEqual(json.loads((api / "apps" / "PPSA09999.json").read_text(encoding="utf-8")),
+                         {"schema": 3, "titleid": "PPSA09999", "status": "withdrawn"})
+        self.assertNotIn("apps/PPSA09999.json", json.loads((api / "manifest.json").read_text(encoding="utf-8"))["files"])
 
     def test_footer_shows_when_the_catalog_last_changed(self):
         with mock.patch.object(site, "source_commit_time", lambda commit: "2026-10-03T04:05:00Z"):

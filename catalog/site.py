@@ -116,7 +116,8 @@ def withdrawn_titleids(apps_dir: Path, listed: set[str]) -> list[str]:
     """Title IDs whose record was removed in the last WITHDRAWN_DAYS and isn't listed now, from git history.
 
     Cloudflare Pages keeps serving a file for a while after a deployment drops it, so a withdrawn
-    app's page would stay reachable; a redirect at its address takes over at once.
+    app's page and API file would stay reachable; a redirect or a new file at the address takes
+    over at once.
     """
     log = _git("log", f"--since={WITHDRAWN_DAYS} days ago", "--diff-filter=D", "--name-only", "--format=",
                "--", str(apps_dir))
@@ -928,6 +929,10 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
                           f"{old.rstrip('/')} {base} 301", f"{old}* {base}:splat 301"]
     for titleid in withdrawn_titleids(apps_dir, {r.titleid for r in records}):
         redirects += [f"{base}app/{titleid}/ {base} 302", f"{base}app/{titleid} {base} 302"]
+        # Its API file is replaced as well. Written after the manifest and so not named in it:
+        # an app that is absent from the manifest is not in the catalog.
+        _write_json(root / "api" / API_VERSION / "apps" / f"{titleid}.json",
+                    {"schema": API_SCHEMA, "titleid": titleid, "status": "withdrawn"})
     (out / "_redirects").write_text("\n".join(redirects) + "\n", encoding="utf-8")
     (out / "robots.txt").write_text("User-agent: *\nAllow: /\n", encoding="utf-8")
     return total
