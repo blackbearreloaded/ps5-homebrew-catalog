@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99310",
+  "name": "Mario 64",
+  "kind": "app",
+  "description": "Super Mario 64 for PlayStation 5: a homebrew port of Ghostship (libultraship) on RADV, 4K at 60 fps, with the ROM converted on the console. Bring your own ROM.",
+  "license": "GPL-3.0",
+  "author": "Gary Riches",
+  "version": "1.0",
+  "source_repo": "https://github.com/griches/PS5_Ghostship",
+  "artifact_url": "https://github.com/griches/PS5_Ghostship/releases/download/v1.0/Mario64-PS5-v1.0.zip",
+  "sha256": "1c3fe58a6aaa0cac969eafd6bedb747833f74a67a44fec68619c2cf99051cf46",
+  "icon_url": "https://raw.githubusercontent.com/griches/PS5_Ghostship/v1.0/ps5/sce_sys/icon0.png"
+}

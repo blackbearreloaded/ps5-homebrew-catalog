@@ -2,7 +2,7 @@
 
 The store at <https://homebrew.page/> is a static site generated from
 `apps/` by `python3 -m catalog build` and deployed to Cloudflare Pages by GitHub
-Actions on every push to `main`. There is no server-side code, database or tracking.
+Actions when a maintainer starts the CI workflow on `main` by hand. There is no server-side code, database or tracking.
 
 ## What the build produces
 
@@ -57,14 +57,19 @@ dist/
 - Every metadata value is HTML-escaped; descriptions render as plain text.
 - Icons are fetched from `icon_url`, resized to 512 px WebP (when Pillow is
   installed) and served from the site, so visitors never hit the original host.
-  The deploy job keeps them in a CI cache, so each icon URL is fetched only once
-  across deploys. A broken icon becomes a placeholder with a build warning.
+  The deploy job keeps them in a CI cache and fetches an icon again only when its
+  copy is older than a day, so a changed picture at the same address shows up
+  with the next deploy after that. A broken icon becomes a placeholder with a build warning.
 - Search waits for a pause in typing. A shelf shows at most 20 tiles; its
   section shows them all.
 - Without JavaScript the catalog page is the plain grid of every app, and every
   app page is complete; the script adds Discover, the sections, search, the
   order and the copy buttons. The pages carry no inline styles or scripts, as
   the content security policy requires.
+- The page of an app withdrawn in the last 30 days redirects to the front page,
+  and its API file is replaced by one that says `"status": "withdrawn"`.
+  Cloudflare Pages keeps serving a file for a while after a deployment drops
+  it; the redirect at that address takes over at once.
 - The build fails, and Cloudflare keeps the previous deployment, if any record
   is invalid.
 
@@ -256,7 +261,7 @@ The workflow repeats the deploy job of `ci.yml`; change both together.
 5. **Switch deployment on.** Under **Settings → Secrets and variables → Actions
    → Variables**, add the repository variable `CLOUDFLARE_PAGES_PROJECT` =
    `homebrew-page`. The deploy job is skipped while this variable is missing.
-6. **Deploy.** Go to **Actions → CI → Run workflow** on `main`, or push. Check
+6. **Deploy.** Go to **Actions → CI → Run workflow** on `main`. Check
    `https://homebrew-page.pages.dev/`. If the name is taken on `pages.dev`,
    Cloudflare adds a suffix; the project's page in the dashboard shows the address.
 7. **Connect the domain.** In the Pages project, go to **Custom domains → Set up

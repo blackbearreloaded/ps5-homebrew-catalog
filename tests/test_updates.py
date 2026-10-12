@@ -10,7 +10,7 @@ import catalog.__main__ as cli
 from catalog.policy import check_publisher
 from catalog.records import Record
 from catalog.report import Report
-from catalog.updates import find_update, is_release_bump, new_version, pick_asset
+from catalog.updates import find_gone, find_update, is_release_bump, new_version, pick_asset
 
 from helpers import record, reservation, write_record
 
@@ -104,6 +104,20 @@ class FindUpdateTests(unittest.TestCase):
         update, reason = self.find([release("v0.6.0", [asset("example-0.6.0-PPSA01234.zip", digest=None)])])
         self.assertIsNone(update)
         self.assertIn("no digest", reason)
+
+    def test_gone_means_repository_release_or_file_not_found(self):
+        listed = Record(Path("PPSA01234.json"), OLD)
+        there = release("v0.5.0", [asset("example-0.5.0-PPSA01234.zip")])
+        cases = [
+            (None, there, "the repository no longer exists"),
+            ({}, None, "the release v0.5.0 no longer exists"),
+            ({}, release("v0.5.0", [asset("other.zip")]), "the release v0.5.0 no longer has example-0.5.0-PPSA01234.zip"),
+            ({}, there, None),
+        ]
+        for repo, found, expected in cases:
+            github = mock.Mock(repo=lambda owner, name: repo, release_by_tag=lambda owner, name, tag: found)
+            self.assertEqual(find_gone(listed, github), expected)
+        self.assertIsNone(find_gone(Record(Path("PPSA01234.json"), reservation(titleid="PPSA01234")), mock.Mock()))
 
     def test_reservations_are_skipped(self):
         self.assertEqual(self.find([], data=reservation(titleid="PPSA01234")), (None, "reservation"))
@@ -212,6 +226,24 @@ class OpenPullRequestTests(unittest.TestCase):
         self.open(self.updates)
         self.assertEqual([(n, t) for n, t, _ in self.updated], [(7, "Update 2 apps: Example App to 0.6.0, Other App to 2.0")])
         self.assertEqual(self.pushed("PPSA04321")["version"], "2.0")
+
+    def test_gone_apps_get_one_removal_pull_request(self):
+        gone = [(Record(self.clone / "apps" / "PPSA01234.json", OLD), "the repository no longer exists")]
+        with mock.patch.object(cli, "ROOT", self.clone), mock.patch.object(cli, "APPS", self.clone / "apps"):
+            cli.open_removals_pr(gone, "example/catalog", self.github, Report())
+            (head, title, body), = self.created
+            self.assertEqual((head, title), ("catalog-update/removals", "Withdraw Example App: its source is gone"))
+            self.assertIn("the repository no longer exists", body)
+            self.assertEqual(self.run_git(self.clone, "diff", "--name-only", "origin/main",
+                                          "origin/catalog-update/removals").split(), ["apps/PPSA01234.json"])
+            # The working tree is back on main, with the record still there.
+            self.assertTrue((self.clone / "apps" / "PPSA01234.json").is_file())
+            self.open_pr["catalog-update/removals"] = {"number": 9, "title": title}
+            report = Report()
+            cli.open_removals_pr(gone, "example/catalog", self.github, report)
+            self.assertIn("already proposes", report.items[-1][2])
+            cli.open_removals_pr([], "example/catalog", self.github, Report())
+            self.assertEqual(self.closed, [9])
 
     def test_stale_pull_request_is_closed(self):
         self.open_pr["catalog-update/all"] = {"number": 7, "title": "Update Example App to 0.6.0"}

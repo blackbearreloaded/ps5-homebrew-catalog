@@ -16,9 +16,9 @@ string.Template placeholders; every metadata value is HTML-escaped before it is
 substituted.
 
 Icons are fetched and re-served from the site, resized to WebP when Pillow is
-installed. With an icon cache directory, each icon URL is fetched only once
-across builds (icon URLs are pinned to a tag or commit); entries no longer used
-are pruned. A failed icon falls back to a placeholder instead of failing the
+installed. With an icon cache directory, an icon is fetched again only when its
+cached copy is older than a day (an icon URL may name a branch, where the file
+can change); entries no longer used are pruned. A failed icon falls back to a placeholder instead of failing the
 build.
 """
 
@@ -32,6 +32,7 @@ import os
 import re
 import shutil
 import subprocess
+import time
 from pathlib import Path
 from string import Template
 from urllib.parse import quote, unquote
@@ -106,6 +107,22 @@ def _git(*args: str) -> str | None:
         return subprocess.run(["git", *args], cwd=ROOT, check=True, capture_output=True, text=True).stdout
     except (OSError, subprocess.CalledProcessError):
         return None
+
+
+WITHDRAWN_DAYS = 30  # how long a withdrawn app's page keeps redirecting
+
+
+def withdrawn_titleids(apps_dir: Path, listed: set[str]) -> list[str]:
+    """Title IDs whose record was removed in the last WITHDRAWN_DAYS and isn't listed now, from git history.
+
+    Cloudflare Pages keeps serving a file for a while after a deployment drops it, so a withdrawn
+    app's page and API file would stay reachable; a redirect or a new file at the address takes
+    over at once.
+    """
+    log = _git("log", f"--since={WITHDRAWN_DAYS} days ago", "--diff-filter=D", "--name-only", "--format=",
+               "--", str(apps_dir))
+    removed = {Path(line).stem for line in (log or "").splitlines() if re.fullmatch(r".*/[A-Z]{4}[0-9]{5}\.json", line)}
+    return sorted(removed - listed)
 
 
 def last_updated(apps_dir: Path) -> dict[str, str]:
@@ -341,17 +358,32 @@ def png_icons(data: bytes) -> dict[int, bytes]:
     return icons
 
 
+ICON_MAX_AGE = 24 * 60 * 60  # seconds a cached original is used before it is fetched again
+
+
 def _icon(url: str, cache: Path | None) -> tuple[bytes, str, bytes]:
-    """(site icon, its extension, original bytes) for url, using and filling the optional cache of originals."""
+    """(site icon, its extension, original bytes) for url, using and filling the optional cache of originals.
+
+    A cached original older than ICON_MAX_AGE is fetched again: the file behind a URL that names a
+    branch can change. When that fetch fails, the cached one is used.
+    """
     entry = cache / (hashlib.sha256(url.encode()).hexdigest() + ".img") if cache else None
+    kept = None
     if entry and entry.is_file():
         try:
             data = entry.read_bytes()
-            return (*process_icon(data), data)
+            kept = (*process_icon(data), data)
+            if time.time() - entry.stat().st_mtime < ICON_MAX_AGE:
+                return kept
         except (OSError, ValueError):
             entry.unlink(missing_ok=True)
-    data = artifacts.fetch_small(url, artifacts.MAX_ICON_BYTES)
-    result = process_icon(data)
+    try:
+        data = artifacts.fetch_small(url, artifacts.MAX_ICON_BYTES)
+        result = process_icon(data)
+    except (artifacts.DownloadError, OSError, ValueError):
+        if kept is None:
+            raise
+        return kept
     if entry:
         cache.mkdir(parents=True, exist_ok=True)
         entry.write_bytes(data)
@@ -895,6 +927,12 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
         if old != base:
             redirects += [f"{old}list {base}?view=list 301", f"{old}list/ {base}?view=list 301",
                           f"{old.rstrip('/')} {base} 301", f"{old}* {base}:splat 301"]
+    for titleid in withdrawn_titleids(apps_dir, {r.titleid for r in records}):
+        redirects += [f"{base}app/{titleid}/ {base} 302", f"{base}app/{titleid} {base} 302"]
+        # Its API file is replaced as well. Written after the manifest and so not named in it:
+        # an app that is absent from the manifest is not in the catalog.
+        _write_json(root / "api" / API_VERSION / "apps" / f"{titleid}.json",
+                    {"schema": API_SCHEMA, "titleid": titleid, "status": "withdrawn"})
     (out / "_redirects").write_text("\n".join(redirects) + "\n", encoding="utf-8")
     (out / "robots.txt").write_text("User-agent: *\nAllow: /\n", encoding="utf-8")
     return total

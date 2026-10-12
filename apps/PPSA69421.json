@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA69421",
+  "name": "SuperTuxKart",
+  "kind": "game",
+  "description": "Alpha port of the open-source kart racer SuperTuxKart 1.5, with story mode and local races; network play is switched off.",
+  "license": "GPL-3.0-or-later",
+  "author": "Marice",
+  "version": "00.001.000",
+  "source_repo": "https://github.com/Marice/stk-ps5",
+  "artifact_url": "https://github.com/Marice/stk-ps5/releases/download/00.001.000/PPSA69421.zip",
+  "sha256": "f2240bf0e67cf585ae7c6acc16068e1b8bef5e3c1b5f7e8ae550053d937b712a",
+  "icon_url": "https://raw.githubusercontent.com/Marice/stk-ps5/00.001.000/sce_sys/icon0.png"
+}

@@ -19,7 +19,7 @@ import json
 import tempfile
 from dataclasses import dataclass, field
 from pathlib import Path
-from urllib.parse import quote
+from urllib.parse import quote, unquote
 
 from . import artifacts
 from .github import GitHub
@@ -125,6 +125,24 @@ def find_update(record: Record, github: GitHub, icon_exists=None) -> tuple[Updat
     if problems:
         return None, f"newer release {tag} found, but the updated record would be invalid: {problems[0]}"
     return Update(record, data, tag, bool(release.get("prerelease")), notes), ""
+
+
+def find_gone(record: Record, github: GitHub) -> str | None:
+    """Why a listed app can no longer be installed (its repository, release or file is gone), or None.
+
+    Only GitHub's plain "not found" counts; any other failure raises GitHubError and proves nothing.
+    """
+    if record.reserved:
+        return None
+    if github.repo(record.owner, record.repo) is None:
+        return "the repository no longer exists"
+    release = github.release_by_tag(record.owner, record.repo, record.tag)
+    if release is None:
+        return f"the release {record.tag} no longer exists"
+    names = {a.get("name") for a in release.get("assets", [])}
+    if not names & {record.asset_name, unquote(record.asset_name)}:
+        return f"the release {record.tag} no longer has {record.asset_name}"
+    return None
 
 
 def _icon_exists(url: str) -> bool:

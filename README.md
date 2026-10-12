@@ -233,8 +233,8 @@ to run on untrusted pull requests.
 
 ## Website
 
-GitHub Actions rebuilds the store from `main` after every merge and deploys it
-to Cloudflare Pages. The front
+GitHub Actions rebuilds the store from `main` and deploys it to Cloudflare Pages
+when a maintainer starts the run; merges are published together, not one by one. The front
 page is a store front: featured apps over shelves, with sections for apps, games
 and tools, search and sorting; each app has its own page, coloured from its icon; it works on phones, has a TV mode for the PS5 browser and smart TVs
 (controller-driven, inspired by [tv4play](https://github.com/ps5-payload-dev/tv4play)), and shows when each app was last updated. See **[Website](docs/website.md)** for the output, themes, local

@@ -71,7 +71,7 @@ The first eleven fields after `schema` are the app's record, exactly as in
 | Field | Type | Meaning |
 | --- | --- | --- |
 | `schema` | integer | Schema revision of this file; see [Versioning of the API](#versioning-of-the-api). |
-| `status` | string | `available`: the app has a release and can be installed. `coming_soon`: the title ID is [reserved](submitting.md#reserving-a-title-id) and nothing can be downloaded yet. |
+| `status` | string | `available`: the app has a release and can be installed. `coming_soon`: the title ID is [reserved](submitting.md#reserving-a-title-id) and nothing can be downloaded yet. `withdrawn`: the app was removed from the catalog in the last 30 days; the file then has only `schema`, `titleid` and `status`, and it is not in the index or the manifest. |
 | `content_version` | string or null | The release's `contentVersion` from its `sce_sys/param.json`, in the PlayStation format `NN.NNN.NNN` (`01.000.070`). **This is the value to compare with an installed copy**; see [Finding updates](#finding-updates). `null` when it isn't known. |
 | `format` | string or null | `zip` for every app accepted now: the app folder in an archive. A listing made before ZIP became the only accepted format can still be `ffpkg` or `ffpfsc` (an image file); a client that installs only `zip` should show such an app as not installable. See [Artifact formats](artifact-formats.md). |
 | `artifact_name` | string or null | File name of the download. |
@@ -354,7 +354,9 @@ rely on HTTPS.
    update usually means the manifest and the file come from two different
    builds; fetch the manifest again.
 
-An app that is absent from a verified manifest is not in the catalog.
+An app that is absent from a verified manifest is not in the catalog. That
+includes an app whose file says `"status": "withdrawn"`: the file only
+replaces the old one at that address and is never named in the manifest.
 
 ### The public keys
 

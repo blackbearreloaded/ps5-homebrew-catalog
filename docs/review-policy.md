@@ -85,6 +85,9 @@ the catalog per day.
   within 14 days, the listing is withdrawn. A changed sha256 on a listed asset
   is treated as a security incident: the listing is withdrawn immediately and
   restored only after the owner explains the change.
+- **Repository, release or file gone:** the daily release-update job opens a
+  pull request that removes the listing. Maintainers merge it when the app
+  is not coming back.
 - **Newer upstream release:** the daily release-update job opens a pull
   request moving the listing to it (pre-releases included). Maintainers review
   and merge it like any update, or close it to skip that version. Owners can

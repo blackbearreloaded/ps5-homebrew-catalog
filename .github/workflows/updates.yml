@@ -1,7 +1,8 @@
 name: Release updates
 
 # Daily: looks for newer upstream releases (pre-releases included) of every
-# listed app and opens or refreshes one pull request with all of them as the catalog's
+# listed app and opens or refreshes one pull request with all of them, and a second one that
+# withdraws the apps whose repository, release or file is gone, both as the catalog's
 # GitHub App. Pull requests opened by an app trigger the normal submission
 # check; a maintainer merges them. Does nothing until CATALOG_BOT_CLIENT_ID is
 # set (as a variable of the catalog-bot environment or of the repository).

@@ -487,17 +487,85 @@ def open_updates_pr(updates: list, repository: str, github: GitHub, report: Repo
         report.notice("updates", f"opened pull request #{pull.get('number')}: {title}")
 
 
+REMOVAL_BRANCH = "catalog-update/removals"
+
+
+def removals_pr_text(gone: list) -> tuple[str, str]:
+    """Title and body of the one pull request that withdraws every listed app whose source is gone."""
+    names = [record.data["name"] for record, _ in gone]
+    if len(names) == 1:
+        title = f"Withdraw {names[0]}: its source is gone"
+    else:
+        shown = ", ".join(names[:3]) + (f" and {len(names) - 3} more" if len(names) > 3 else "")
+        title = f"Withdraw {len(names)} apps whose source is gone: {shown}"
+    body = "\n".join([
+        f"Automated proposal from the daily release check: {len(gone)} listed app(s) can no longer be installed.",
+        "",
+        *[f"- **{record.data['name']}** (`{record.titleid}`), {record.data['source_repo']}: {reason}."
+          for record, reason in gone],
+        "",
+        "Merge it to remove these records from the catalog. Closing it without merging rejects nothing: "
+        "the next run proposes it again while the source stays gone, and an app that comes back drops "
+        "out of this pull request.",
+    ])
+    return title, body
+
+
+def open_removals_pr(gone: list, repository: str, github: GitHub, report: Report) -> None:
+    """Keep one pull request that removes every listed app whose source is gone; close it when none is."""
+    existing = github.open_pull(repository, REMOVAL_BRANCH)
+    if not gone:
+        if existing:
+            github.update_pull(repository, existing["number"], existing.get("title", "Withdraw apps"),
+                               "Closed by the release check: the source of every listed app is there.")
+            github.close_pull(repository, existing["number"])
+            report.notice("removals", f"closed pull request #{existing['number']}: nothing left to withdraw")
+        return
+
+    title, body = removals_pr_text(gone)
+    paths = sorted(f"apps/{record.path.name}" for record, _ in gone)
+    git("fetch", "--quiet", "origin", "main")
+    if existing:
+        git("fetch", "--quiet", "origin", f"+refs/heads/{REMOVAL_BRANCH}:refs/remotes/origin/{REMOVAL_BRANCH}")
+        if sorted(git("diff", "--name-only", "origin/main", f"origin/{REMOVAL_BRANCH}").split()) == paths:
+            report.notice("removals", f"pull request #{existing['number']} already proposes these withdrawals")
+            return
+    git("checkout", "--quiet", "-B", REMOVAL_BRANCH, "origin/main")
+    try:
+        git("rm", "--quiet", *paths)
+        git("commit", "--quiet", "-m", title)
+        git("push", "--quiet", "--force", "origin", f"{REMOVAL_BRANCH}:{REMOVAL_BRANCH}")
+    finally:
+        git("checkout", "--quiet", "--detach", "origin/main")
+    if existing:
+        github.update_pull(repository, existing["number"], title, body)
+        report.notice("removals", f"updated pull request #{existing['number']}: {title}")
+    else:
+        pull = github.create_pull(repository, REMOVAL_BRANCH, "main", title, body)
+        report.notice("removals", f"opened pull request #{pull.get('number')}: {title}")
+
+
 def cmd_updates(args) -> int:
-    from .updates import find_update
+    from .updates import find_gone, find_update
     report = Report()
     records = load_catalog(APPS, report)
     wanted = {t.upper() for t in args.titleids}
     github = GitHub()
     found = []
+    gone = []
     for record in records:
         if wanted and record.titleid not in wanted:
             continue
         name = f"apps/{record.path.name}"
+        try:
+            lost = find_gone(record, github)
+        except GitHubError as error:
+            report.warning(name, f"could not check the source: {error}")
+            continue
+        if lost:
+            gone.append((record, lost))
+            report.warning(name, f"can no longer be installed: {lost}")
+            continue
         try:
             update, reason = find_update(record, github)
         except GitHubError as error:
@@ -523,6 +591,14 @@ def cmd_updates(args) -> int:
             open_updates_pr(found, repository, github, report)
         except (GitHubError, subprocess.CalledProcessError) as error:
             report.error("updates", f"could not open the pull request: {error}")
+        # Many apps gone at once looks like a fault on GitHub's side, not like withdrawals.
+        if len(gone) > max(3, len(records) // 4):
+            report.error("removals", f"{len(gone)} apps look gone at once; no pull request was opened")
+        elif not wanted:
+            try:
+                open_removals_pr(gone, repository, github, report)
+            except (GitHubError, subprocess.CalledProcessError) as error:
+                report.error("removals", f"could not open the pull request: {error}")
     return report.emit("Update check", f"{len(found)} update(s) found.")
 
 
