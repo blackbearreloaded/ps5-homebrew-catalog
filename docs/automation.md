@@ -270,6 +270,14 @@ skip others, revert the unwanted record on the branch before merging; that app
 is proposed again on the next run. Run
 `python3 -m catalog updates` locally to see what would be proposed.
 
+The same run looks for listed apps that can no longer be installed: the
+repository, the listed release or the listed file answers "not found". Those
+go into a **second pull request**, on the branch `catalog-update/removals`,
+which removes their records. Merge it to withdraw them; closing it rejects
+nothing, and an app that comes back drops out of it. A failed request proves
+nothing and is only reported, and when more than a quarter of the catalog
+looks gone at once the run reports an error and opens no pull request.
+
 ### Setting up the GitHub App (once)
 
 Pull requests opened with the workflow's built-in token wouldn't trigger the
