@@ -67,7 +67,22 @@ class SiteBuildTests(unittest.TestCase):
         self.assertIn("/ps5/list/ /?view=list 301", redirects)
         self.assertIn("/ps5 / 301", redirects)
         self.assertIn("/ps5/* /:splat 301", redirects)
+        self.assertNotIn(" 302", redirects)
         self.assertFalse((root / "list").exists())
+
+    def test_withdrawn_apps_redirect_to_the_front_page(self):
+        from catalog import site
+        log = "apps/PPSA09999.json\n\napps/PPSA01234.json\napps/notes.txt\n"
+        with mock.patch.object(site, "_git", lambda *args: log):
+            # PPSA01234 was removed once and is listed again: it keeps its page.
+            self.assertEqual(site.withdrawn_titleids(self.apps, {"PPSA01234"}), ["PPSA09999"])
+        with mock.patch.object(site, "_git", lambda *args: None):
+            self.assertEqual(site.withdrawn_titleids(self.apps, set()), [])
+        with mock.patch.object(site, "withdrawn_titleids", lambda apps, listed: ["PPSA09999"]):
+            self.build()
+        redirects = (self.out / "_redirects").read_text(encoding="utf-8")
+        self.assertIn("/app/PPSA09999/ / 302", redirects)
+        self.assertIn("/app/PPSA09999 / 302", redirects)
 
     def test_footer_shows_when_the_catalog_last_changed(self):
         with mock.patch.object(site, "source_commit_time", lambda commit: "2026-10-03T04:05:00Z"):

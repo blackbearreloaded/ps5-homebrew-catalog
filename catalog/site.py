@@ -109,6 +109,21 @@ def _git(*args: str) -> str | None:
         return None
 
 
+WITHDRAWN_DAYS = 30  # how long a withdrawn app's page keeps redirecting
+
+
+def withdrawn_titleids(apps_dir: Path, listed: set[str]) -> list[str]:
+    """Title IDs whose record was removed in the last WITHDRAWN_DAYS and isn't listed now, from git history.
+
+    Cloudflare Pages keeps serving a file for a while after a deployment drops it, so a withdrawn
+    app's page would stay reachable; a redirect at its address takes over at once.
+    """
+    log = _git("log", f"--since={WITHDRAWN_DAYS} days ago", "--diff-filter=D", "--name-only", "--format=",
+               "--", str(apps_dir))
+    removed = {Path(line).stem for line in (log or "").splitlines() if re.fullmatch(r".*/[A-Z]{4}[0-9]{5}\.json", line)}
+    return sorted(removed - listed)
+
+
 def last_updated(apps_dir: Path) -> dict[str, str]:
     """Map record filename to the ISO commit date of the last commit that changed it.
 
@@ -911,6 +926,8 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
         if old != base:
             redirects += [f"{old}list {base}?view=list 301", f"{old}list/ {base}?view=list 301",
                           f"{old.rstrip('/')} {base} 301", f"{old}* {base}:splat 301"]
+    for titleid in withdrawn_titleids(apps_dir, {r.titleid for r in records}):
+        redirects += [f"{base}app/{titleid}/ {base} 302", f"{base}app/{titleid} {base} 302"]
     (out / "_redirects").write_text("\n".join(redirects) + "\n", encoding="utf-8")
     (out / "robots.txt").write_text("User-agent: *\nAllow: /\n", encoding="utf-8")
     return total

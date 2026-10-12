@@ -66,6 +66,9 @@ dist/
   app page is complete; the script adds Discover, the sections, search, the
   order and the copy buttons. The pages carry no inline styles or scripts, as
   the content security policy requires.
+- The page of an app withdrawn in the last 30 days redirects to the front page.
+  Cloudflare Pages keeps serving a file for a while after a deployment drops
+  it; the redirect at that address takes over at once.
 - The build fails, and Cloudflare keeps the previous deployment, if any record
   is invalid.
 
