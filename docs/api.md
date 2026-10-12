@@ -18,6 +18,7 @@ API itself, and there is no server behind it, only files on a CDN.
 | [`/api/v1/index.json`](https://homebrew.page/api/v1/index.json) | One compact entry per app, reservations included | about 330 bytes per app | show the catalog as a list |
 | `/api/v1/apps/<TITLEID>.json` | Everything about one app | about 1 KB | show one app, install it, or let an app check itself |
 | [`/api/v1/manifest.json`](https://homebrew.page/api/v1/manifest.json) and `manifest.sig` | The hash of every JSON file above, the catalog's sequence number, and a signature over both | about 90 bytes per app | verify that the catalog is genuine before installing from it |
+| [`/api/v1/news.json`](https://homebrew.page/api/v1/news.json) and `news.sig` | Short messages from the catalog's maintainers, newest first, and a signature over the file | under 64 KB | show what is new; see [News](#news-newsjson) |
 | `/api/v1/icons/<TITLEID>.png` | The app's icon as PNG, at most 512 px on its longer side | varies | show the icon without a WebP decoder |
 | `/api/v1/icons/<TITLEID>-256.png` | The same, at most 256 px | varies | lists and grids |
 
@@ -196,6 +197,39 @@ fetch `apps/<TITLEID>.json` for the description, license, download and hash.
 `icon_hash` is there so a list can keep its icons; see [Caching icons](#caching-icons).
 `generated` and `commit` say which build of the catalog this is; `count` is the
 length of `apps`.
+
+`added` is when the catalog first listed the app (the first commit of its
+record), `null` when the build can't read the history. A list can use it for
+"new in the catalog"; `released` and `updated` move with every release.
+
+## News: `news.json`
+
+```json
+{
+  "schema": 3,
+  "news": [
+    {
+      "id": "2026-10-11-developer-pages",
+      "date": "2026-10-11T09:00:00Z",
+      "title": "Developer pages",
+      "body": "Open an app and see everything else its developer made.\n\nA blank line starts a new paragraph."
+    }
+  ]
+}
+```
+
+At most twenty items, newest first. `id` never changes for an item, so a client
+can remember which one its user has read. `title` is one line of at most 120
+characters; `body` is plain text of at most 2,000, with a blank line between
+paragraphs. The items come from [`news.json`](../news.json) at the top of the
+repository, changed by pull request like everything else.
+
+The file is **not** listed in `manifest.json`: stores released before it existed
+refuse a manifest that names a file they don't know. It has its own signature
+instead: `news.sig` is the Ed25519 signature of the exact bytes of `news.json`,
+made with the same key as `manifest.sig`. A client that shows the news verifies
+it against the [public keys](#the-public-keys) first, and shows nothing when the
+file is missing or doesn't verify.
 
 ## Versions: `versions.json`
 
@@ -444,6 +478,7 @@ main site.
 | 3 | 2026-10-02 | Added `manifest.json` and `manifest.sig`: the catalog is signed. |
 | 3 | 2026-10-07 | Added `safety` to app files and `sandbox` to index entries: what the release scan found. `schema` stays 3. |
 | 3 | 2026-10-07 | `icon` and `icon_small` end in `?v=<icon_hash>`, so an icon's address changes with its picture. No field was added or renamed. |
+| 3 | 2026-10-11 | Added `added` to app files and index entries, and the signed `news.json` beside the catalog (not in the manifest). `schema` stays 3. |
 | 3 | 2026-10-05 | Added `release_notes` and `release_notes_truncated` to app files. `schema` stays 3: a released store accepts only that exact number, so it is raised with the next change that store has been prepared for. Test for the field, not for the number. |
 
 ## Where the values come from
