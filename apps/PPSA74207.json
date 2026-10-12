@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA74207",
+  "name": "The Simpsons Game",
+  "kind": "game",
+  "description": "Create a PS5-ready The Simpsons Game folder from your Xbox 360 game files, with graphics settings and optional frame generation.",
+  "license": "GPL-3.0",
+  "author": "ZazaMastro",
+  "version": "3.10.6",
+  "source_repo": "https://github.com/LoZazaMastro/TheSimpsonsGame-PS5-Builder",
+  "artifact_url": "https://github.com/LoZazaMastro/TheSimpsonsGame-PS5-Builder/releases/download/v3.10.6/TheSimpsonsGame-PS5-Builder-v3.10.6-Source.zip",
+  "sha256": "af518c36ba5f7dfd3ed7f37238fa53c7b031e1002863ec4c88f1821943ce86f1",
+  "icon_url": "https://raw.githubusercontent.com/LoZazaMastro/TheSimpsonsGame-PS5-Builder/v3.10.6/prospero/sce_sys/icon0.png"
+}

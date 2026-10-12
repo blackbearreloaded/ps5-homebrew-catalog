@@ -28,6 +28,9 @@ ROOT = Path(__file__).resolve().parents[1]
 KEYS = ROOT / "keys"
 MANIFEST = "manifest.json"
 SIGNATURE = "manifest.sig"
+# Signed by itself and never listed in the manifest (catalog/news.py).
+NEWS = "news.json"
+NEWS_SIGNATURE = "news.sig"
 SIGNATURE_BYTES = 64
 
 
@@ -57,11 +60,12 @@ def public_keys(directory: Path = KEYS) -> dict[str, Path]:
 def write_manifest(api_root: Path, schema: int, sequence: int, commit: str) -> Path:
     """List every JSON file of the API with its hash. Deterministic for a given set of files."""
     files = {path.relative_to(api_root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
-             for path in sorted(api_root.rglob("*.json")) if path.name != MANIFEST}
+             for path in sorted(api_root.rglob("*.json")) if path.name not in (MANIFEST, NEWS)}
     manifest = api_root / MANIFEST
     manifest.write_text(json.dumps({"schema": schema, "sequence": sequence, "commit": commit, "files": files},
                                    ensure_ascii=False, separators=(",", ":"), sort_keys=True) + "\n", encoding="utf-8")
     (api_root / SIGNATURE).unlink(missing_ok=True)
+    (api_root / NEWS_SIGNATURE).unlink(missing_ok=True)
     return manifest
 
 
@@ -95,13 +99,27 @@ def sign(api_root: Path, private_pem: str, keys_dir: Path = KEYS) -> str:
         key.touch(mode=0o600)
         key.write_text(private_pem if private_pem.endswith("\n") else private_pem + "\n", encoding="utf-8")
         result = _openssl("pkeyutl", "-sign", "-inkey", str(key), "-rawin", "-in", str(manifest), "-out", str(signature))
+        # The news, when the build wrote any, with the same key.
+        news, news_signature = api_root / NEWS, api_root / NEWS_SIGNATURE
+        news_signature.unlink(missing_ok=True)
+        if result.returncode == 0 and news.is_file():
+            signed = _openssl("pkeyutl", "-sign", "-inkey", str(key), "-rawin", "-in", str(news),
+                              "-out", str(news_signature))
+            if signed.returncode != 0 or not news_signature.is_file() or \
+                    news_signature.stat().st_size != SIGNATURE_BYTES:
+                news_signature.unlink(missing_ok=True)
+                signature.unlink(missing_ok=True)
+                raise SigningError("openssl could not sign the news")
     if result.returncode != 0 or not signature.is_file() or signature.stat().st_size != SIGNATURE_BYTES:
         signature.unlink(missing_ok=True)
+        news_signature.unlink(missing_ok=True)
         raise SigningError("openssl could not sign the manifest; is the signing key an Ed25519 private key in PEM form?")
     for identifier, public in public_keys(keys_dir).items():
-        if verify(manifest, signature, public):
+        if verify(manifest, signature, public) and (not news_signature.is_file() or
+                                                    verify(news, news_signature, public)):
             return identifier
     signature.unlink(missing_ok=True)
+    news_signature.unlink(missing_ok=True)
     raise SigningError("the signing key is not one of the published public keys in keys/")
 
 

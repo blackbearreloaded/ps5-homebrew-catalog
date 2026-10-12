@@ -6,7 +6,7 @@ library and run by four workflows.
 | Workflow | Trigger | Runs |
 | --- | --- | --- |
 | [Submission check](../.github/workflows/pull-request.yml) | Pull requests (`pull_request_target`) | `python3 -m catalog pr`, and in a second job the [release scan](#release-scan), `python3 -m catalog scan-pr` |
-| [CI](../.github/workflows/ci.yml) | Pull requests and pushes to `main` | Tests, `catalog check` and a website build; on `main` also `catalog push`, then the [website deployment](website.md#deployment) |
+| [CI](../.github/workflows/ci.yml) | Pull requests; publishing is started by hand on `main` | Tests, `catalog check` and a website build; a manual run on `main` also does `catalog push`, then the [website deployment](website.md#deployment) |
 | [Deploy fallback](../.github/workflows/deploy-fallback.yml) | Manual only, by the repository owner | The same deploy on the maintainer's own runner, for an Actions outage; see [Fallback deploy](website.md#fallback-deploy) |
 | [Scan the catalog](../.github/workflows/scan-catalog.yml) | Manual only | `catalog scan`: one report on every listed app, or on the title IDs given; see [Release scan](#release-scan) |
 | [Catalog health](../.github/workflows/health.yml) | Daily 06:17 UTC and manual | `catalog health --slice today` |
@@ -194,11 +194,14 @@ python3 -m catalog scan                      # every listed release (about 2 GB 
 python3 -m catalog scan --zip app.zip PPSA12345
 ```
 
-## Push to `main`
+## Publishing from `main`
 
-Every push runs the tests and the offline check, then fully verifies the records
-changed since the previous commit. This covers maintainer commits that don't go
-through a pull request.
+A merge starts nothing. The site is published by a run started by hand (Actions >
+CI > Run workflow on `main`), so several merges can go out together. That run
+does the tests and the offline check, then fully verifies the records changed
+since the commit that is online (the store API's index names it); when that
+commit can't be read, it verifies every record. This also covers maintainer
+commits that don't go through a pull request.
 
 The deploy that follows builds the website and the [store API](api.md). For
 each release it hasn't seen, the build asks GitHub for the download size and

@@ -38,6 +38,10 @@ class ManifestTests(unittest.TestCase):
         manifest = json.loads(path.read_text(encoding="utf-8"))
         self.assertEqual((manifest["schema"], manifest["sequence"], manifest["commit"]), (3, 41, "abc"))
         self.assertEqual(sorted(manifest["files"]), ["apps/PPSA01234.json", "versions.json"])
+        # The news is signed by itself: a released store refuses a manifest that names it.
+        (self.api / signing.NEWS).write_text('{"schema":3,"news":[]}\n', encoding="utf-8")
+        manifest = json.loads(signing.write_manifest(self.api, 3, 41, "abc").read_text(encoding="utf-8"))
+        self.assertEqual(sorted(manifest["files"]), ["apps/PPSA01234.json", "versions.json"])
         self.assertEqual(manifest["files"]["versions.json"],
                          hashlib.sha256((self.api / "versions.json").read_bytes()).hexdigest())
         # Writing it again gives the same bytes, and never lists itself.
@@ -70,6 +74,17 @@ class ManifestTests(unittest.TestCase):
         # Rebuilding the manifest removes the stale signature.
         signing.write_manifest(self.api, 3, 42, "abc")
         self.assertFalse(signature.exists())
+        # With news in the build, the same key signs it too; a rebuild removes that signature as well.
+        news = self.api / signing.NEWS
+        news.write_text('{"schema":3,"news":[]}\n', encoding="utf-8")
+        self.assertFalse((self.api / signing.NEWS_SIGNATURE).exists())
+        signing.sign(self.api, private, keys)
+        news_signature = self.api / signing.NEWS_SIGNATURE
+        self.assertEqual(news_signature.stat().st_size, 64)
+        self.assertTrue(signing.verify(news, news_signature, keys / "test.pub.pem"))
+        self.assertFalse(signing.verify(self.api / signing.MANIFEST, news_signature, keys / "test.pub.pem"))
+        signing.write_manifest(self.api, 3, 43, "abc")
+        self.assertFalse(news_signature.exists())
 
     @unittest.skipUnless(OPENSSL, "needs the openssl program")
     def test_a_key_that_is_not_published_is_refused(self):

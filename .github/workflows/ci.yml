@@ -1,9 +1,9 @@
 name: CI
 
+# A pull request runs the tests. Publishing is started by hand (Actions > CI > Run workflow on
+# main): a merge starts nothing, so several merges can go out together in one run.
 on:
   pull_request:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -34,7 +34,9 @@ jobs:
 
   verify:
     name: Verify changed records
-    if: github.event_name == 'push'
+    # Before publishing: every record that changed since the commit that is online is verified
+    # in full, which also covers commits that did not come through a pull request.
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
     needs: tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -46,9 +48,17 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.13'
+      - name: Find the commit that is online
+        # The store API's index names the commit it was built from. When it cannot be read, or
+        # that commit is not in this history, BEFORE stays empty and every record is verified.
+        run: |
+          online=$(curl -fsS --retry 2 https://homebrew.page/api/v1/index.json \
+            | python3 -c 'import json, sys; print(json.load(sys.stdin).get("commit", ""))' || true)
+          if [[ $online =~ ^[0-9a-f]{40}$ ]] && git merge-base --is-ancestor "$online" "$GITHUB_SHA" 2>/dev/null; then
+            echo "BEFORE=$online" >> "$GITHUB_ENV"
+          fi
       - run: python3 -m catalog push --before "$BEFORE" --after "$AFTER"
         env:
-          BEFORE: ${{ github.event.before }}
           AFTER: ${{ github.sha }}
           GITHUB_TOKEN: ${{ github.token }}
 
@@ -57,7 +67,7 @@ jobs:
     # Writes a small summary per listed release for the site's safety labels. It downloads and
     # reads files nobody has reviewed, so it has no secrets, and the deploy job reads its output
     # only as data. A release is scanned once: summaries are kept by the file's sha256.
-    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
     needs: tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -85,14 +95,15 @@ jobs:
 
   deploy:
     name: Deploy website to Cloudflare Pages
-    # Only trusted code on main reaches this job: it never runs for pull requests.
+    # Only trusted code on main reaches this job, and only in a run started by hand: it never
+    # runs for pull requests or for a merge.
     # deploy-fallback.yml repeats these steps for an Actions outage: change both together.
     # It is skipped until the CLOUDFLARE_PAGES_PROJECT repository variable exists.
     # The scan job may fail or be skipped: the site is then built without safety labels.
     needs: [tests, verify, scan]
     if: >-
       always() && github.ref == 'refs/heads/main'
-      && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+      && github.event_name == 'workflow_dispatch'
       && needs.tests.result == 'success'
       && (needs.verify.result == 'success' || needs.verify.result == 'skipped')
       && vars.CLOUDFLARE_PAGES_PROJECT != ''
