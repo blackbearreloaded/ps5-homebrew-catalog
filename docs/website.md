@@ -2,7 +2,7 @@
 
 The store at <https://homebrew.page/> is a static site generated from
 `apps/` by `python3 -m catalog build` and deployed to Cloudflare Pages by GitHub
-Actions on every push to `main`. There is no server-side code, database or tracking.
+Actions when a maintainer starts the CI workflow on `main` by hand. There is no server-side code, database or tracking.
 
 ## What the build produces
 
