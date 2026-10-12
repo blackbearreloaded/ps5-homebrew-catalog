@@ -5,9 +5,9 @@
   "description": "SwanStationPS5 is a PlayStation 1 emulator that runs all games using SwanStation core.",
   "license": "GPL-3.0-or-later",
   "author": "AngelXex",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "source_repo": "https://github.com/darkxex/SwanStationPS5",
-  "artifact_url": "https://github.com/darkxex/SwanStationPS5/releases/download/1.2.2/PPSA98510.zip",
-  "sha256": "10ed9f94a892baefee4f0db91ca01a5758bec0b6c0013bea315e36b914d37999",
+  "artifact_url": "https://github.com/darkxex/SwanStationPS5/releases/download/1.2.3/PPSA98510.zip",
+  "sha256": "1573e1beea58857297b284e2b88afbb6f80798020544e42ffc94cecba38e37e4",
   "icon_url": "https://raw.githubusercontent.com/darkxex/SwanStationPS5/master/sce_sys/icon0.png"
 }
