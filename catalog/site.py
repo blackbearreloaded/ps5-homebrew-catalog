@@ -16,9 +16,9 @@ string.Template placeholders; every metadata value is HTML-escaped before it is
 substituted.
 
 Icons are fetched and re-served from the site, resized to WebP when Pillow is
-installed. With an icon cache directory, each icon URL is fetched only once
-across builds (icon URLs are pinned to a tag or commit); entries no longer used
-are pruned. A failed icon falls back to a placeholder instead of failing the
+installed. With an icon cache directory, an icon is fetched again only when its
+cached copy is older than a day (an icon URL may name a branch, where the file
+can change); entries no longer used are pruned. A failed icon falls back to a placeholder instead of failing the
 build.
 """
 
@@ -32,6 +32,7 @@ import os
 import re
 import shutil
 import subprocess
+import time
 from pathlib import Path
 from string import Template
 from urllib.parse import quote, unquote
@@ -341,17 +342,32 @@ def png_icons(data: bytes) -> dict[int, bytes]:
     return icons
 
 
+ICON_MAX_AGE = 24 * 60 * 60  # seconds a cached original is used before it is fetched again
+
+
 def _icon(url: str, cache: Path | None) -> tuple[bytes, str, bytes]:
-    """(site icon, its extension, original bytes) for url, using and filling the optional cache of originals."""
+    """(site icon, its extension, original bytes) for url, using and filling the optional cache of originals.
+
+    A cached original older than ICON_MAX_AGE is fetched again: the file behind a URL that names a
+    branch can change. When that fetch fails, the cached one is used.
+    """
     entry = cache / (hashlib.sha256(url.encode()).hexdigest() + ".img") if cache else None
+    kept = None
     if entry and entry.is_file():
         try:
             data = entry.read_bytes()
-            return (*process_icon(data), data)
+            kept = (*process_icon(data), data)
+            if time.time() - entry.stat().st_mtime < ICON_MAX_AGE:
+                return kept
         except (OSError, ValueError):
             entry.unlink(missing_ok=True)
-    data = artifacts.fetch_small(url, artifacts.MAX_ICON_BYTES)
-    result = process_icon(data)
+    try:
+        data = artifacts.fetch_small(url, artifacts.MAX_ICON_BYTES)
+        result = process_icon(data)
+    except (artifacts.DownloadError, OSError, ValueError):
+        if kept is None:
+            raise
+        return kept
     if entry:
         cache.mkdir(parents=True, exist_ok=True)
         entry.write_bytes(data)

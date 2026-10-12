@@ -1,4 +1,5 @@
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -368,6 +369,21 @@ class IconCacheTests(unittest.TestCase):
                 site.build_site(root / "out3", apps, Report(), icon_cache=cache)
                 self.assertEqual(len(fetches), 2)
                 self.assertEqual(len(list(cache.glob("*.img"))), 1)
+                # A copy older than a day is fetched again; when that fails, the copy is still used.
+                entry, = cache.glob("*.img")
+                old = entry.stat().st_mtime - site.ICON_MAX_AGE - 60
+                os.utime(entry, (old, old))
+                site.build_site(root / "out4", apps, Report(), icon_cache=cache)
+                self.assertEqual(len(fetches), 3)
+                os.utime(entry, (old, old))
+
+                def failing_fetch(url, limit):
+                    raise site.artifacts.DownloadError("offline")
+
+                report = Report()
+                with mock.patch.object(site.artifacts, "fetch_small", failing_fetch):
+                    site.build_site(root / "out5", apps, report, icon_cache=cache)
+                self.assertTrue(list((root / "out5").rglob("*.png")))
 
 
 if __name__ == "__main__":

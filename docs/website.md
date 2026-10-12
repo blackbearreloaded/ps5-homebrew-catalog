@@ -57,8 +57,9 @@ dist/
 - Every metadata value is HTML-escaped; descriptions render as plain text.
 - Icons are fetched from `icon_url`, resized to 512 px WebP (when Pillow is
   installed) and served from the site, so visitors never hit the original host.
-  The deploy job keeps them in a CI cache, so each icon URL is fetched only once
-  across deploys. A broken icon becomes a placeholder with a build warning.
+  The deploy job keeps them in a CI cache and fetches an icon again only when its
+  copy is older than a day, so a changed picture at the same address shows up
+  with the next deploy after that. A broken icon becomes a placeholder with a build warning.
 - Search waits for a pause in typing. A shelf shows at most 20 tiles; its
   section shows them all.
 - Without JavaScript the catalog page is the plain grid of every app, and every
