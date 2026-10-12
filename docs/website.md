@@ -257,7 +257,7 @@ The workflow repeats the deploy job of `ci.yml`; change both together.
 5. **Switch deployment on.** Under **Settings → Secrets and variables → Actions
    → Variables**, add the repository variable `CLOUDFLARE_PAGES_PROJECT` =
    `homebrew-page`. The deploy job is skipped while this variable is missing.
-6. **Deploy.** Go to **Actions → CI → Run workflow** on `main`, or push. Check
+6. **Deploy.** Go to **Actions → CI → Run workflow** on `main`. Check
    `https://homebrew-page.pages.dev/`. If the name is taken on `pages.dev`,
    Cloudflare adds a suffix; the project's page in the dashboard shows the address.
 7. **Connect the domain.** In the Pages project, go to **Custom domains → Set up
