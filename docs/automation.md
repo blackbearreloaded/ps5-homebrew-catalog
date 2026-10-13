@@ -7,6 +7,7 @@ library and run by four workflows.
 | --- | --- | --- |
 | [Submission check](../.github/workflows/pull-request.yml) | Pull requests (`pull_request_target`) | `python3 -m catalog pr`, and in a second job the [release scan](#release-scan), `python3 -m catalog scan-pr` |
 | [CI](../.github/workflows/ci.yml) | Pull requests; publishing is started by hand on `main` | Tests, `catalog check` and a website build; a manual run on `main` also does `catalog push`, then the [website deployment](website.md#deployment) |
+| [Comments](../.github/workflows/comments.yml) | Every half hour, and on every discussion comment | `python3 -m catalog comments --sync`: one discussion per listed app, likes and comments written to the `comments-data` branch; see [Comments and likes](#comments-and-likes) |
 | [Deploy fallback](../.github/workflows/deploy-fallback.yml) | Manual only, by the repository owner | The same deploy on the maintainer's own runner, for an Actions outage; see [Fallback deploy](website.md#fallback-deploy) |
 | [Scan the catalog](../.github/workflows/scan-catalog.yml) | Manual only | `catalog scan`: one report on every listed app, or on the title IDs given; see [Release scan](#release-scan) |
 | [Catalog health](../.github/workflows/health.yml) | Daily 06:17 UTC and manual | `catalog health --slice today` |
@@ -306,6 +307,48 @@ submission check, so the job acts as a small GitHub App instead.
 
 If the `main` ruleset restricts who may create branches, allow the app to push
 `catalog-update/all` branch.
+
+## Comments and likes
+
+GitHub holds the comments and likes; the catalog has no database. Every listed
+app has one Discussion in this repository, in the category **App comments**. Its
+replies are the app's comments, and the 👍 reactions on its first post are the
+app's likes. A hidden marker in the post (`<!-- titleid: PPSA01234 -->`) ties it
+to its record, so an app can change its name.
+
+The [Comments](../.github/workflows/comments.yml) workflow runs every half hour
+and whenever someone comments (a reaction starts no workflow, so likes are as
+fresh as the timer). Each run:
+
+1. creates the discussion of every listed app that has none, renames the one of
+   an app that changed its name, locks the discussion of an app that left the
+   catalog and moves it to the category **Withdrawn**, and brings it back when
+   the app is listed again. A discussion a maintainer locked by hand stays locked;
+2. reads, for every discussion, the number of 👍, the number of comments and
+   the latest 10 comments;
+3. turns each comment into one line of plain text: addresses and invisible
+   characters are dropped and it is cut at 500 characters. Comments GitHub hides
+   and comments from the logins in the optional `COMMENTS_SCOPE` secret are left
+   out;
+4. writes two kinds of file to the branch `comments-data`, as a single commit
+   that replaces the branch, and only when something changed.
+
+| File | Content |
+| --- | --- |
+| `v1/index.json` | `schema` (1) and `apps`: per title ID the `discussion` number, its `url`, `likes` and `comments` |
+| `v1/apps/<TITLEID>.json` | the same four values for one app, and `latest`: up to 10 comments, newest first, each with `author`, `date` and `text` |
+
+They are read from
+`https://raw.githubusercontent.com/<owner>/ps5-homebrew-catalog/comments-data/`.
+These files are not part of the signed store API: they are decoration, and
+whoever shows them must treat every string as untrusted text.
+
+The workflow does nothing until Discussions are switched on (**Settings →
+General → Features**) and the two categories exist; categories can only be made
+by hand, under **Discussions → Categories**. Give **App comments** the format
+"Announcement", so only maintainers and the workflow open discussions and
+everyone can reply. A run that can't read the discussions changes nothing.
+`python3 -m catalog comments` shows locally what a run would do.
 
 ## Discovery
 

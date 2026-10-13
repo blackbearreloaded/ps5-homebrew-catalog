@@ -631,6 +631,46 @@ def open_listing_pr(candidate, repository: str, github: GitHub, open_files: dict
     return f"#{pull.get('number')} opened"
 
 
+def cmd_comments(args) -> int:
+    """Keep one discussion per listed app, and write the likes and comments that clients read."""
+    from . import comments
+    report = Report()
+    records = load_catalog(APPS, report)
+    if report.failed:
+        return report.emit("Comments", "")
+    owner, _, name = (args.repository or os.environ.get("GITHUB_REPOSITORY", "")).partition("/")
+    github = GitHub()
+    try:
+        found = comments.setup(github, owner, name)
+        if found is None or comments.ACTIVE not in found[1]:
+            report.notice("comments", f"Discussions with a category \"{comments.ACTIVE}\" are not set up in "
+                                      f"{owner}/{name}; nothing to do")
+            return report.emit("Comments", "Nothing was changed.")
+        repository, categories = found
+        scope = comments.read_scope(os.environ.get("COMMENTS_SCOPE", ""))
+        threads = comments.read_threads(comments.list_nodes(github, owner, name), scope)
+        actions = comments.plan(records, threads)
+        for action in actions:
+            report.notice("comments", ("" if args.sync else "would ") + comments.describe(action))
+        if args.sync and actions:
+            comments.apply(actions, github, repository, categories)
+            threads = comments.read_threads(comments.list_nodes(github, owner, name), scope)
+    except GitHubError as error:
+        # Nothing is written: the files that are published stay as they are.
+        report.error("comments", str(error))
+        return report.emit("Comments", "")
+    files = comments.payload(records, threads)
+    if args.out:
+        out = Path(args.out)
+        shutil.rmtree(out, ignore_errors=True)
+        for path, content in files.items():
+            target = out / path
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(json.dumps(content, ensure_ascii=False, separators=(",", ":"), sort_keys=True) + "\n",
+                              encoding="utf-8", newline="\n")
+    return report.emit("Comments", f"{len(files) - 1} app(s) have a discussion; {len(actions)} change(s).")
+
+
 def cmd_discover(args) -> int:
     from .discover import MAX_NEW_PULLS, discover, publish, read_ignore, read_scope, render
     repository = os.environ.get("GITHUB_REPOSITORY", "")
@@ -787,6 +827,12 @@ def main(argv: list[str] | None = None) -> int:
     updates.add_argument("titleids", nargs="*", help="title IDs to check (default: all)")
     updates.add_argument("--open-prs", action="store_true", help="CI: open or refresh one pull request per update")
     updates.set_defaults(func=cmd_updates)
+
+    comments = commands.add_parser("comments", help="one discussion per listed app; likes and comments as JSON")
+    comments.add_argument("--repository", default="", help="owner/name (default: GITHUB_REPOSITORY)")
+    comments.add_argument("--sync", action="store_true", help="CI: create, rename, lock and unlock discussions")
+    comments.add_argument("--out", default="", help="directory to write v1/index.json and v1/apps/*.json to")
+    comments.set_defaults(func=cmd_comments)
 
     discover = commands.add_parser("discover", help="find native PS5 apps on GitHub that aren't listed yet")
     discover.add_argument("--max-repos", type=int, default=600, help="release lookups per run")
