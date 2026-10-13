@@ -5,9 +5,9 @@
   "description": "The Wind Waker (GameCube) for PlayStation 5: a homebrew port of SwitchWaker on RADV (Aurora, Dawn WebGPU, SDL3), 4K at 60 fps. Bring your own disc image.",
   "license": "GPL-3.0",
   "author": "Gary Riches",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "source_repo": "https://github.com/griches/PS5_SwitchWaker",
-  "artifact_url": "https://github.com/griches/PS5_SwitchWaker/releases/download/v1.0.1/WindWaker-PS5-v1.0.1.zip",
-  "sha256": "f5a52ea170f5ef1994dbda45eca0d98c481e4355dda50426d94fef4a39163f93",
-  "icon_url": "https://raw.githubusercontent.com/griches/PS5_SwitchWaker/v1.0.1/ps5/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/griches/PS5_SwitchWaker/releases/download/v1.0.2/WindWaker-PS5-v1.0.2.zip",
+  "sha256": "64c37649f0d5afdae67d443a8072f7626e691a3f6a169df6d909398cc51e476c",
+  "icon_url": "https://raw.githubusercontent.com/griches/PS5_SwitchWaker/v1.0.2/ps5/sce_sys/icon0.png"
 }
