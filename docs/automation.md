@@ -312,19 +312,19 @@ If the `main` ruleset restricts who may create branches, allow the app to push
 
 GitHub holds the comments and likes; the catalog has no database. Every listed
 app has one Discussion in this repository, in the category **App comments**. Its
-replies are the app's comments, and the 👍 reactions on its first post are the
-app's likes. A hidden marker in the post (`<!-- titleid: PPSA01234 -->`) ties it
+replies are the app's comments, and its upvotes (the arrow beside the title)
+are the app's likes. A hidden marker in the post (`<!-- titleid: PPSA01234 -->`) ties it
 to its record, so an app can change its name.
 
 The [Comments](../.github/workflows/comments.yml) workflow runs every half hour
-and whenever someone comments (a reaction starts no workflow, so likes are as
+and whenever someone comments (an upvote starts no workflow, so likes are as
 fresh as the timer). Each run:
 
 1. creates the discussion of every listed app that has none, renames the one of
    an app that changed its name, locks the discussion of an app that left the
    catalog and moves it to the category **Withdrawn**, and brings it back when
    the app is listed again. A discussion a maintainer locked by hand stays locked;
-2. reads, for every discussion, the number of 👍, the number of comments and
+2. reads, for every discussion, the number of upvotes, the number of comments and
    the latest 10 comments;
 3. turns each comment into one line of plain text: addresses and invisible
    characters are dropped and it is cut at 500 characters. Comments GitHub hides

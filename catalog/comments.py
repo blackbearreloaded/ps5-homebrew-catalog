@@ -1,7 +1,7 @@
 """Comments and likes: one GitHub Discussion per listed app, and the JSON that clients read.
 
 GitHub holds the state. A listed app's discussion carries its title ID in a hidden marker; the
-replies are the app's comments and the thumbs-up reactions on the first post are its likes. This
+replies are the app's comments and the discussion's upvotes are its likes. This
 module decides what to create, rename, lock or bring back, and turns the discussions into the two
 kinds of file the website and the store show: v1/index.json and v1/apps/<TITLEID>.json.
 
@@ -44,7 +44,7 @@ LIST = """query($owner: String!, $name: String!, $after: String) {
       nodes {
         id number title body url locked
         category { name }
-        reactions(content: THUMBS_UP) { totalCount }
+        upvoteCount
         comments(last: %d) {
           totalCount
           nodes { author { login } createdAt bodyText isMinimized }
@@ -104,7 +104,7 @@ def thread_body(record: Record) -> str:
     return "\n".join([
         f"Comments and likes for **{record.data['name']}**, listed at {SITE}/app/{record.titleid}/.",
         "",
-        "React to this post with 👍 to like the app, and reply below to comment.",
+        "Upvote this discussion (the arrow beside its title) to like the app, and reply below to comment.",
         "",
         f"The catalog only lists this app; its developer maintains it at {record.data['source_repo']}. "
         "Bug reports belong there.",
@@ -130,7 +130,7 @@ def read_threads(nodes: list[dict], out_of_scope: frozenset[str] | set[str] = fr
         threads[marker.group(1)] = Thread(
             id=node["id"], number=node["number"], url=node["url"], title=node["title"],
             titleid=marker.group(1), category=(node.get("category") or {}).get("name", ""),
-            locked=bool(node.get("locked")), likes=node["reactions"]["totalCount"],
+            locked=bool(node.get("locked")), likes=node.get("upvoteCount") or 0,
             comments=node["comments"]["totalCount"], latest=latest)
     return threads
 

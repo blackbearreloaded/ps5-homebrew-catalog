@@ -15,7 +15,7 @@ def node(number, titleid, title=None, category=comments.ACTIVE, locked=False, li
     return {
         "id": f"D_{number}", "number": number, "title": title or f"Example App ({titleid})",
         "body": f"Comments for the app.\n\n<!-- titleid: {titleid} -->", "url": f"https://github.com/o/r/discussions/{number}",
-        "locked": locked, "category": {"name": category}, "reactions": {"totalCount": likes},
+        "locked": locked, "category": {"name": category}, "upvoteCount": likes,
         "comments": {"totalCount": len(replies) if total is None else total, "nodes": list(replies)},
     }
 
