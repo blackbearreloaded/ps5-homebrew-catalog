@@ -7,7 +7,7 @@ library and run by four workflows.
 | --- | --- | --- |
 | [Submission check](../.github/workflows/pull-request.yml) | Pull requests (`pull_request_target`) | `python3 -m catalog pr`, and in a second job the [release scan](#release-scan), `python3 -m catalog scan-pr` |
 | [CI](../.github/workflows/ci.yml) | Pull requests; publishing is started by hand on `main` | Tests, `catalog check` and a website build; a manual run on `main` also does `catalog push`, then the [website deployment](website.md#deployment) |
-| [Comments](../.github/workflows/comments.yml) | Every half hour, and on every discussion comment | `python3 -m catalog comments --sync`: one discussion per listed app, likes and comments written to the `comments-data` branch; see [Comments and likes](#comments-and-likes) |
+| [Comments](../.github/workflows/comments.yml) | Every hour, and on every discussion comment | `python3 -m catalog comments --sync`: one discussion per listed app, likes and comments written to the `comments-data` branch; see [Comments and likes](#comments-and-likes) |
 | [Deploy fallback](../.github/workflows/deploy-fallback.yml) | Manual only, by the repository owner | The same deploy on the maintainer's own runner, for an Actions outage; see [Fallback deploy](website.md#fallback-deploy) |
 | [Scan the catalog](../.github/workflows/scan-catalog.yml) | Manual only | `catalog scan`: one report on every listed app, or on the title IDs given; see [Release scan](#release-scan) |
 | [Catalog health](../.github/workflows/health.yml) | Daily 06:17 UTC and manual | `catalog health --slice today` |
@@ -316,7 +316,7 @@ replies are the app's comments, and its upvotes (the arrow beside the title)
 are the app's likes. A hidden marker in the post (`<!-- titleid: PPSA01234 -->`) ties it
 to its record, so an app can change its name.
 
-The [Comments](../.github/workflows/comments.yml) workflow runs every half hour
+The [Comments](../.github/workflows/comments.yml) workflow runs every hour
 and whenever someone comments (an upvote starts no workflow, so likes are as
 fresh as the timer). Each run:
 
