@@ -330,6 +330,11 @@ html:not(.js) .sort { display: none; }
 /* The "Most liked" shelf: the tile's place in the order, and its likes where the developer's name is elsewhere. */
 .tile__rank { position: absolute; left: calc(16 * var(--u)); top: calc(10 * var(--u)); font: 600 calc(46 * var(--u))/1 var(--display); color: var(--accent); }
 .tile__author b { font-weight: 600; color: var(--accent); }
+/* Likes and comments of the app, beside the developer's name; zero is shown too. */
+.tile__stats { position: absolute; right: calc(20 * var(--u)); bottom: calc(10 * var(--u)); display: flex; align-items: center; gap: calc(14 * var(--u)); font: 600 calc(18 * var(--u))/1.25 var(--body); color: rgba(244, 239, 230, 0.82); white-space: nowrap; }
+.tile__stats b { font-weight: 600; color: var(--accent); }
+.tile__stats svg { width: 1em; height: 1em; margin-right: 0.3em; vertical-align: -0.14em; }
+.tile.has-stats .tile__author { right: calc(128 * var(--u)); }
 
 /* ---- The product page ------------------------------------------------------------------- */
 

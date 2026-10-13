@@ -226,6 +226,7 @@
         addShelf({ title: SECTIONS[key].title, apps: available.filter(function (app) { return app.kind === SECTIONS[key].kind; }).sort(byName) });
       });
       addShelf({ title: "Coming soon", apps: apps.filter(function (app) { return app.soon; }).sort(byName) });
+      paintStats();
       addLikedShelf();
     }
 
@@ -280,6 +281,45 @@
       shelvesBox.insertBefore(section, before || null);
     }
 
+    /* Likes and comments on a tile, bottom right, zero included; without `app` they are taken off. */
+    function dressTile(tile, app) {
+      var old = $(".tile__stats", tile);
+      if (old) tile.removeChild(old);
+      tile.classList.toggle("has-stats", !!app);
+      if (!app) return;
+      var stats = document.createElement("span");
+      stats.className = "tile__stats";
+      stats.setAttribute("role", "img");
+      stats.setAttribute("aria-label", app.likes + (app.likes === 1 ? " like, " : " likes, ") + app.comments + (app.comments === 1 ? " comment" : " comments"));
+      var likes = document.createElement("b");
+      likes.textContent = "▲ " + app.likes;
+      stats.appendChild(likes);
+      var comments = document.createElement("span");
+      var bubble = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      bubble.setAttribute("viewBox", "0 0 24 24");
+      var shape = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      shape.setAttribute("d", "M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z");
+      shape.setAttribute("fill", "none");
+      shape.setAttribute("stroke", "currentColor");
+      shape.setAttribute("stroke-width", "2");
+      shape.setAttribute("stroke-linejoin", "round");
+      bubble.appendChild(shape);
+      comments.appendChild(bubble);
+      comments.appendChild(document.createTextNode(app.comments));
+      stats.appendChild(comments);
+      tile.appendChild(stats);
+    }
+    /* Every tile of every app: the grid's own, and the shelves' copies (the ranked shelf says it in words). */
+    function paintStats() {
+      if (!likesKnown) return;
+      apps.forEach(function (app) {
+        dressTile(app.item.firstElementChild, app);
+        $$('[data-shelf-app="' + app.id + '"]', shelvesBox).forEach(function (tile) {
+          if (!tile.hasAttribute("data-ranked")) dressTile(tile, app);
+        });
+      });
+    }
+
     /* "Most liked": the apps people upvoted, in order, each with its place and what it has so far.
        It goes second, once the likes are known, and only when some app has one. */
     var likedShelfReady = false;
@@ -288,6 +328,8 @@
       likedShelfReady = true;
       var liked = apps.filter(function (app) { return !app.soon && app.likes > 0; }).sort(byLikes).slice(0, MOST_LIKED);
       addShelf({ title: "Most liked", apps: liked, dress: function (tile, app, position) {
+        tile.setAttribute("data-ranked", "");
+        dressTile(tile, null);
         var rank = document.createElement("span");
         rank.className = "tile__rank";
         rank.textContent = position + 1;
@@ -465,6 +507,7 @@
         app.comments = entry && entry.comments > 0 ? Math.floor(entry.comments) : 0;
       });
       likesKnown = true;
+      paintStats();
       addLikedShelf();
       if (state.sort === "liked" && !(state.section === "discover" && !state.query)) showGrid();
     });
