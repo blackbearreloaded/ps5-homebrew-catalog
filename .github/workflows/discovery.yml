@@ -59,9 +59,12 @@ jobs:
         env:
           SLUG: ${{ steps.token.outputs.app-slug }}
           GH_TOKEN: ${{ steps.token.outputs.token }}
+      # Listing pull requests can be paused without a change here: set the repository variable
+      # DISCOVERY_OPEN_PRS to "false". The discovery issue is rewritten either way.
       - if: steps.setup.outputs.enabled == 'true'
-        run: python3 -m catalog discover --open-prs --issue
+        run: python3 -m catalog discover --issue $OPEN_PRS
         env:
+          OPEN_PRS: ${{ vars.DISCOVERY_OPEN_PRS != 'false' && '--open-prs' || '' }}
           GITHUB_TOKEN: ${{ steps.token.outputs.token }}
           ISSUE_TOKEN: ${{ github.token }}
           DISCOVERY_SCOPE: ${{ secrets.DISCOVERY_SCOPE }}
