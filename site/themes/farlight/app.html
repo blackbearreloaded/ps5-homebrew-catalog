@@ -14,10 +14,21 @@
         <li>$license</li>
         <li class="chips__caps">$format</li>
       </ul>
+      <p class="react">
+        <a class="react__button" data-react="likes" href="$comments_search"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 5l7 8h-4.5v6h-5v-6H5z" fill="currentColor"/></svg>Like<b data-count="likes"></b></a>
+        <a class="react__button" data-react="comments" href="$comments_search"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-6l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Comment<b data-count="comments"></b></a>
+      </p>
       <div class="article">
         <p class="article__lead">$description</p>
 
         $notes
+
+        <h2 id="comments-title">Comments</h2>
+        <section class="comments" data-comments-for="$titleid" aria-labelledby="comments-title">
+          <p class="comments__none" data-comments-none>No comments yet. <a data-comments-link href="$comments_search">Write the first one on GitHub</a>.</p>
+          <ul class="comments__list" data-comments-list hidden></ul>
+          <p class="comments__more" data-comments-more hidden><a data-comments-link href="$comments_search">Comment on GitHub</a></p>
+        </section>
 
         $safety
 
@@ -34,12 +45,6 @@ $steps
 
         <h2 id="source-title">Source</h2>
         <p><a href="$source_repo">$source_short</a><span class="sep" aria-hidden="true">·</span><a href="$release_url">Release $tag</a></p>
-
-        <h2 id="comments-title">Comments</h2>
-        <section class="comments" data-comments-for="$titleid" aria-labelledby="comments-title">
-          <p class="comments__line"><span class="comments__likes" data-likes hidden></span><a data-comments-link href="$comments_search">Comment or like on GitHub</a></p>
-          <ul class="comments__list" data-comments-list hidden></ul>
-        </section>
 
         <h2 id="details-title">Details</h2>
         <dl class="facts">

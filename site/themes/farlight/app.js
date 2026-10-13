@@ -281,9 +281,9 @@
       apps.forEach(function (app) { likes[app.id] = app.likes; });
       $$("[data-likes-for]").forEach(function (badge) {
         var count = likes[badge.getAttribute("data-likes-for")] || 0;
-        badge.hidden = count < 1;
-        badge.textContent = count < 1 ? "" : likesLabel(count);
-        if (count > 0) badge.setAttribute("title", count === 1 ? "1 like" : count + " likes");
+        badge.hidden = !likesKnown;
+        badge.textContent = likesLabel(count);
+        badge.setAttribute("title", count === 1 ? "1 like" : count + " likes");
       });
     }
 
@@ -472,19 +472,23 @@
     });
     var comments = $("[data-comments-for]");
     if (comments) commentsFile("apps/" + comments.getAttribute("data-comments-for") + ".json", function (data) {
+      showReactions(data);
       showComments(comments, data);
+    });
+  }
+
+  /* The Like and Comment buttons: where they lead, and how many there are so far (zero included). */
+  function showReactions(data) {
+    var address = /^https:\/\/github\.com\/[^\s"<>]+$/.test(data.url || "") ? data.url : "";
+    $$("[data-react], [data-comments-link]").forEach(function (link) { if (address) link.setAttribute("href", address); });
+    ["likes", "comments"].forEach(function (what) {
+      var count = $('[data-count="' + what + '"]');
+      if (count) count.textContent = String(data[what] > 0 ? Math.floor(data[what]) : 0);
     });
   }
 
   /* Everything in the file is other people's text: it goes in as text, never as markup. */
   function showComments(box, data) {
-    var link = $("[data-comments-link]", box);
-    if (link && /^https:\/\/github\.com\/[^\s"<>]+$/.test(data.url || "")) link.setAttribute("href", data.url);
-    var likes = $("[data-likes]", box);
-    if (likes && data.likes > 0) {
-      likes.textContent = likesLabel(Math.floor(data.likes)) + (data.likes === 1 ? " like" : " likes");
-      likes.hidden = false;
-    }
     var list = $("[data-comments-list]", box);
     var latest = Array.isArray(data.latest) ? data.latest.slice(0, 10) : [];
     if (!list || !latest.length) return;
@@ -506,7 +510,14 @@
       list.appendChild(entry);
     });
     list.hidden = !list.children.length;
-    if (data.comments > latest.length && link) link.textContent = "Read all " + Math.floor(data.comments) + " comments on GitHub";
+    if (list.hidden) return;
+    var none = $("[data-comments-none]", box);
+    var more = $("[data-comments-more]", box);
+    if (none) none.hidden = true;
+    if (more) {
+      more.hidden = false;
+      if (data.comments > latest.length) $("a", more).textContent = "Read all " + Math.floor(data.comments) + " comments on GitHub";
+    }
   }
 
   document.addEventListener("DOMContentLoaded", function () {

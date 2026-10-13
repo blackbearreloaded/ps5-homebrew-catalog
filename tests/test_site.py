@@ -155,6 +155,9 @@ class SiteBuildTests(unittest.TestCase):
         self.assertIn('data-likes-for="PPSA01234" hidden', home)
         detail = (self.out / "app" / "PPSA01234" / "index.html").read_text(encoding="utf-8")
         self.assertIn('data-comments-for="PPSA01234"', detail)
+        # The Like and Comment buttons come right after the release facts, before the description.
+        self.assertLess(detail.index('data-react="likes"'), detail.index('class="article"'))
+        self.assertIn('data-react="comments"', detail)
         self.assertIn('href="https://github.com/blackbearreloaded/ps5-homebrew-catalog/discussions?discussions_q=PPSA01234"', detail)
         self.assertIn("connect-src 'self' https://raw.githubusercontent.com;", (self.out / "_headers").read_text(encoding="utf-8"))
         self.assertIn("/api/*/manifest.sig\n  Content-Type: application/octet-stream",

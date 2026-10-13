@@ -350,6 +350,13 @@ html:not(.js) .sort { display: none; }
 .chips li { display: grid; place-items: center; height: calc(42 * var(--u)); min-height: 30px; padding: 0 calc(18 * var(--u)); border: 1.5px solid rgba(244, 239, 230, 0.22); border-radius: 999px; background: rgba(244, 239, 230, 0.08); font: 600 calc(20 * var(--u))/1 var(--body); color: rgba(244, 239, 230, 0.88); }
 .chips li:empty { display: none; }
 .chips__caps { text-transform: uppercase; }
+/* Like and Comment: the way to the app's discussion, with what is there so far. */
+.react { display: flex; flex-wrap: wrap; gap: calc(16 * var(--u)); margin: calc(28 * var(--u)) 0 0; }
+.react__button { display: inline-flex; align-items: center; gap: calc(12 * var(--u)); height: calc(62 * var(--u)); min-height: 44px; padding: 0 calc(26 * var(--u)); border: 2px solid var(--accent); border-radius: 999px; background: rgba(255, 209, 102, 0.12); font: 600 calc(24 * var(--u))/1 var(--body); color: var(--ink); text-decoration: none; transition: background 0.15s; }
+.react__button:hover, .react__button:focus-visible { background: rgba(255, 209, 102, 0.26); }
+.react__button svg { color: var(--accent); flex: none; }
+.react__button b { display: grid; place-items: center; min-width: calc(40 * var(--u)); height: calc(36 * var(--u)); min-height: 24px; padding: 0 calc(12 * var(--u)); border-radius: 999px; background: var(--accent); font-weight: 700; color: #17132b; }
+.react__button b:empty { display: none; }
 
 .article { margin-top: calc(34 * var(--u)); font-size: calc(22 * var(--u)); line-height: 1.55; color: rgba(244, 239, 230, 0.78); }
 .article__lead { margin: 0; font-size: calc(26 * var(--u)); line-height: calc(38 * var(--u)); color: rgba(244, 239, 230, 0.9); }
@@ -360,9 +367,8 @@ html:not(.js) .sort { display: none; }
 .article code { padding: 0.12em 0.4em; border-radius: 6px; background: rgba(244, 239, 230, 0.1); color: var(--ink); overflow-wrap: anywhere; }
 .article__note { padding: calc(16 * var(--u)) calc(20 * var(--u)); border-left: 3px solid rgba(255, 209, 102, 0.7); border-radius: 0 calc(12 * var(--u)) calc(12 * var(--u)) 0; background: rgba(244, 239, 230, 0.06); font-size: calc(20 * var(--u)); color: rgba(244, 239, 230, 0.72); }
 /* Comments: what people wrote in the app's GitHub discussion, as plain text. */
-.comments__line { display: flex; flex-wrap: wrap; align-items: center; gap: calc(18 * var(--u)); }
-.comments__likes { display: grid; place-items: center; height: calc(42 * var(--u)); min-height: 30px; padding: 0 calc(18 * var(--u)); border: 1.5px solid rgba(244, 239, 230, 0.22); border-radius: 999px; background: rgba(244, 239, 230, 0.06); color: var(--ink); }
-.comments__likes[hidden] { display: none; }
+.comments__none, .comments__more { margin: 0; }
+.comments__none[hidden], .comments__more[hidden] { display: none; }
 .comments__list { margin: calc(8 * var(--u)) 0 0; padding: 0; list-style: none; }
 .comments__list li { margin: 0 0 calc(12 * var(--u)); padding: calc(18 * var(--u)) calc(22 * var(--u)); border-radius: calc(16 * var(--u)); background: rgba(244, 239, 230, 0.06); }
 .comments__by { display: block; margin: 0 0 calc(6 * var(--u)); font-size: 0.86em; color: rgba(244, 239, 230, 0.62); }
