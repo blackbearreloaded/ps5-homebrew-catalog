@@ -237,9 +237,32 @@ GitHub Actions rebuilds the store from `main` and deploys it to Cloudflare Pages
 when a maintainer starts the run; merges are published together, not one by one. The front
 page is a store front: featured apps over shelves, with sections for apps, games
 and tools, search and sorting; each app has its own page, coloured from its icon; it works on phones, has a TV mode for the PS5 browser and smart TVs
-(controller-driven, inspired by [tv4play](https://github.com/ps5-payload-dev/tv4play)), and shows when each app was last updated. Each app also has comments and likes, kept in a GitHub Discussion of this repository and shown on its page. See **[Website](docs/website.md)** for the output, themes, local
+(controller-driven, inspired by [tv4play](https://github.com/ps5-payload-dev/tv4play)), and shows when each app was last updated. See **[Website](docs/website.md)** for the output, themes, local
 preview and the Cloudflare deployment (no Cloudflare credentials in the
 repository).
+
+## Comments and likes
+
+Every listed app has a comment thread and a like count, shown on its page and
+on its tile at [homebrew.page](https://homebrew.page/).
+
+- **You need a GitHub account.** The **Like** and **Comment** buttons on an
+  app's page open that app's discussion in this repository's
+  [Discussions](https://github.com/blackbearreloaded/ps5-homebrew-catalog/discussions).
+  There you upvote the discussion (the arrow beside its title) to like the app,
+  and reply to comment. Reading needs no account: the site shows the counts and
+  the latest comments to everyone.
+- **A comment shows on the site within about five minutes.**
+- **A like can take a little over an hour.** Likes are collected once an hour
+  (and whenever someone comments), and the site reads them from a file GitHub
+  caches for a few minutes.
+- The site keeps none of this itself: GitHub holds the comments and likes, and
+  its rules and moderation apply. Comments appear on the site as plain text,
+  without links.
+- Comments are for talking about an app. A bug in an app goes to that app's own
+  repository, linked from its page.
+
+How it works is in [Automation](docs/automation.md#comments-and-likes).
 
 ## Store API
 
