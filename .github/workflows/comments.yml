@@ -1,0 +1,62 @@
+name: Comments
+
+# One GitHub Discussion per listed app holds its comments, and its upvotes are the app's
+# likes (catalog/comments.py). Every hour, and whenever someone comments,
+# this creates the discussions that are missing, locks those of withdrawn apps, and writes what
+# the website and the store show (likes, counts, the latest comments) to the branch
+# comments-data, which holds nothing else. main is never written to. An upvote starts no
+# workflow, so likes are as fresh as the timer. It does nothing until Discussions are on and have
+# a category "App comments".
+on:
+  schedule:
+    - cron: '11 * * * *'
+  discussion_comment:
+    types: [created, edited, deleted]
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: comments
+  cancel-in-progress: false
+
+jobs:
+  comments:
+    name: Sync discussions and publish counts
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write      # the comments-data branch only; main keeps its pull request rule
+      discussions: write   # create, rename, lock and unlock the apps' discussions
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      # What people write is read through the API and only ever handled as data: nothing of the
+      # event that started this run is used.
+      - run: python3 -m catalog comments --sync --out "$RUNNER_TEMP/comments"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          COMMENTS_SCOPE: ${{ secrets.COMMENTS_SCOPE }}
+      - name: Publish to the comments-data branch
+        # One commit that replaces the branch, and only when the files differ from what is there.
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          [ -f "$RUNNER_TEMP/comments/v1/index.json" ] || { echo "Nothing to publish."; exit 0; }
+          cd "$RUNNER_TEMP/comments"
+          remote="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          git init --quiet --initial-branch comments-data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          git commit --quiet --message "Comments and likes"
+          if git fetch --quiet --depth 1 "$remote" comments-data 2>/dev/null \
+              && [ "$(git rev-parse 'FETCH_HEAD^{tree}')" = "$(git rev-parse 'HEAD^{tree}')" ]; then
+            echo "Nothing changed."
+            exit 0
+          fi
+          git push --quiet --force "$remote" HEAD:comments-data

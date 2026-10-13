@@ -99,6 +99,9 @@ class SiteBuildTests(unittest.TestCase):
         self.assertIn('<a class="notice"', page)
         self.assertIn('href="https://github.com/blackbearreloaded/ProsperoStore"', page)
         tv = (self.out / "tv" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('data-comments="https://raw.githubusercontent.com/blackbearreloaded/ps5-homebrew-catalog/comments-data/v1/"', tv)
+        # The QR library is one of the site's own files and comes before the script that uses it.
+        self.assertRegex(tv, r'<script src="/assets/qrcode\.[0-9a-f]+\.js" defer></script>\n<script src="/assets/tv\.')
         self.assertIn('<p class="tv-credit">Maintained by BlackBearReloaded · Built from abc1234 · last updated '
                       '<time datetime="2026-10-03T04:05:00Z">3 Oct 2026, 04:05 UTC</time></p>', tv)
         self.assertEqual(site._commit_time_html(None), "")
@@ -149,6 +152,17 @@ class SiteBuildTests(unittest.TestCase):
             "PPSA01234": {"content_version": None, "version": "01.000.000"},
             "PPSA04321": {"content_version": None, "version": "2"}}})
         self.assertIn("/api/*\n  Access-Control-Allow-Origin: *", (self.out / "_headers").read_text(encoding="utf-8"))
+        # Likes and comments come from the comments branch: the page says where, and may fetch from there.
+        home = (self.out / "index.html").read_text(encoding="utf-8")
+        self.assertIn('data-comments="https://raw.githubusercontent.com/blackbearreloaded/ps5-homebrew-catalog/comments-data/v1/"', home)
+        self.assertNotIn("data-likes-for", home)   # likes are on the "Most liked" shelf, which the script makes
+        detail = (self.out / "app" / "PPSA01234" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('data-comments-for="PPSA01234"', detail)
+        # The Like and Comment buttons come right after the release facts, before the description.
+        self.assertLess(detail.index('data-react="likes"'), detail.index('class="article"'))
+        self.assertIn('data-react="comments"', detail)
+        self.assertIn('href="https://github.com/blackbearreloaded/ps5-homebrew-catalog/discussions?discussions_q=PPSA01234"', detail)
+        self.assertIn("connect-src 'self' https://raw.githubusercontent.com;", (self.out / "_headers").read_text(encoding="utf-8"))
         self.assertIn("/api/*/manifest.sig\n  Content-Type: application/octet-stream",
                       (self.out / "_headers").read_text(encoding="utf-8"))
         # The manifest names every JSON file of the API by its hash; the build itself never signs.

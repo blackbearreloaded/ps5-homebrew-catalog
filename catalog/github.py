@@ -51,6 +51,14 @@ class GitHub:
     def _get(self, path: str):
         return self._request("GET", path)
 
+    def graphql(self, query: str, variables: dict | None = None) -> dict:
+        """The `data` of a GraphQL answer; an answer with errors raises GitHubError."""
+        answer = self._request("POST", "/graphql", {"query": query, "variables": variables or {}})
+        if not answer or answer.get("errors") or "data" not in answer:
+            errors = "; ".join(e.get("message", "") for e in (answer or {}).get("errors", [])) or "no data"
+            raise GitHubError(f"GitHub GraphQL request failed: {errors}")
+        return answer["data"]
+
     def repo(self, owner: str, name: str) -> dict | None:
         return self._get(f"/repos/{quote(owner)}/{quote(name)}")
 

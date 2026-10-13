@@ -327,6 +327,14 @@ html:not(.js) .sort { display: none; }
 }
 .tile:hover::before, .tile:focus-visible::before { opacity: 0; }
 .tile:hover .tile__name, .tile:focus-visible .tile__name { color: var(--ink); }
+/* The "Most liked" shelf: the tile's place in the order, and its likes where the developer's name is elsewhere. */
+.tile__rank { position: absolute; left: calc(16 * var(--u)); top: calc(10 * var(--u)); font: 600 calc(46 * var(--u))/1 var(--display); color: var(--accent); }
+.tile__author b { font-weight: 600; color: var(--accent); }
+/* Likes and comments of the app, beside the developer's name; zero is shown too. */
+.tile__stats { position: absolute; right: calc(20 * var(--u)); bottom: calc(10 * var(--u)); display: flex; align-items: center; gap: calc(14 * var(--u)); font: 600 calc(18 * var(--u))/1.25 var(--body); color: rgba(244, 239, 230, 0.82); white-space: nowrap; }
+.tile__stats b { font-weight: 600; color: var(--accent); }
+.tile__stats svg { width: 1em; height: 1em; margin-right: 0.3em; vertical-align: -0.14em; }
+.tile.has-stats .tile__author { right: calc(128 * var(--u)); }
 
 /* ---- The product page ------------------------------------------------------------------- */
 
@@ -348,6 +356,13 @@ html:not(.js) .sort { display: none; }
 .chips li { display: grid; place-items: center; height: calc(42 * var(--u)); min-height: 30px; padding: 0 calc(18 * var(--u)); border: 1.5px solid rgba(244, 239, 230, 0.22); border-radius: 999px; background: rgba(244, 239, 230, 0.08); font: 600 calc(20 * var(--u))/1 var(--body); color: rgba(244, 239, 230, 0.88); }
 .chips li:empty { display: none; }
 .chips__caps { text-transform: uppercase; }
+/* Like and Comment: the way to the app's discussion, with what is there so far. */
+.react { display: flex; flex-wrap: wrap; gap: calc(16 * var(--u)); margin: calc(28 * var(--u)) 0 0; }
+.react__button { display: inline-flex; align-items: center; gap: calc(12 * var(--u)); height: calc(62 * var(--u)); min-height: 44px; padding: 0 calc(26 * var(--u)); border: 2px solid var(--accent); border-radius: 999px; background: rgba(255, 209, 102, 0.12); font: 600 calc(24 * var(--u))/1 var(--body); color: var(--ink); text-decoration: none; transition: background 0.15s; }
+.react__button:hover, .react__button:focus-visible { background: rgba(255, 209, 102, 0.26); }
+.react__button svg { color: var(--accent); flex: none; }
+.react__button b { display: grid; place-items: center; min-width: calc(40 * var(--u)); height: calc(36 * var(--u)); min-height: 24px; padding: 0 calc(12 * var(--u)); border-radius: 999px; background: var(--accent); font-weight: 700; color: #17132b; }
+.react__button b:empty { display: none; }
 
 .article { margin-top: calc(34 * var(--u)); font-size: calc(22 * var(--u)); line-height: 1.55; color: rgba(244, 239, 230, 0.78); }
 .article__lead { margin: 0; font-size: calc(26 * var(--u)); line-height: calc(38 * var(--u)); color: rgba(244, 239, 230, 0.9); }
@@ -357,6 +372,15 @@ html:not(.js) .sort { display: none; }
 .article a:hover { text-decoration-color: var(--accent); }
 .article code { padding: 0.12em 0.4em; border-radius: 6px; background: rgba(244, 239, 230, 0.1); color: var(--ink); overflow-wrap: anywhere; }
 .article__note { padding: calc(16 * var(--u)) calc(20 * var(--u)); border-left: 3px solid rgba(255, 209, 102, 0.7); border-radius: 0 calc(12 * var(--u)) calc(12 * var(--u)) 0; background: rgba(244, 239, 230, 0.06); font-size: calc(20 * var(--u)); color: rgba(244, 239, 230, 0.72); }
+/* Comments: what people wrote in the app's GitHub discussion, as plain text. */
+.comments__none, .comments__more { margin: 0; }
+.comments__none[hidden], .comments__more[hidden] { display: none; }
+.comments__list { margin: calc(8 * var(--u)) 0 0; padding: 0; list-style: none; }
+.comments__list li { margin: 0 0 calc(12 * var(--u)); padding: calc(18 * var(--u)) calc(22 * var(--u)); border-radius: calc(16 * var(--u)); background: rgba(244, 239, 230, 0.06); }
+.comments__by { display: block; margin: 0 0 calc(6 * var(--u)); font-size: 0.86em; color: rgba(244, 239, 230, 0.62); }
+.comments__by b { font-weight: 600; color: var(--ink); }
+.comments__text { display: block; overflow-wrap: anywhere; }
+
 /* Release notes: the developer's text, reduced to headings, paragraphs and lists. */
 .notes { padding: calc(22 * var(--u)) calc(26 * var(--u)) calc(10 * var(--u)); border-radius: calc(16 * var(--u)); background: rgba(244, 239, 230, 0.05); box-shadow: inset 0 0 0 1.5px rgba(244, 239, 230, 0.08); overflow-wrap: anywhere; }
 .notes h3 { margin: calc(18 * var(--u)) 0 calc(8 * var(--u)); font: 600 calc(22 * var(--u))/1.25 var(--body); color: var(--ink); }
