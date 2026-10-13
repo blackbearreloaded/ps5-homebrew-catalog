@@ -327,8 +327,9 @@ html:not(.js) .sort { display: none; }
 }
 .tile:hover::before, .tile:focus-visible::before { opacity: 0; }
 .tile:hover .tile__name, .tile:focus-visible .tile__name { color: var(--ink); }
-.tile__likes { position: absolute; right: calc(12 * var(--u)); top: calc(12 * var(--u)); display: grid; place-items: center; height: calc(32 * var(--u)); min-height: 20px; padding: 0 calc(12 * var(--u)); border-radius: 999px; background: rgba(9, 9, 22, 0.66); font: 600 calc(17 * var(--u))/1 var(--body); color: var(--ink); }
-.tile__likes[hidden] { display: none; }
+/* The "Most liked" shelf: the tile's place in the order, and its likes where the developer's name is elsewhere. */
+.tile__rank { position: absolute; left: calc(16 * var(--u)); top: calc(10 * var(--u)); font: 600 calc(46 * var(--u))/1 var(--display); color: var(--accent); }
+.tile__author b { font-weight: 600; color: var(--accent); }
 
 /* ---- The product page ------------------------------------------------------------------- */
 

@@ -66,6 +66,7 @@
   var FEATURED = 5;
   var NEW_AND_UPDATED = 12;
   var SHELF_TILES = 20; // a shelf is a taste; the section has them all
+  var MOST_LIKED = 10;
 
   var calm = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -101,7 +102,6 @@
       if (data && data.schema === 1) done(data);
     }).catch(function () { /* unreachable or malformed: the page stays as it was built */ });
   }
-  function likesLabel(likes) { return "▲ " + likes; }
 
   /* ---- The top bar: the sections and the line under the one in view ---- */
 
@@ -149,7 +149,8 @@
         description: item.getAttribute("data-description"),
         version: item.getAttribute("data-version"),
         size: item.getAttribute("data-size"),
-        likes: 0
+        likes: 0,
+        comments: 0
       };
     });
     var byName = function (a, b) { return a.sortName < b.sortName ? -1 : a.sortName > b.sortName ? 1 : 0; };
@@ -220,71 +221,85 @@
       var available = apps.filter(function (app) { return !app.soon; });
       var fresh = available.slice().sort(byUpdated).slice(0, NEW_AND_UPDATED);
       featured = fresh.slice(0, FEATURED);
-      var shelves = [{ title: "New and updated", apps: fresh }];
+      addShelf({ title: "New and updated", apps: fresh });
       ["apps", "games", "tools"].forEach(function (key) {
-        shelves.push({ title: SECTIONS[key].title, apps: available.filter(function (app) { return app.kind === SECTIONS[key].kind; }).sort(byName) });
+        addShelf({ title: SECTIONS[key].title, apps: available.filter(function (app) { return app.kind === SECTIONS[key].kind; }).sort(byName) });
       });
-      shelves.push({ title: "Coming soon", apps: apps.filter(function (app) { return app.soon; }).sort(byName) });
-      shelves.forEach(function (shelf) {
-        if (!shelf.apps.length) return;
-        var section = document.createElement("section");
-        section.className = "shelf";
-        var heading = document.createElement("h2");
-        heading.className = "shelf__title";
-        heading.textContent = shelf.title;
-        var number = document.createElement("span");
-        number.className = "count";
-        number.textContent = shelf.apps.length;
-        heading.appendChild(number);
-        var row = document.createElement("div");
-        row.className = "shelf__row";
-        var tiles = document.createElement("ul");
-        tiles.className = "shelf__tiles";
-        shelf.apps.slice(0, SHELF_TILES).forEach(function (app) {
-          var entry = document.createElement("li");
-          var tile = app.item.firstElementChild.cloneNode(true);
-          tile.style.animationDelay = "";
-          tile.setAttribute("data-shelf-app", app.id);
-          entry.appendChild(tile);
-          tiles.appendChild(entry);
-        });
-        row.appendChild(tiles);
-        ["prev", "next"].forEach(function (way) {
-          var button = document.createElement("button");
-          button.type = "button";
-          button.className = "shelf__go shelf__go--" + way;
-          button.setAttribute("aria-label", way === "prev" ? "Earlier in " + shelf.title : "More of " + shelf.title);
-          button.textContent = way === "prev" ? "‹" : "›";
-          button.addEventListener("click", function () {
-            tiles.scrollBy({ left: (way === "prev" ? -0.8 : 0.8) * tiles.clientWidth, behavior: calm ? "auto" : "smooth" });
-          });
-          row.appendChild(button);
-        });
-        var ends = function () {
-          var buttons = $$(".shelf__go", row);
-          buttons[0].disabled = tiles.scrollLeft < 8;
-          buttons[1].disabled = tiles.scrollLeft + tiles.clientWidth > tiles.scrollWidth - 8;
-        };
-        tiles.addEventListener("scroll", ends, { passive: true });
-        window.addEventListener("resize", ends);
-        setTimeout(ends, 0);
-        section.appendChild(heading);
-        section.appendChild(row);
-        shelvesBox.appendChild(section);
-      });
-      paintLikes();
+      addShelf({ title: "Coming soon", apps: apps.filter(function (app) { return app.soon; }).sort(byName) });
+      addLikedShelf();
     }
 
-    /* The like count on every tile of an app, the shelves' copies included. */
-    function paintLikes() {
-      var likes = {};
-      apps.forEach(function (app) { likes[app.id] = app.likes; });
-      $$("[data-likes-for]").forEach(function (badge) {
-        var count = likes[badge.getAttribute("data-likes-for")] || 0;
-        badge.hidden = !likesKnown;
-        badge.textContent = likesLabel(count);
-        badge.setAttribute("title", count === 1 ? "1 like" : count + " likes");
+    /* One shelf: its title, a row of tiles copied from the grid, and the two buttons that page it.
+       `dress` may add to each tile; `before` is the shelf it goes in front of (the end without it). */
+    function addShelf(shelf, before) {
+      if (!shelf.apps.length) return;
+      var section = document.createElement("section");
+      section.className = "shelf";
+      var heading = document.createElement("h2");
+      heading.className = "shelf__title";
+      heading.textContent = shelf.title;
+      var number = document.createElement("span");
+      number.className = "count";
+      number.textContent = shelf.apps.length;
+      heading.appendChild(number);
+      var row = document.createElement("div");
+      row.className = "shelf__row";
+      var tiles = document.createElement("ul");
+      tiles.className = "shelf__tiles";
+      shelf.apps.slice(0, SHELF_TILES).forEach(function (app, position) {
+        var entry = document.createElement("li");
+        var tile = app.item.firstElementChild.cloneNode(true);
+        tile.style.animationDelay = "";
+        tile.setAttribute("data-shelf-app", app.id);
+        if (shelf.dress) shelf.dress(tile, app, position);
+        entry.appendChild(tile);
+        tiles.appendChild(entry);
       });
+      row.appendChild(tiles);
+      ["prev", "next"].forEach(function (way) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "shelf__go shelf__go--" + way;
+        button.setAttribute("aria-label", way === "prev" ? "Earlier in " + shelf.title : "More of " + shelf.title);
+        button.textContent = way === "prev" ? "‹" : "›";
+        button.addEventListener("click", function () {
+          tiles.scrollBy({ left: (way === "prev" ? -0.8 : 0.8) * tiles.clientWidth, behavior: calm ? "auto" : "smooth" });
+        });
+        row.appendChild(button);
+      });
+      var ends = function () {
+        var buttons = $$(".shelf__go", row);
+        buttons[0].disabled = tiles.scrollLeft < 8;
+        buttons[1].disabled = tiles.scrollLeft + tiles.clientWidth > tiles.scrollWidth - 8;
+      };
+      tiles.addEventListener("scroll", ends, { passive: true });
+      window.addEventListener("resize", ends);
+      setTimeout(ends, 0);
+      section.appendChild(heading);
+      section.appendChild(row);
+      shelvesBox.insertBefore(section, before || null);
+    }
+
+    /* "Most liked": the apps people upvoted, in order, each with its place and what it has so far.
+       It goes second, once the likes are known, and only when some app has one. */
+    var likedShelfReady = false;
+    function addLikedShelf() {
+      if (likedShelfReady || !shelvesReady || !likesKnown) return;
+      likedShelfReady = true;
+      var liked = apps.filter(function (app) { return !app.soon && app.likes > 0; }).sort(byLikes).slice(0, MOST_LIKED);
+      addShelf({ title: "Most liked", apps: liked, dress: function (tile, app, position) {
+        var rank = document.createElement("span");
+        rank.className = "tile__rank";
+        rank.textContent = position + 1;
+        tile.appendChild(rank);
+        var line = $(".tile__author", tile);
+        if (!line) return;
+        line.textContent = "";
+        var likes = document.createElement("b");
+        likes.textContent = "▲ " + app.likes;
+        line.appendChild(likes);
+        line.appendChild(document.createTextNode((app.likes === 1 ? " like" : " likes") + "  ·  " + app.comments + (app.comments === 1 ? " comment" : " comments")));
+      } }, shelvesBox.children[1]);
     }
 
     /* The stage: the featured apps in turn, or the tile the pointer is on. */
@@ -447,9 +462,10 @@
       apps.forEach(function (app) {
         var entry = data.apps && data.apps[app.id];
         app.likes = entry && entry.likes > 0 ? Math.floor(entry.likes) : 0;
+        app.comments = entry && entry.comments > 0 ? Math.floor(entry.comments) : 0;
       });
       likesKnown = true;
-      paintLikes();
+      addLikedShelf();
       if (state.sort === "liked" && !(state.section === "discover" && !state.query)) showGrid();
     });
     window.addEventListener("popstate", function () { readAddress(); render(); });

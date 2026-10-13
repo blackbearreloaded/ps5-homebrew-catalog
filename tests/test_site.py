@@ -152,7 +152,7 @@ class SiteBuildTests(unittest.TestCase):
         # Likes and comments come from the comments branch: the page says where, and may fetch from there.
         home = (self.out / "index.html").read_text(encoding="utf-8")
         self.assertIn('data-comments="https://raw.githubusercontent.com/blackbearreloaded/ps5-homebrew-catalog/comments-data/v1/"', home)
-        self.assertIn('data-likes-for="PPSA01234" hidden', home)
+        self.assertNotIn("data-likes-for", home)   # likes are on the "Most liked" shelf, which the script makes
         detail = (self.out / "app" / "PPSA01234" / "index.html").read_text(encoding="utf-8")
         self.assertIn('data-comments-for="PPSA01234"', detail)
         # The Like and Comment buttons come right after the release facts, before the description.
