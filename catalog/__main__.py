@@ -653,7 +653,12 @@ def cmd_comments(args) -> int:
         for action in actions:
             report.notice("comments", ("" if args.sync else "would ") + comments.describe(action))
         if args.sync and actions:
-            comments.apply(actions, github, repository, categories)
+            try:
+                comments.apply(actions, github, repository, categories)
+            except GitHubError as error:
+                # GitHub stops a long row of new discussions part-way. What exists is published,
+                # and the next run goes on from there.
+                report.warning("comments", f"stopped part-way, the next run continues: {error}")
             threads = comments.read_threads(comments.list_nodes(github, owner, name), scope)
     except GitHubError as error:
         # Nothing is written: the files that are published stay as they are.

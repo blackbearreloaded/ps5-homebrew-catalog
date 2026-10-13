@@ -144,6 +144,15 @@ class CommandTests(unittest.TestCase):
 
         code, written = self.run_command(graphql)
         self.assertEqual((code, written["v1/index.json"]["apps"]), (0, {}))   # without --sync nothing is created
+
+        def refusing(query, variables):
+            if query == comments.CREATE:
+                raise cli.GitHubError("Something went wrong")
+            return graphql(query, variables)
+
+        # A refused creation is a warning, and what exists is still written.
+        code, written = self.run_command(refusing, "--sync")
+        self.assertEqual((code, written["v1/index.json"]["apps"]), (0, {}))
         code, written = self.run_command(graphql, "--sync")
         self.assertEqual(code, 0)
         self.assertEqual(written["v1/index.json"]["apps"]["PPSA01234"]["likes"], 2)

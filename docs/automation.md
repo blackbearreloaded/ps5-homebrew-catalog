@@ -347,7 +347,9 @@ The workflow does nothing until Discussions are switched on (**Settings →
 General → Features**) and the two categories exist; categories can only be made
 by hand, under **Discussions → Categories**. Give **App comments** the format
 "Announcement", so only maintainers and the workflow open discussions and
-everyone can reply. A run that can't read the discussions changes nothing.
+everyone can reply. A run that can't read the discussions changes nothing. GitHub
+may stop a long row of new discussions part-way (the first run makes one per
+app); the run then publishes what exists and the next one continues.
 `python3 -m catalog comments` shows locally what a run would do.
 
 ## Discovery

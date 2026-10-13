@@ -26,7 +26,7 @@ LATEST = 10                  # comments kept per app
 MAX_TEXT = 500               # characters kept per comment
 SITE = "https://homebrew.page"
 MARKER = re.compile(r"<!-- titleid: ([A-Z]{4}[0-9]{5}) -->")
-PAUSE = 1.5                  # seconds between two discussions created in a row (GitHub's content limit)
+PAUSE = 3.0                  # seconds between two discussions created in a row (GitHub's content limit)
 
 _URL = re.compile(r"(?:https?://|www\.)\S+", re.IGNORECASE)
 
