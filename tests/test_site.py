@@ -99,6 +99,9 @@ class SiteBuildTests(unittest.TestCase):
         self.assertIn('<a class="notice"', page)
         self.assertIn('href="https://github.com/blackbearreloaded/ProsperoStore"', page)
         tv = (self.out / "tv" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('data-comments="https://raw.githubusercontent.com/blackbearreloaded/ps5-homebrew-catalog/comments-data/v1/"', tv)
+        # The QR library is one of the site's own files and comes before the script that uses it.
+        self.assertRegex(tv, r'<script src="/assets/qrcode\.[0-9a-f]+\.js" defer></script>\n<script src="/assets/tv\.')
         self.assertIn('<p class="tv-credit">Maintained by BlackBearReloaded · Built from abc1234 · last updated '
                       '<time datetime="2026-10-03T04:05:00Z">3 Oct 2026, 04:05 UTC</time></p>', tv)
         self.assertEqual(site._commit_time_html(None), "")

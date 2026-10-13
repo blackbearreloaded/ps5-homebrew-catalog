@@ -9,6 +9,9 @@
  * comes from the JSON block the build embeds in the page; everything is drawn
  * with DOM APIs, so no metadata is ever parsed as HTML. The state (section,
  * sort, open app) lives in the URL hash, so a reload lands on the same screen.
+ * Likes and comments are read from the catalog's comments files (the address
+ * is on <body>); they are other people's text and are only ever shown as text.
+ * The QR codes are drawn here by qrcode-generator (qrcode.js, loaded before this).
  */
 (function () {
   "use strict";
@@ -19,7 +22,7 @@
     PAGE_UP: 33, PAGE_DOWN: 34,
     GREEN: 154, CHAN_UP: 157, CHAN_DOWN: 158, NEXT: 176, PREV: 177, TOP_MENU: 131
   };
-  var SORTS = [["name", "Name"], ["updated", "Recently updated"], ["author", "Developer"]];
+  var SORTS = [["name", "Name"], ["updated", "Recently updated"], ["author", "Developer"], ["liked", "Most liked"]];
   var HEADINGS = { all: "All", app: "Apps", game: "Games", tool: "Tools", soon: "Coming soon" };
   var REPEAT_MS = 110;
 
@@ -29,6 +32,7 @@
   var el = {};
   var railItems = [];
   var lastKeyAt = 0;
+  var likesKnown = false;
 
   function $(id) { return document.getElementById(id); }
 
@@ -37,6 +41,79 @@
     if (className) node.className = className;
     if (text !== undefined && text !== null) node.textContent = text;
     return node;
+  }
+
+  /* Likes and comments */
+
+  function commentsFile(path, done) {
+    var from = document.body.getAttribute("data-comments");
+    if (!from || !window.fetch) return;
+    window.fetch(from + path, { credentials: "omit" }).then(function (answer) {
+      return answer.ok ? answer.json() : null;
+    }).then(function (data) {
+      if (data && data.schema === 1) done(data);
+    }).catch(function () { /* unreachable or malformed: the page stays as it is */ });
+  }
+
+  function whole(value) { return value > 0 ? Math.floor(value) : 0; }
+  function commentsLabel(comments) { return comments + (comments === 1 ? " comment" : " comments"); }
+
+  /* The third line of a tile, zero included, once the counts are known. */
+  function paintTile(app) {
+    if (!app.stats || !likesKnown) return;
+    app.stats.textContent = "";
+    app.stats.appendChild(make("b", "", "▲ " + app.likes));
+    app.stats.appendChild(document.createTextNode("  ·  " + commentsLabel(app.comments)));
+  }
+
+  /* A QR code for an address, as one SVG drawn here. Null without the library, or when it can't encode it. */
+  function qr(address) {
+    if (typeof qrcode !== "function") return null;
+    try {
+      var code = qrcode(0, "M");
+      code.addData(address);
+      code.make();
+      var size = code.getModuleCount();
+      var quiet = 4; // the light margin a reader needs around the code
+      var dark = "";
+      for (var row = 0; row < size; row++) {
+        for (var column = 0; column < size; column++) {
+          if (code.isDark(row, column)) dark += "M" + (column + quiet) + " " + (row + quiet) + "h1v1h-1z";
+        }
+      }
+      var NS = "http://www.w3.org/2000/svg";
+      var svg = document.createElementNS(NS, "svg");
+      svg.setAttribute("class", "tv-qr");
+      svg.setAttribute("viewBox", "0 0 " + (size + 2 * quiet) + " " + (size + 2 * quiet));
+      svg.setAttribute("shape-rendering", "crispEdges");
+      svg.setAttribute("role", "img");
+      svg.setAttribute("aria-label", "QR code for " + address);
+      var paper = document.createElementNS(NS, "rect");
+      paper.setAttribute("width", "100%");
+      paper.setAttribute("height", "100%");
+      paper.setAttribute("fill", "#fff");
+      svg.appendChild(paper);
+      var modules = document.createElementNS(NS, "path");
+      modules.setAttribute("d", dark);
+      modules.setAttribute("fill", "#000");
+      svg.appendChild(modules);
+      return svg;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function discussionAddress(value) {
+    return /^https:\/\/github\.com\/[^\s"<>]+$/.test(value || "") ? value : "";
+  }
+
+  /* A QR code beside what it is for. */
+  function scanRow(address, beside) {
+    var row = make("div", "tv-scan");
+    var code = address ? qr(address) : null;
+    if (code) row.appendChild(code);
+    row.appendChild(beside);
+    return row;
   }
 
   /* State in the URL hash */
@@ -62,6 +139,7 @@
   function compare(a, b) {
     if (state.sort === "updated") return (b.updated_iso || "").localeCompare(a.updated_iso || "") || a.sort_name.localeCompare(b.sort_name);
     if (state.sort === "author") return a.author.toLowerCase().localeCompare(b.author.toLowerCase()) || a.sort_name.localeCompare(b.sort_name);
+    if (state.sort === "liked") return (b.likes || 0) - (a.likes || 0) || a.sort_name.localeCompare(b.sort_name);
     return a.sort_name.localeCompare(b.sort_name) || a.titleid.localeCompare(b.titleid);
   }
 
@@ -95,6 +173,10 @@
     item.appendChild(art);
     item.appendChild(make("p", "tv-tile__name", app.name));
     item.appendChild(make("p", "tv-tile__meta", app.soon ? app.author : app.author + " · " + app.version_label));
+    // The line is there from the start, so the tile keeps its height when the counts arrive.
+    app.stats = make("p", "tv-tile__stats", "\u00a0");
+    item.appendChild(app.stats);
+    paintTile(app);
     app.node = item;
     return item;
   }
@@ -212,6 +294,8 @@
     attr(attrs, "Updated", app.updated);
     attr(attrs, "Source", app.source);
     info.appendChild(attrs);
+    el.detailAttrs = attrs;
+    showCounts(app);
 
     if (app.soon) {
       info.appendChild(make("p", "tv-note", "This title ID is reserved by its developer. The app isn't released yet; it will appear here with a download once it is."));
@@ -221,13 +305,25 @@
       app.steps.forEach(function (step) { steps.appendChild(make("li", "", step)); });
       info.appendChild(steps);
       var get = make("div", "tv-get");
-      get.appendChild(make("span", "", "Download it on your computer or phone:"));
+      get.appendChild(make("span", "", "Scan, or open on your computer or phone, to download it:"));
       get.appendChild(make("strong", "", app.short_url));
-      info.appendChild(get);
+      info.appendChild(scanRow("https://" + app.short_url, get));
       var hash = make("p", "tv-hash", "SHA-256 of " + app.artifact_name);
       hash.appendChild(make("code", "", app.sha256.match(/.{1,8}/g).join(" ")));
       info.appendChild(hash);
       info.appendChild(make("p", "tv-note", "Read the release notes first: some apps need a payload or extra setup. " + app.author + " is solely responsible for this app and its content."));
+      // Filled when the app's comments arrive, if this app is still the one on screen.
+      var comments = make("div", "tv-detail__comments");
+      info.appendChild(comments);
+      if (app.latest) showComments(comments, app);
+      else commentsFile("apps/" + app.titleid + ".json", function (data) {
+        app.latest = Array.isArray(data.latest) ? data.latest.slice(0, 10) : [];
+        app.likes = whole(data.likes);
+        app.comments = whole(data.comments);
+        app.counted = true;
+        app.discussion = discussionAddress(data.url);
+        if (comments.isConnected) { showCounts(app); showComments(comments, app); }
+      });
     }
     d.appendChild(info);
 
@@ -246,6 +342,37 @@
     el.crossHint.textContent = "Back";
     el.moveHint.textContent = "Previous / next · scroll";
     writeHash();
+  }
+
+  /* Likes and comments join the facts of the app on screen, zero included, when they are known. */
+  function showCounts(app) {
+    var attrs = el.detailAttrs;
+    if (!attrs || !(likesKnown || app.counted)) return;
+    Array.prototype.forEach.call(attrs.querySelectorAll("[data-count]"), function (row) { attrs.removeChild(row); });
+    [["Likes", "▲ " + app.likes], ["Comments", String(app.comments)]].forEach(function (fact) {
+      attr(attrs, fact[0], fact[1]);
+      attrs.lastChild.setAttribute("data-count", "");
+    });
+  }
+
+  function showComments(box, app) {
+    box.textContent = "";
+    box.appendChild(make("h3", "tv-section-title", "Comments (" + app.comments + ")"));
+    var list = make("ul", "tv-comments");
+    app.latest.forEach(function (comment) {
+      if (!comment || typeof comment.text !== "string" || !comment.text) return;
+      var entry = make("li");
+      var when = new Date(comment.date);
+      var by = String(comment.author || "someone").slice(0, 40);
+      if (!isNaN(when)) by += " · " + when.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+      entry.appendChild(make("b", "", by));
+      entry.appendChild(document.createTextNode(comment.text.slice(0, 500)));
+      list.appendChild(entry);
+    });
+    if (list.children.length) box.appendChild(list);
+    var first = list.children.length ? "To like this app or comment" : "No comments yet. To write the first, or to like this app";
+    box.appendChild(scanRow(app.discussion, make("p", "tv-note", first + (app.discussion ? ", scan this code" : ", open " + app.short_url) +
+      " on your phone: it opens the app's discussion on GitHub, where a GitHub account is needed.")));
   }
 
   function closeDetail() {
@@ -410,7 +537,7 @@
     } catch (error) { /* storage blocked */ }
     var data = JSON.parse($("tv-data").textContent);
     apps = data.apps;
-    apps.forEach(function (app) { app.sort_name = app.name.toLowerCase(); });
+    apps.forEach(function (app) { app.sort_name = app.name.toLowerCase(); app.likes = 0; app.comments = 0; });
     el = {
       grid: $("tv-grid"), main: $("tv-main"), empty: $("tv-empty"), heading: $("tv-heading"),
       status: $("tv-status"), sort: $("tv-sort"), detail: $("tv-detail"), crossHint: $("tv-hint-cross"),
@@ -425,6 +552,23 @@
       var index = view.map(function (a) { return a.titleid; }).indexOf(openId);
       if (index >= 0) { setFocus("grid", index); openDetail(index); }
     }
+    commentsFile("index.json", function (data) {
+      likesKnown = true;
+      apps.forEach(function (app) {
+        var entry = (data.apps && data.apps[app.titleid]) || {};
+        app.likes = whole(entry.likes);
+        app.comments = whole(entry.comments);
+        app.discussion = discussionAddress(entry.url);
+        paintTile(app);
+      });
+      if (state.detail >= 0) { showCounts(view[state.detail]); return; }
+      if (state.sort !== "liked") return;
+      var current = view[state.index] && view[state.index].titleid;
+      renderGrid();
+      var again = view.map(function (a) { return a.titleid; }).indexOf(current);
+      state.index = again < 0 ? 0 : again;
+      setFocus(state.zone, state.zone === "rail" ? state.rail : state.index);
+    });
     document.addEventListener("keydown", onKey);
     window.addEventListener("gamepadconnected", startPads);
     startPads();

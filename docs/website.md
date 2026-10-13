@@ -73,7 +73,13 @@ dist/
   fetch from: an app's page has Like and Comment buttons with their counts and
   the latest comments, every tile shows the app's likes and comments (zero
   included), Discover gets a ranked "Most liked" shelf once an app
-  has a like, and the sections can be ordered by "Most liked". Everything is
+  has a like, and the sections can be ordered by "Most liked". TV mode shows
+  the counts on every tile and in an app's details with its latest comments,
+  can order by "Most liked", and shows two QR codes there: one for the app's
+  page, to download it, and one for its discussion, to like or comment. They
+  are drawn in the page by a bundled library
+  ([qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator), MIT);
+  no address is sent anywhere to make them. Everything is
   shown as plain text. Writing happens on GitHub, through the link on the page.
   When the files can't be read the page keeps only that link.
 - The page of an app withdrawn in the last 30 days redirects to the front page,

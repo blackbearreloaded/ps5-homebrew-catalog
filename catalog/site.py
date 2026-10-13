@@ -859,6 +859,8 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
             shared, canonical=e(site_url + base + "tv/"), rail=rail_html,
             tv_css=assets.add(f"{theme}-tv", "css", (theme_obj.directory / "tv.css").read_bytes()),
             tv_js=assets.add("tv", "js", (shared_dir / "tv.js").read_bytes()),
+            # qrcode-generator (MIT), unchanged: tv.js draws the QR codes of the detail view with it.
+            tv_qr=assets.add("qrcode", "js", (shared_dir / "qrcode.js").read_bytes()),
             # Inside <script type="application/json">, "<" is escaped so no value can close the element.
             data=data.replace("<", "\\u003c"),
         ), encoding="utf-8")
