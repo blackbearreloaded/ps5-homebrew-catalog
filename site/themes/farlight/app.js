@@ -90,6 +90,19 @@
     });
   }
 
+  /* ---- Likes and comments: read from the catalog's comments files, shown as plain text ---- */
+
+  function commentsFile(path, done) {
+    var from = document.body.getAttribute("data-comments");
+    if (!from || !window.fetch) return;
+    window.fetch(from + path, { credentials: "omit" }).then(function (answer) {
+      return answer.ok ? answer.json() : null;
+    }).then(function (data) {
+      if (data && data.schema === 1) done(data);
+    }).catch(function () { /* unreachable or malformed: the page stays as it was built */ });
+  }
+  function likesLabel(likes) { return "▲ " + likes; }
+
   /* ---- The top bar: the sections and the line under the one in view ---- */
 
   function moveLine(section) {
@@ -135,11 +148,16 @@
         accent: item.getAttribute("data-accent"),
         description: item.getAttribute("data-description"),
         version: item.getAttribute("data-version"),
-        size: item.getAttribute("data-size")
+        size: item.getAttribute("data-size"),
+        likes: 0
       };
     });
     var byName = function (a, b) { return a.sortName < b.sortName ? -1 : a.sortName > b.sortName ? 1 : 0; };
     var byUpdated = function (a, b) { return a.updated < b.updated ? 1 : a.updated > b.updated ? -1 : byName(a, b); };
+    var byLikes = function (a, b) { return b.likes - a.likes || byName(a, b); };
+    var ORDERS = { name: { label: "Name", by: byName }, updated: { label: "Recently updated", by: byUpdated },
+                   liked: { label: "Most liked", by: byLikes } };
+    var likesKnown = false; // "Most liked" is offered once the likes have arrived
 
     var search = $("[data-search]");
     var state = { section: "discover", query: "", sort: "name" };
@@ -149,7 +167,7 @@
       var section = params.get("section") || "";
       state.section = SECTIONS[section] ? section : "discover";
       state.query = (params.get("q") || "").trim();
-      state.sort = params.get("sort") === "updated" ? "updated" : "name";
+      state.sort = ORDERS[params.get("sort")] ? params.get("sort") : "name";
       if (search && search.value !== state.query) search.value = state.query;
     }
     function writeAddress(push) {
@@ -176,7 +194,7 @@
         if (section.kind) return app.kind === section.kind && !app.soon;
         return true;
       });
-      shown.sort(state.sort === "updated" ? byUpdated : byName);
+      shown.sort(ORDERS[state.sort].by);
       apps.forEach(function (app) { app.item.hidden = true; });
       shown.forEach(function (app, index) {
         app.item.hidden = false;
@@ -188,7 +206,7 @@
       title.textContent = terms.length ? "Results for “" + state.query + "”" : section.title === "Discover" ? "PS5 homebrew" : section.title;
       count.textContent = shown.length;
       empty.hidden = shown.length !== 0;
-      sortName.textContent = state.sort === "updated" ? "Recently updated" : "Name";
+      sortName.textContent = ORDERS[state.sort].label;
       document.title = (terms.length ? "Search" : section.title) + " — PS5 Homebrew Store";
     }
 
@@ -253,6 +271,19 @@
         section.appendChild(heading);
         section.appendChild(row);
         shelvesBox.appendChild(section);
+      });
+      paintLikes();
+    }
+
+    /* The like count on every tile of an app, the shelves' copies included. */
+    function paintLikes() {
+      var likes = {};
+      apps.forEach(function (app) { likes[app.id] = app.likes; });
+      $$("[data-likes-for]").forEach(function (badge) {
+        var count = likes[badge.getAttribute("data-likes-for")] || 0;
+        badge.hidden = count < 1;
+        badge.textContent = count < 1 ? "" : likesLabel(count);
+        if (count > 0) badge.setAttribute("title", count === 1 ? "1 like" : count + " likes");
       });
     }
 
@@ -407,9 +438,19 @@
     }
     var sort = $("[data-sort]");
     if (sort) sort.addEventListener("click", function () {
-      state.sort = state.sort === "name" ? "updated" : "name";
+      var order = likesKnown ? ["name", "updated", "liked"] : ["name", "updated"];
+      state.sort = order[(order.indexOf(state.sort) + 1) % order.length];
       writeAddress(false);
       showGrid();
+    });
+    commentsFile("index.json", function (data) {
+      apps.forEach(function (app) {
+        var entry = data.apps && data.apps[app.id];
+        app.likes = entry && entry.likes > 0 ? Math.floor(entry.likes) : 0;
+      });
+      likesKnown = true;
+      paintLikes();
+      if (state.sort === "liked" && !(state.section === "discover" && !state.query)) showGrid();
     });
     window.addEventListener("popstate", function () { readAddress(); render(); });
     window.addEventListener("resize", function () { moveLine(state.query ? "" : state.section); });
@@ -429,6 +470,43 @@
     if (search) search.addEventListener("keydown", function (event) {
       if (event.key === "Enter" && search.value.trim()) window.location.href = base + "?q=" + encodeURIComponent(search.value.trim());
     });
+    var comments = $("[data-comments-for]");
+    if (comments) commentsFile("apps/" + comments.getAttribute("data-comments-for") + ".json", function (data) {
+      showComments(comments, data);
+    });
+  }
+
+  /* Everything in the file is other people's text: it goes in as text, never as markup. */
+  function showComments(box, data) {
+    var link = $("[data-comments-link]", box);
+    if (link && /^https:\/\/github\.com\/[^\s"<>]+$/.test(data.url || "")) link.setAttribute("href", data.url);
+    var likes = $("[data-likes]", box);
+    if (likes && data.likes > 0) {
+      likes.textContent = likesLabel(Math.floor(data.likes)) + (data.likes === 1 ? " like" : " likes");
+      likes.hidden = false;
+    }
+    var list = $("[data-comments-list]", box);
+    var latest = Array.isArray(data.latest) ? data.latest.slice(0, 10) : [];
+    if (!list || !latest.length) return;
+    latest.forEach(function (comment) {
+      if (!comment || typeof comment.text !== "string" || !comment.text) return;
+      var entry = document.createElement("li");
+      var by = document.createElement("span");
+      by.className = "comments__by";
+      var author = document.createElement("b");
+      author.textContent = String(comment.author || "someone").slice(0, 40);
+      by.appendChild(author);
+      var when = new Date(comment.date);
+      if (!isNaN(when)) by.appendChild(document.createTextNode("  ·  " + when.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" })));
+      var text = document.createElement("span");
+      text.className = "comments__text";
+      text.textContent = comment.text.slice(0, 500);
+      entry.appendChild(by);
+      entry.appendChild(text);
+      list.appendChild(entry);
+    });
+    list.hidden = !list.children.length;
+    if (data.comments > latest.length && link) link.textContent = "Read all " + Math.floor(data.comments) + " comments on GitHub";
   }
 
   document.addEventListener("DOMContentLoaded", function () {

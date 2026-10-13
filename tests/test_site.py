@@ -149,6 +149,14 @@ class SiteBuildTests(unittest.TestCase):
             "PPSA01234": {"content_version": None, "version": "01.000.000"},
             "PPSA04321": {"content_version": None, "version": "2"}}})
         self.assertIn("/api/*\n  Access-Control-Allow-Origin: *", (self.out / "_headers").read_text(encoding="utf-8"))
+        # Likes and comments come from the comments branch: the page says where, and may fetch from there.
+        home = (self.out / "index.html").read_text(encoding="utf-8")
+        self.assertIn('data-comments="https://raw.githubusercontent.com/blackbearreloaded/ps5-homebrew-catalog/comments-data/v1/"', home)
+        self.assertIn('data-likes-for="PPSA01234" hidden', home)
+        detail = (self.out / "app" / "PPSA01234" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('data-comments-for="PPSA01234"', detail)
+        self.assertIn('href="https://github.com/blackbearreloaded/ps5-homebrew-catalog/discussions?discussions_q=PPSA01234"', detail)
+        self.assertIn("connect-src 'self' https://raw.githubusercontent.com;", (self.out / "_headers").read_text(encoding="utf-8"))
         self.assertIn("/api/*/manifest.sig\n  Content-Type: application/octet-stream",
                       (self.out / "_headers").read_text(encoding="utf-8"))
         # The manifest names every JSON file of the API by its hash; the build itself never signs.

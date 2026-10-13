@@ -66,6 +66,14 @@ dist/
   app page is complete; the script adds Discover, the sections, search, the
   order and the copy buttons. The pages carry no inline styles or scripts, as
   the content security policy requires.
+- **Comments and likes** are the app's GitHub Discussion
+  ([how they get there](automation.md#comments-and-likes)). The page's script
+  reads them from the `comments-data` branch through raw.githubusercontent.com,
+  the one address besides the site itself the content security policy lets it
+  fetch from: an app's page shows its likes and latest comments, tiles show the
+  like count, and the sections can be ordered by "Most liked". Everything is
+  shown as plain text. Writing happens on GitHub, through the link on the page.
+  When the files can't be read the page keeps only that link.
 - The page of an app withdrawn in the last 30 days redirects to the front page,
   and its API file is replaced by one that says `"status": "withdrawn"`.
   Cloudflare Pages keeps serving a file for a while after a deployment drops

@@ -35,6 +35,12 @@ $steps
         <h2 id="source-title">Source</h2>
         <p><a href="$source_repo">$source_short</a><span class="sep" aria-hidden="true">·</span><a href="$release_url">Release $tag</a></p>
 
+        <h2 id="comments-title">Comments</h2>
+        <section class="comments" data-comments-for="$titleid" aria-labelledby="comments-title">
+          <p class="comments__line"><span class="comments__likes" data-likes hidden></span><a data-comments-link href="$comments_search">Comment or like on GitHub</a></p>
+          <ul class="comments__list" data-comments-list hidden></ul>
+        </section>
+
         <h2 id="details-title">Details</h2>
         <dl class="facts">
           <div><dt>Title ID</dt><dd>$titleid</dd></div>

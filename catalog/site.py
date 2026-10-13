@@ -44,6 +44,8 @@ from .report import Report
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
 REPO_URL = "https://github.com/blackbearreloaded/ps5-homebrew-catalog"
+# Likes and comments, written by the Comments workflow to a branch of their own (catalog/comments.py).
+COMMENTS_URL = REPO_URL.replace("https://github.com/", "https://raw.githubusercontent.com/") + "/comments-data/v1/"
 DEFAULT_SITE_URL = "https://homebrew.page"
 DEFAULT_BASE = "/"
 # Base paths the site used to be served under; their URLs redirect to the current base.
@@ -733,6 +735,8 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
                 version_label=e(version_label(d["version"])),
                 release_url=e(f"{d['source_repo']}/releases/tag/{d['artifact_url'].split('/releases/download/')[1].split('/')[0]}"),
                 tag=e(record.tag),
+                # Finds the app's discussion by its title ID; the page's script swaps in the exact address.
+                comments_search=e(f"{REPO_URL}/discussions?discussions_q={record.titleid}"),
                 safety=safety_section(record),
                 notes=notes_section(
                     record, f"{d['source_repo']}/releases/tag/{d['artifact_url'].split('/releases/download/')[1].split('/')[0]}"),
@@ -767,6 +771,7 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
     shared = {
         "base": base,
         "repo": REPO_URL,
+        "comments_url": COMMENTS_URL,
         "submit_url": f"{REPO_URL}/blob/main/docs/submitting.md",
         "css": css,
         "js": js,
@@ -894,7 +899,8 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
 
     # Cloudflare Pages configuration.
     csp = ("default-src 'self'; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com; "
-           "font-src https://fonts.gstatic.com; script-src 'self'; connect-src 'self'; "
+           "font-src https://fonts.gstatic.com; script-src 'self'; "
+           "connect-src 'self' https://raw.githubusercontent.com; "
            "base-uri 'self'; form-action 'none'; frame-ancestors 'none'")
     (out / "_headers").write_text(f"""/*
   X-Content-Type-Options: nosniff

@@ -327,6 +327,8 @@ html:not(.js) .sort { display: none; }
 }
 .tile:hover::before, .tile:focus-visible::before { opacity: 0; }
 .tile:hover .tile__name, .tile:focus-visible .tile__name { color: var(--ink); }
+.tile__likes { position: absolute; right: calc(12 * var(--u)); top: calc(12 * var(--u)); display: grid; place-items: center; height: calc(32 * var(--u)); min-height: 20px; padding: 0 calc(12 * var(--u)); border-radius: 999px; background: rgba(9, 9, 22, 0.66); font: 600 calc(17 * var(--u))/1 var(--body); color: var(--ink); }
+.tile__likes[hidden] { display: none; }
 
 /* ---- The product page ------------------------------------------------------------------- */
 
@@ -357,6 +359,16 @@ html:not(.js) .sort { display: none; }
 .article a:hover { text-decoration-color: var(--accent); }
 .article code { padding: 0.12em 0.4em; border-radius: 6px; background: rgba(244, 239, 230, 0.1); color: var(--ink); overflow-wrap: anywhere; }
 .article__note { padding: calc(16 * var(--u)) calc(20 * var(--u)); border-left: 3px solid rgba(255, 209, 102, 0.7); border-radius: 0 calc(12 * var(--u)) calc(12 * var(--u)) 0; background: rgba(244, 239, 230, 0.06); font-size: calc(20 * var(--u)); color: rgba(244, 239, 230, 0.72); }
+/* Comments: what people wrote in the app's GitHub discussion, as plain text. */
+.comments__line { display: flex; flex-wrap: wrap; align-items: center; gap: calc(18 * var(--u)); }
+.comments__likes { display: grid; place-items: center; height: calc(42 * var(--u)); min-height: 30px; padding: 0 calc(18 * var(--u)); border: 1.5px solid rgba(244, 239, 230, 0.22); border-radius: 999px; background: rgba(244, 239, 230, 0.06); color: var(--ink); }
+.comments__likes[hidden] { display: none; }
+.comments__list { margin: calc(8 * var(--u)) 0 0; padding: 0; list-style: none; }
+.comments__list li { margin: 0 0 calc(12 * var(--u)); padding: calc(18 * var(--u)) calc(22 * var(--u)); border-radius: calc(16 * var(--u)); background: rgba(244, 239, 230, 0.06); }
+.comments__by { display: block; margin: 0 0 calc(6 * var(--u)); font-size: 0.86em; color: rgba(244, 239, 230, 0.62); }
+.comments__by b { font-weight: 600; color: var(--ink); }
+.comments__text { display: block; overflow-wrap: anywhere; }
+
 /* Release notes: the developer's text, reduced to headings, paragraphs and lists. */
 .notes { padding: calc(22 * var(--u)) calc(26 * var(--u)) calc(10 * var(--u)); border-radius: calc(16 * var(--u)); background: rgba(244, 239, 230, 0.05); box-shadow: inset 0 0 0 1.5px rgba(244, 239, 230, 0.08); overflow-wrap: anywhere; }
 .notes h3 { margin: calc(18 * var(--u)) 0 calc(8 * var(--u)); font: 600 calc(22 * var(--u))/1.25 var(--body); color: var(--ink); }
