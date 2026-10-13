@@ -33,6 +33,7 @@
   var railItems = [];
   var lastKeyAt = 0;
   var likesKnown = false;
+  var gridStale = false; // the likes arrived while an app's details covered a grid in "Most liked" order
 
   function $(id) { return document.getElementById(id); }
 
@@ -381,6 +382,14 @@
     el.moveHint.textContent = "Move";
     var index = state.detail;
     state.detail = -1;
+    if (gridStale) {
+      // The grid behind the details is put in order now, keeping the place on the app that was open.
+      gridStale = false;
+      var open = view[index] && view[index].titleid;
+      renderGrid();
+      var again = view.map(function (a) { return a.titleid; }).indexOf(open);
+      index = again < 0 ? 0 : again;
+    }
     writeHash();
     setFocus("grid", index);
   }
@@ -561,7 +570,11 @@
         app.discussion = discussionAddress(entry.url);
         paintTile(app);
       });
-      if (state.detail >= 0) { showCounts(view[state.detail]); return; }
+      if (state.detail >= 0) {
+        showCounts(view[state.detail]);
+        gridStale = state.sort === "liked";
+        return;
+      }
       if (state.sort !== "liked") return;
       var current = view[state.index] && view[state.index].titleid;
       renderGrid();
