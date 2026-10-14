@@ -5,9 +5,9 @@
   "description": "Local LLM chat app for PS5.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",
-  "version": "01.005.000",
+  "version": "01.006.000",
   "source_repo": "https://github.com/blackbearreloaded/ProsperoAI",
-  "artifact_url": "https://github.com/blackbearreloaded/ProsperoAI/releases/download/01.005.000/PPSA99004.zip",
-  "sha256": "9d0bb50b269dffc8ee901df111be3f799ca0a444bd79bd95bbdd486117feb87d",
-  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ProsperoAI/01.005.000/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/blackbearreloaded/ProsperoAI/releases/download/01.006.000/PPSA99004.zip",
+  "sha256": "8b2241e003a22bffccee23e9424991533047e633e5ce337af60281b96868439e",
+  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ProsperoAI/01.006.000/sce_sys/icon0.png"
 }
