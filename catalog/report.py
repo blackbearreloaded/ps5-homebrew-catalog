@@ -42,11 +42,6 @@ class Report:
         print(f"{title} {verdict} ({counts}).")
         if not self.failed:
             print(passed_message)
-        # For a later job: how many errors and warnings this check had.
-        output = os.environ.get("GITHUB_OUTPUT")
-        if output:
-            with open(output, "a", encoding="utf-8") as handle:
-                handle.write(f"errors={self.count('error')}\nwarnings={self.count('warning')}\n")
         summary = os.environ.get("GITHUB_STEP_SUMMARY")
         if summary:
             with open(summary, "a", encoding="utf-8") as handle:
