@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99474",
+  "name": "Twispero",
+  "kind": "app",
+  "description": "Twitch for jailbroken PS5: live streams with chat, past broadcasts and clips on the console's own video decoder.",
+  "license": "GPL-3.0",
+  "author": "unicxrn",
+  "version": "1.0.0",
+  "source_repo": "https://github.com/unicxrn/twispero",
+  "artifact_url": "https://github.com/unicxrn/twispero/releases/download/v1.0.0/PPSA99474.zip",
+  "sha256": "6b478353e6f69afa6171a0ca5e8c7e13e6cf352d07b3e7d514c5abe922d8d4ba",
+  "icon_url": "https://raw.githubusercontent.com/unicxrn/twispero/v1.0.0/app/projects/evoplayer/sce_sys/icon0.png"
+}
