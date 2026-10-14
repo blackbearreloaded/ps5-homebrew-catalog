@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99312",
+  "name": "Super Mario Sunshine",
+  "kind": "app",
+  "description": "Super Mario Sunshine (GameCube) for PlayStation 5: a homebrew port of chasem-dev's sms-pc-port on the PS5 OpenGL SDK, 4K at 60 fps. Bring your own disc image.",
+  "license": "GPL-3.0",
+  "author": "Gary Riches",
+  "version": "0.10.0",
+  "source_repo": "https://github.com/griches/PS5_Sunshine",
+  "artifact_url": "https://github.com/griches/PS5_Sunshine/releases/download/v0.10.0/Sunshine-PS5-v0.10.0.zip",
+  "sha256": "854c4a5d853ffb4e1061f76afd3bba2dd6cca0daa09ffe6dfadc38271042bb99",
+  "icon_url": "https://raw.githubusercontent.com/griches/PS5_Sunshine/v0.10.0/ps5/sce_sys/icon0.png"
+}
