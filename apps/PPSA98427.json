@@ -4,7 +4,7 @@
   "kind": "app",
   "description": "Rediscover your audio CDs and fall in love with your music again: a native PS5 player with USB drive support, album art and reactive visuals.",
   "license": "GPL-3.0",
-  "author": "Andrea Sgarro",
+  "author": "LoZazaMastro",
   "version": "1.0.0",
   "source_repo": "https://github.com/LoZazaMastro/CD-Player",
   "artifact_url": "https://github.com/LoZazaMastro/CD-Player/releases/download/v1.0.0/PPSA98427.zip",
