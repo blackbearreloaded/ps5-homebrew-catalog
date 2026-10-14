@@ -150,3 +150,17 @@ class GitHub:
 
     def update_pull(self, repository: str, number: int, title: str, body: str) -> dict:
         return self._request("PATCH", f"/repos/{repository}/pulls/{number}", {"title": title, "body": body})
+
+    # Used only by the automatic merge of a developer's release bump, with the catalog bot's token.
+    # Both name the commit that was checked: GitHub refuses them when the pull request has moved on.
+
+    def approve_pull(self, repository: str, number: int, sha: str, body: str) -> dict:
+        return self._request("POST", f"/repos/{repository}/pulls/{number}/reviews",
+                             {"commit_id": sha, "event": "APPROVE", "body": body})
+
+    def merge_pull(self, repository: str, number: int, sha: str, title: str) -> dict:
+        merged = self._request("PUT", f"/repos/{repository}/pulls/{number}/merge",
+                               {"sha": sha, "merge_method": "squash", "commit_title": title})
+        if merged is None:
+            raise GitHubError(f"pull request #{number} was not found")
+        return merged
