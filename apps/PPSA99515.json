@@ -5,9 +5,9 @@
   "description": "A native Emby client for PlayStation 5 with media playback and optional Seerr requests.",
   "license": "GPL-3.0",
   "author": "bornaradusin",
-  "version": "1.2.3",
+  "version": "1.2.5",
   "source_repo": "https://github.com/bornaradusin/Emby5",
-  "artifact_url": "https://github.com/bornaradusin/Emby5/releases/download/1.2.3/Emby5-1.2.3.zip",
-  "sha256": "69ebbcd05f9f1f2af08c68d57c9e7902c3e7defba80cea94ca1f9357785074b8",
-  "icon_url": "https://raw.githubusercontent.com/bornaradusin/Emby5/1.2.3/app/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/bornaradusin/Emby5/releases/download/1.2.5/Emby5-1.2.5.zip",
+  "sha256": "84eb60b06df40873bbea3e4bb99208df653ffde3f3c8931813c1834966a0dbed",
+  "icon_url": "https://raw.githubusercontent.com/bornaradusin/Emby5/1.2.5/app/sce_sys/icon0.png"
 }

@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA47402",
+  "name": "Syobon Action",
+  "kind": "game",
+  "description": "Native PS5 port of Syobon Action (Cat Mario), the deliberately unfair platformer by Chiku, with DualSense controls, a pause menu and a stage select.",
+  "license": "GPL-3.0",
+  "author": "Andrei Kvapil",
+  "version": "01.001.000",
+  "source_repo": "https://github.com/kvaps/syobon-action-ps5",
+  "artifact_url": "https://github.com/kvaps/syobon-action-ps5/releases/download/01.001.000/PPSA47402.zip",
+  "sha256": "86e763fac842e90c48e54ddb4915ef517c5c17f37d4506574848e4e0a8aa51f5",
+  "icon_url": "https://raw.githubusercontent.com/kvaps/syobon-action-ps5/01.001.000/sce_sys/icon0.png"
+}

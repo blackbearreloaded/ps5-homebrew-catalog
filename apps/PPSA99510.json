@@ -5,9 +5,9 @@
   "description": "Gyro aiming in any game: the controller's gyroscope drives the stick, tuned from your phone while you play.",
   "license": "GPL-3.0",
   "author": "jmelovich",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "source_repo": "https://github.com/jmelovich/ps5-gyroaim",
-  "artifact_url": "https://github.com/jmelovich/ps5-gyroaim/releases/download/v1.0.0/PPSA99510.zip",
-  "sha256": "2080773de32d5a67ae830e06fe1ab2ceb4909900c5fadfedbc7a728918042d88",
-  "icon_url": "https://raw.githubusercontent.com/jmelovich/ps5-gyroaim/v1.0.0/app/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/jmelovich/ps5-gyroaim/releases/download/v1.0.2/PPSA99510.zip",
+  "sha256": "b748ef79e0296fc33ef2b648d6ee4d6e70c622b708a629ca076ac8e9aeec243a",
+  "icon_url": "https://raw.githubusercontent.com/jmelovich/ps5-gyroaim/v1.0.2/app/sce_sys/icon0.png"
 }

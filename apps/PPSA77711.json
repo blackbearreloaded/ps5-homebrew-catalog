@@ -5,9 +5,9 @@
   "description": "Unofficial Stremio client for the PS5",
   "license": "GPL-3.0",
   "author": "Argyris Vazaios",
-  "version": "1.0",
+  "version": "1.2",
   "source_repo": "https://github.com/Sp9nky/unofficial-stremio-ps5-port",
-  "artifact_url": "https://github.com/Sp9nky/unofficial-stremio-ps5-port/releases/download/v1.0/PPSA77711.ffpfsc",
-  "sha256": "7054e2022b73bca6d6fb0dbe807eadb006af07985aca0e0c770fd747c6c244a0",
-  "icon_url": "https://raw.githubusercontent.com/Sp9nky/unofficial-stremio-ps5-port/v1.0/app/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/Sp9nky/unofficial-stremio-ps5-port/releases/download/v1.2/PPSA77711.ffpfsc",
+  "sha256": "eec6ef7d9a173fce4e0fdca8521e57a9d789742cb1257262d23bc834c3ef4fa7",
+  "icon_url": "https://raw.githubusercontent.com/Sp9nky/unofficial-stremio-ps5-port/v1.2/app/sce_sys/icon0.png"
 }
