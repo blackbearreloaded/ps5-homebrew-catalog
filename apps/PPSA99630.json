@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99630",
+  "name": "Morrowind (OpenMW)",
+  "kind": "game",
+  "description": "Native PS5 port of OpenMW for Morrowind; requires your own Morrowind game data.",
+  "license": "GPL-3.0",
+  "author": "mshivam019",
+  "version": "v1.0.1",
+  "source_repo": "https://github.com/mshivam019/morrowind-ps5",
+  "artifact_url": "https://github.com/mshivam019/morrowind-ps5/releases/download/v1.0.1/PPSA99630.zip",
+  "sha256": "0b50f2e63660db79724022e90575910728800feb0699d254a36f3c66af971b5c",
+  "icon_url": "https://raw.githubusercontent.com/mshivam019/morrowind-ps5/v1.0.1/art/icon0.png"
+}
