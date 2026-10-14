@@ -387,6 +387,72 @@ def cmd_pr(args) -> int:
                                              "a maintainer will review it.")
 
 
+def cmd_automerge(args) -> int:
+    """CI: merge a pull request that only moves the author's own app to its newest release.
+
+    Base-branch code; the pull request's files are read only as data. It runs after the submission
+    check and the release scan passed, and merges only when neither had a warning. Whatever it
+    decides, it never fails the pull request: a pull request it leaves alone waits for a maintainer.
+    """
+    from .automerge import bump_reasons
+    event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
+    pull = event["pull_request"]
+    number, author, sha = pull["number"], pull["user"]["login"], pull["head"]["sha"]
+    name = f"pull request #{number}"
+    report = Report()
+    reasons = []
+    if pull.get("draft"):
+        reasons.append("it is a draft")
+    if (pull.get("base") or {}).get("ref") != "main":
+        reasons.append("it does not target main")
+    for variable, check in (("SUBMISSION_WARNINGS", "submission check"), ("SCAN_WARNINGS", "release scan")):
+        count = os.environ.get(variable, "")
+        if count != "0":
+            reasons.append(f"the {check} has {count} warning(s) to read" if count.isdigit()
+                           else f"the {check} did not report its result")
+
+    head = "refs/catalog/pr-head"
+    git("fetch", "--no-tags", "--quiet", "origin", f"+refs/pull/{number}/head:{head}")
+    if git("rev-parse", head).strip() != sha:
+        reasons.append("it changed while it was being checked")
+    changes = diff_changes(git("merge-base", "HEAD", head).strip(), head)
+    old = new = None
+    if len(changes) == 1 and changes[0].status == "M" and RECORD_PATH.fullmatch(changes[0].path):
+        path = changes[0].path
+        if int(git("cat-file", "-s", f"{head}:{path}")) <= MAX_FILE_BYTES and (ROOT / path).is_file():
+            old = load_record(ROOT / path, Report())
+            with tempfile.TemporaryDirectory(prefix="catalog-bump-") as tmp:
+                proposed = Path(tmp) / Path(path).name
+                proposed.write_bytes(git_bytes("show", f"{head}:{path}"))
+                new = load_record(proposed, Report())
+    reasons += bump_reasons(author, changes, old, new, GitHub())
+
+    output = os.environ.get("GITHUB_OUTPUT")
+    if output:
+        with open(output, "a", encoding="utf-8") as handle:
+            handle.write(f"eligible={'false' if reasons else 'true'}\n")
+    if reasons:
+        for reason in reasons:
+            report.notice(name, "left for a maintainer: " + reason)
+        return report.emit("Automatic merge", "Nothing was merged.")
+    if not args.merge:
+        report.notice(name, f"@{author} moves their own app to its newest release, and no check had a warning")
+        return report.emit("Automatic merge", "This pull request can be merged without a maintainer.")
+    bot = GitHub(os.environ["MERGE_TOKEN"])
+    repository = os.environ["GITHUB_REPOSITORY"]
+    try:
+        bot.approve_pull(repository, number, sha,
+                         "A release bump by the app's developer: only the version, file, sha256 and icon "
+                         "changed, the release is the newest of the app's repository, and the submission "
+                         "check and the release scan passed without a warning. Merged automatically; it is "
+                         "published with the catalog's next publication.")
+        bot.merge_pull(repository, number, sha, f"{pull['title']} (#{number})")
+        report.notice(name, f"merged: @{author} moved their own app to its newest release")
+    except GitHubError as error:
+        report.warning(name, f"meets every rule, but could not be merged: {error}")
+    return report.emit("Automatic merge", "Done.")
+
+
 UPDATE_BRANCH = "catalog-update/all"
 # The pull request body records which release it proposes for each app.
 UPDATE_STATE = re.compile(r"<!-- catalog-updates: (\{.*?\}) -->")
@@ -867,6 +933,10 @@ def main(argv: list[str] | None = None) -> int:
     push.add_argument("--before", default="")
     push.add_argument("--after", default="HEAD")
     push.set_defaults(func=cmd_push)
+
+    automerge = commands.add_parser("automerge", help="CI: merge a developer's release bump of their own app")
+    automerge.add_argument("--merge", action="store_true", help="merge it (needs MERGE_TOKEN); otherwise only decide")
+    automerge.set_defaults(func=cmd_automerge)
 
     health = commands.add_parser("health", help="CI: re-verify listed releases (daily slice or all)")
     health.add_argument("--slice", default="all", choices=["all", "today"] + [str(n) for n in range(HEALTH_SLICES)],

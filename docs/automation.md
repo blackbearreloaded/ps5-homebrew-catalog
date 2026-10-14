@@ -5,7 +5,7 @@ library and run by four workflows.
 
 | Workflow | Trigger | Runs |
 | --- | --- | --- |
-| [Submission check](../.github/workflows/pull-request.yml) | Pull requests (`pull_request_target`) | `python3 -m catalog pr`, and in a second job the [release scan](#release-scan), `python3 -m catalog scan-pr` |
+| [Submission check](../.github/workflows/pull-request.yml) | Pull requests (`pull_request_target`) | `python3 -m catalog pr`, and in a second job the [release scan](#release-scan), `python3 -m catalog scan-pr`; then [merges a developer's release bump](#automatic-merge-of-a-developers-release-bump), `python3 -m catalog automerge` |
 | [CI](../.github/workflows/ci.yml) | Pull requests; publishing is started by hand on `main` | Tests, `catalog check` and a website build; a manual run on `main` also does `catalog push`, then the [website deployment](website.md#deployment) |
 | [Comments](../.github/workflows/comments.yml) | Every hour, and on every discussion comment | `python3 -m catalog comments --sync`: one discussion per listed app, likes and comments written to the `comments-data` branch; see [Comments and likes](#comments-and-likes) |
 | [Deploy fallback](../.github/workflows/deploy-fallback.yml) | Manual only, by the repository owner | The same deploy on the maintainer's own runner, for an Actions outage; see [Fallback deploy](website.md#fallback-deploy) |
@@ -69,6 +69,41 @@ Dependabot.
 
 The CI workflow does run PR code (tests), with the standard read-only
 `pull_request` token and no secrets.
+
+## Automatic merge of a developer's release bump
+
+A developer who publishes a new release and updates their own record is not kept waiting for a
+maintainer. After the submission check and the release scan have both passed, two more jobs of
+the same workflow run `python3 -m catalog automerge`, and the pull request is approved and
+squash-merged by the catalog's GitHub App when **all** of this holds:
+
+- it changes exactly one file, an existing `apps/<TITLEID>.json`: a new app, a removal or any
+  other file always waits for a maintainer;
+- only `version`, `artifact_url`, `sha256` and `icon_url` differ from the listed record, the
+  file is a new one, it is a release file of the same `source_repo`, and a changed icon stays
+  in that repository;
+- the release is the **newest** one of that repository;
+- the author owns `source_repo`, or is a public member of the organization that owns it. The
+  bot's own update pull requests and bumps sent by other accounts wait for a maintainer;
+- it is not a draft, it targets `main`, and it did not change while it was being checked: the
+  approval and the merge name the commit that was checked, and GitHub refuses them otherwise;
+- neither check had a **warning**. A release that gained a way out of the sandbox since the
+  listed one, an unapproved helper or a licence that no longer agrees are warnings, so those
+  wait for a maintainer.
+
+A pull request that does not qualify is left exactly as before; the job's summary says which
+rule kept it, and the job never fails a pull request. Merging publishes nothing: the update
+goes online with the next [publication](#publishing-from-main), which verifies every changed
+record once more.
+
+The first job decides with a read-only token. Only the second has the app's token, and it runs
+only for a pull request the first one let through. Both use the base branch's code and read the
+pull request's files as data. To pause the merges, set the repository variable
+`AUTO_MERGE_BUMPS` to `false`; the checks themselves are not affected.
+
+The app merges with an approving review of its own. If the branch rules of `main` do not count
+an app's review, add the app to the bypass list of the rule that requires one; until then the
+job reports that the merge was refused and the pull request waits for a maintainer.
 
 ## Release scan
 

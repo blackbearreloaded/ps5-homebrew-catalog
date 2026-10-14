@@ -19,6 +19,8 @@ jobs:
     name: Validate submission
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    outputs:
+      warnings: ${{ steps.check.outputs.warnings }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -31,6 +33,7 @@ jobs:
         with:
           python-version: '3.13'
       - name: Check records, publisher, release, sha256 and icon
+        id: check
         run: python3 -m catalog pr
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -45,6 +48,8 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: read
+    outputs:
+      warnings: ${{ steps.scan.outputs.warnings }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -56,6 +61,68 @@ jobs:
           python-version: '3.13'
       - run: python3 -m pip install --disable-pip-version-check -r requirements-scan.txt
       - name: Scan the listed release for ways out of the sandbox
+        id: scan
         run: python3 -m catalog scan-pr
         env:
           GH_TOKEN: ${{ github.token }}   # read-only: `gh attestation verify` needs one
+
+  bump:
+    name: Is it a developer's release bump?
+    # A developer who only moves their own app to its newest release is not kept waiting for a
+    # maintainer. This job decides, with the base branch's code and a read-only token; it runs
+    # only after both checks above passed, and a warning from either leaves the pull request
+    # for a maintainer. Set the repository variable AUTO_MERGE_BUMPS to "false" to pause it.
+    needs: [submission, scan]
+    if: vars.AUTO_MERGE_BUMPS != 'false'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      eligible: ${{ steps.decide.outputs.eligible }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 0
+          persist-credentials: true   # fetches the PR head as data, as the submission check does
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      - id: decide
+        run: python3 -m catalog automerge
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          SUBMISSION_WARNINGS: ${{ needs.submission.outputs.warnings }}
+          SCAN_WARNINGS: ${{ needs.scan.outputs.warnings }}
+
+  merge:
+    name: Merge the release bump
+    # The only job here with a token that can write: the catalog's GitHub App approves and
+    # squash-merges the commit that was checked. It decides once more before it does, and never
+    # runs for a pull request the job above left for a maintainer. Merging publishes nothing.
+    needs: [submission, scan, bump]
+    if: needs.bump.outputs.eligible == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: catalog-bot
+    steps:
+      - id: token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          client-id: ${{ vars.CATALOG_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.CATALOG_BOT_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.ref }}
+          fetch-depth: 0
+          persist-credentials: true
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.13'
+      - run: python3 -m catalog automerge --merge
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          MERGE_TOKEN: ${{ steps.token.outputs.token }}
+          SUBMISSION_WARNINGS: ${{ needs.submission.outputs.warnings }}
+          SCAN_WARNINGS: ${{ needs.scan.outputs.warnings }}
