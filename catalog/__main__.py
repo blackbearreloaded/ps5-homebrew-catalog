@@ -210,6 +210,11 @@ def cmd_scan_pr(args) -> int:
     base = git("merge-base", "HEAD", head).strip()
     report = Report()
     scanned = 0
+    # What keeps a developer's release bump from being merged without a maintainer (`catalog
+    # automerge`): a helper nobody approved, and what is new since the listed release. Findings
+    # the listed release had too were read when it was listed, so they don't count; without a
+    # listed release to compare with, every warning does.
+    findings = 0
     with tempfile.TemporaryDirectory(prefix="catalog-scan-") as tmp:
         for change in diff_changes(base, head):
             if change.status == "D" or not RECORD_PATH.fullmatch(change.path):
@@ -238,7 +243,9 @@ def cmd_scan_pr(args) -> int:
                 continue
             scanned += 1
             scan = scan_release(data, Path(tmp), attest=True)
-            check_helpers(scan, approved)
+            findings += check_helpers(scan, approved)
+            if not scan.downloaded or scan.failed:
+                findings += 1
             if scan.attested is False:
                 report.notice(change.path, "no verified build attestation: nothing ties this file to a workflow run")
             # An update: scan the listed release too and say what changed.
@@ -251,7 +258,17 @@ def cmd_scan_pr(args) -> int:
                     for line in scan.comparison:
                         if line.startswith("**") or line.startswith("New payload") or line.startswith("Payload"):
                             report.warning(change.path, "since the listed release: " + line.replace("*", "").replace("`", ""))
+                        # A payload that changed is counted above when its new build is not approved.
+                        if line.startswith("**") or line.startswith("New payload"):
+                            findings += 1
+            warnings = report.count("warning")
             _report_scan(scan, change.path, f"{data['name']} ({data['titleid']}) {data['version']}", report)
+            if not scan.compared_with:
+                findings += report.count("warning") - warnings
+    output = os.environ.get("GITHUB_OUTPUT")
+    if output:
+        with open(output, "a", encoding="utf-8") as handle:
+            handle.write(f"findings={findings}\n")
     return report.emit("Release scan", f"{scanned} release(s) scanned; the reports are above.")
 
 
@@ -405,10 +422,11 @@ def cmd_automerge(args) -> int:
         reasons.append("it is a draft")
     if (pull.get("base") or {}).get("ref") != "main":
         reasons.append("it does not target main")
-    for variable, check in (("SUBMISSION_WARNINGS", "submission check"), ("SCAN_WARNINGS", "release scan")):
+    for variable, check, what in (("SUBMISSION_WARNINGS", "submission check", "warning(s)"),
+                                  ("SCAN_FINDINGS", "release scan", "new or unapproved finding(s)")):
         count = os.environ.get(variable, "")
         if count != "0":
-            reasons.append(f"the {check} has {count} warning(s) to read" if count.isdigit()
+            reasons.append(f"the {check} has {count} {what} to read" if count.isdigit()
                            else f"the {check} did not report its result")
 
     head = "refs/catalog/pr-head"

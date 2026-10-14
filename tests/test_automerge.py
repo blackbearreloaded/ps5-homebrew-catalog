@@ -133,7 +133,7 @@ class AutomergeCommandTests(unittest.TestCase):
             writer.merge_pull.side_effect = cli.GitHubError("GitHub API returned HTTP 405")
         variables = {"GITHUB_EVENT_PATH": str(event), "GITHUB_STEP_SUMMARY": "", "GITHUB_OUTPUT": "",
                      "GITHUB_REPOSITORY": "owner/catalog", "MERGE_TOKEN": "token",
-                     "SUBMISSION_WARNINGS": "0", "SCAN_WARNINGS": "0", **(env or {})}
+                     "SUBMISSION_WARNINGS": "0", "SCAN_FINDINGS": "0", **(env or {})}
         with mock.patch.object(cli, "ROOT", self.clone), mock.patch.object(cli, "APPS", self.clone / "apps"), \
                 mock.patch.object(cli, "GitHub", lambda token=None: writer if token else reader), \
                 mock.patch.dict(os.environ, variables), mock.patch("sys.stdout"), mock.patch("sys.stderr"):
@@ -175,7 +175,7 @@ class AutomergeCommandTests(unittest.TestCase):
         writer.merge_pull.assert_not_called()
 
     def test_a_warning_from_a_check_or_a_check_that_said_nothing_stops_the_merge(self):
-        for env in ({"SCAN_WARNINGS": "1"}, {"SUBMISSION_WARNINGS": "2"}, {"SCAN_WARNINGS": ""}):
+        for env in ({"SCAN_FINDINGS": "1"}, {"SUBMISSION_WARNINGS": "2"}, {"SCAN_FINDINGS": ""}):
             with self.subTest(env=env):
                 self.tearDown()
                 self.setUp()

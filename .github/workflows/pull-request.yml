@@ -49,7 +49,7 @@ jobs:
     permissions:
       contents: read
     outputs:
-      warnings: ${{ steps.scan.outputs.warnings }}
+      findings: ${{ steps.scan.outputs.findings }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -70,7 +70,8 @@ jobs:
     name: Is it a developer's release bump?
     # A developer who only moves their own app to its newest release is not kept waiting for a
     # maintainer. This job decides, with the base branch's code and a read-only token; it runs
-    # only after both checks above passed, and a warning from either leaves the pull request
+    # only after both checks above passed. A warning from the submission check, or a scan finding
+    # that is new since the listed release or a helper nobody approved, leaves the pull request
     # for a maintainer. Set the repository variable AUTO_MERGE_BUMPS to "false" to pause it.
     needs: [submission, scan]
     if: vars.AUTO_MERGE_BUMPS != 'false'
@@ -92,7 +93,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           SUBMISSION_WARNINGS: ${{ needs.submission.outputs.warnings }}
-          SCAN_WARNINGS: ${{ needs.scan.outputs.warnings }}
+          SCAN_FINDINGS: ${{ needs.scan.outputs.findings }}
 
   merge:
     name: Merge the release bump
@@ -125,4 +126,4 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           MERGE_TOKEN: ${{ steps.token.outputs.token }}
           SUBMISSION_WARNINGS: ${{ needs.submission.outputs.warnings }}
-          SCAN_WARNINGS: ${{ needs.scan.outputs.warnings }}
+          SCAN_FINDINGS: ${{ needs.scan.outputs.findings }}
