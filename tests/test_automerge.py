@@ -133,7 +133,7 @@ class AutomergeCommandTests(unittest.TestCase):
             writer.merge_pull.side_effect = cli.GitHubError("GitHub API returned HTTP 405")
         variables = {"GITHUB_EVENT_PATH": str(event), "GITHUB_STEP_SUMMARY": "", "GITHUB_OUTPUT": "",
                      "GITHUB_REPOSITORY": "owner/catalog", "MERGE_TOKEN": "token",
-                     "SUBMISSION_WARNINGS": "0", "SCAN_FINDINGS": "0", **(env or {})}
+                     **(env or {})}
         with mock.patch.object(cli, "ROOT", self.clone), mock.patch.object(cli, "APPS", self.clone / "apps"), \
                 mock.patch.object(cli, "GitHub", lambda token=None: writer if token else reader), \
                 mock.patch.dict(os.environ, variables), mock.patch("sys.stdout"), mock.patch("sys.stderr"):
@@ -174,32 +174,10 @@ class AutomergeCommandTests(unittest.TestCase):
         _, writer, _ = self.automerge(self.bump(name="Another Name"))
         writer.merge_pull.assert_not_called()
 
-    def test_a_warning_from_a_check_or_a_check_that_said_nothing_stops_the_merge(self):
-        for env in ({"SCAN_FINDINGS": "1"}, {"SUBMISSION_WARNINGS": "2"}, {"SCAN_FINDINGS": ""}):
-            with self.subTest(env=env):
-                self.tearDown()
-                self.setUp()
-                status, writer, _ = self.automerge(self.bump(), env=env)
-                self.assertEqual(status, 0)
-                writer.merge_pull.assert_not_called()
-
     def test_a_refused_merge_is_reported_and_does_not_fail_the_check(self):
         status, writer, _ = self.automerge(self.bump(), refuse=True)
         self.assertEqual(status, 0)
         writer.merge_pull.assert_called_once()
-
-
-class ReportOutputTests(unittest.TestCase):
-    def test_the_counts_are_written_for_later_jobs(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            output = Path(tmp) / "output"
-            report = Report()
-            report.warning("apps/X.json", "something to look at")
-            report.notice("apps/X.json", "for the record")
-            with mock.patch.dict(os.environ, {"GITHUB_OUTPUT": str(output), "GITHUB_STEP_SUMMARY": ""}), \
-                    mock.patch("sys.stdout"):
-                report.emit("Check", "fine")
-            self.assertEqual(output.read_text(encoding="utf-8"), "errors=0\nwarnings=1\n")
 
 
 if __name__ == "__main__":

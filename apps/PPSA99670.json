@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99670",
+  "name": "Link’s Awakening for PS5",
+  "kind": "game",
+  "description": "Native PS5 port of Link’s Awakening. Requires game files prepared from your own Switch version 1.0.0 base-game dump.",
+  "license": "MIT",
+  "author": "mshivam019",
+  "version": "v0.1.0",
+  "source_repo": "https://github.com/mshivam019/la-ps5",
+  "artifact_url": "https://github.com/mshivam019/la-ps5/releases/download/v0.1.0/PPSA99670.zip",
+  "sha256": "fa46808a12b972909050617dfc99e92bbe77a67265abf0108fc475670f01d53a",
+  "icon_url": "https://raw.githubusercontent.com/mshivam019/la-ps5/v0.1.0/ps5/sce_sys/icon0.png"
+}

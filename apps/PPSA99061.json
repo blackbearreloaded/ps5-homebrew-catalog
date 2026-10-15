@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99061",
+  "name": "Spot5",
+  "kind": "app",
+  "description": "Unofficial native Spotify player, not affiliated with Spotify: Home, Your Library, playlists, artists, Now Playing and more, with Spotify Connect. Needs Premium.",
+  "license": "GPL-3.0-or-later",
+  "author": "abhi245y",
+  "version": "1.1.0",
+  "source_repo": "https://github.com/abhi245y/spot5",
+  "artifact_url": "https://github.com/abhi245y/spot5/releases/download/v1.1.0/PPSA99061.zip",
+  "sha256": "af10d43f274db036ba2835dbc5f429cab416c028a6247023c8f6bd7076600c6c",
+  "icon_url": "https://raw.githubusercontent.com/abhi245y/spot5/v1.1.0/sce_sys/icon0.png"
+}

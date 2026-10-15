@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99320",
+  "name": "Ship of Harkinian (Vulkan)",
+  "kind": "game",
+  "description": "Ship of Harkinian (Ocarina of Time PC port) on Vulkan: converts your own ROM on the console, 60 FPS at 4K, HD texture packs, right-stick camera and PS button prompts; tested on firmware 13.60.",
+  "license": "GPL-3.0",
+  "author": "damiantw",
+  "version": "01.000.000",
+  "source_repo": "https://github.com/damiantw/PS5_Shipwright",
+  "artifact_url": "https://github.com/damiantw/PS5_Shipwright/releases/download/01.000.000/PPSA99320.zip",
+  "sha256": "82782f43c5951e0fd82b97d6580f60a75ee2d1d1ad74816594d1652bb72a0a24",
+  "icon_url": "https://raw.githubusercontent.com/damiantw/PS5_Shipwright/01.000.000/ps5/sce_sys/icon0.png"
+}

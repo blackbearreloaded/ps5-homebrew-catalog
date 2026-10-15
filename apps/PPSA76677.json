@@ -5,9 +5,9 @@
   "description": "Syncs your emulator saves and states with a RomM server and downloads games from your RomM library.",
   "license": "GPL-3.0",
   "author": "s0liton",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "source_repo": "https://github.com/s0liton/RommPS",
-  "artifact_url": "https://github.com/s0liton/RommPS/releases/download/v1.1.1/PPSA76677.zip",
-  "sha256": "35ad81ab20f110baf821a633c26fc0055b22ef3e9cd5ca9b36eb1d294c7c56c3",
-  "icon_url": "https://raw.githubusercontent.com/s0liton/RommPS/v1.1.1/platform/ps5/app/rommps/ps5/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/s0liton/RommPS/releases/download/v1.2.0/PPSA76677.zip",
+  "sha256": "84f8c7302abaff307d5eceac56f49f8950fcbfb96ff4637c5031ef603e571485",
+  "icon_url": "https://raw.githubusercontent.com/s0liton/RommPS/v1.2.0/platform/ps5/app/rommps/ps5/sce_sys/icon0.png"
 }

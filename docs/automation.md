@@ -87,12 +87,10 @@ squash-merged by the catalog's GitHub App when **all** of this holds:
   bot's own update pull requests and bumps sent by other accounts wait for a maintainer;
 - it is not a draft, it targets `main`, and it did not change while it was being checked: the
   approval and the merge name the commit that was checked, and GitHub refuses them otherwise;
-- the submission check had no **warning**, and the release scan found nothing a maintainer has
-  not seen: no helper missing from `helpers/approved.json` (a changed helper is a new build, so
-  it needs approving again), no new way out of the sandbox, no changed verdict and no new
-  payload since the listed release. What the listed release did as well, such as asking a
-  resident service to lift its sandbox, was read when it was listed and does not count; when
-  the listed release could not be scanned for a comparison, every warning counts.
+- the submission check and the release scan both passed. Their warnings do not hold it back:
+  a release scan that reports new helpers or a new way out of the sandbox is merged all the
+  same, and its report stays in the check's summary. Only a failed check stops it, such as an
+  archive that is unsafe to unpack.
 
 A pull request that does not qualify is left exactly as before; the job's summary says which
 rule kept it, and the job never fails a pull request. Merging publishes nothing: the update

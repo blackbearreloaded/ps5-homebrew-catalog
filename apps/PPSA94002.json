@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA94002",
+  "name": "Raptor: Call of the Shadows (PS5)",
+  "kind": "game",
+  "description": "Unofficial native PS5 port of Raptor: Call of the Shadows with DualSense controls and optional first-launch shareware download.",
+  "license": "GPL-3.0",
+  "author": "ChaDea1",
+  "version": "v0.2.0-beta.4",
+  "source_repo": "https://github.com/ChaDea1/RaptorPS5",
+  "artifact_url": "https://github.com/ChaDea1/RaptorPS5/releases/download/v0.2.0-beta.4/raptor-ps5-v0.2.0-beta.4.zip",
+  "sha256": "ce06b3950016e51353a1b46c02ead47896f29c64e012900d7555f54ad4ac2588",
+  "icon_url": "https://raw.githubusercontent.com/ChaDea1/RaptorPS5/v0.2.0-beta.4/sce_sys/icon0.png"
+}

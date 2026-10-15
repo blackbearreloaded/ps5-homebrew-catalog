@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA99640",
+  "name": "Twilight Princess (Dusklight)",
+  "kind": "game",
+  "description": "Native PS5 port of Dusklight for Twilight Princess; requires your own USA GameCube game data.",
+  "license": "CC0-1.0",
+  "author": "mshivam019",
+  "version": "ps5-v0.1.0",
+  "source_repo": "https://github.com/mshivam019/dusklight-ps5",
+  "artifact_url": "https://github.com/mshivam019/dusklight-ps5/releases/download/ps5-v0.1.0/PPSA99640.zip",
+  "sha256": "df097143111f3758b195ce21e2051b8c4f7ef78a2f392d88b3b5fb12d9780a4b",
+  "icon_url": "https://raw.githubusercontent.com/mshivam019/dusklight-ps5/ps5-v0.1.0/ps5/sce_sys/icon0.png"
+}
