@@ -5,9 +5,9 @@
   "description": "Rediscover your audio CDs and fall in love with your music again: a native PS5 player with USB drive support, album art and reactive visuals.",
   "license": "GPL-3.0",
   "author": "LoZazaMastro",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "source_repo": "https://github.com/LoZazaMastro/CD-Player",
-  "artifact_url": "https://github.com/LoZazaMastro/CD-Player/releases/download/v1.0.0/PPSA98427.zip",
-  "sha256": "08ed9a86db0ca62f88a2ccc451358ac7ae189589c103522e93c431029f747103",
-  "icon_url": "https://raw.githubusercontent.com/LoZazaMastro/CD-Player/v1.0.0/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/LoZazaMastro/CD-Player/releases/download/v1.1.0/PPSA98427.zip",
+  "sha256": "84bfa8d224ccc94a1ccd6c1fc338132ac0759dbc505e34c5353a123b249b0dc6",
+  "icon_url": "https://raw.githubusercontent.com/LoZazaMastro/CD-Player/v1.1.0/sce_sys/icon0.png"
 }
