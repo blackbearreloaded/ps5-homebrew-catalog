@@ -1,0 +1,13 @@
+{
+  "titleid": "PPSA69424",
+  "name": "Wave Race 64 Recompiled",
+  "kind": "game",
+  "description": "Native PS5 port of Wave Race 64: Recompiled, the N64 jet ski racer recompiled with 4K output, 60 fps and a modern water renderer; needs your own Wave Race 64 (USA) (Rev A) ROM.",
+  "license": "GPL-3.0-or-later",
+  "author": "Marice",
+  "version": "00.001.000",
+  "source_repo": "https://github.com/Marice/wave-race-64-ps5",
+  "artifact_url": "https://github.com/Marice/wave-race-64-ps5/releases/download/v00.001.000/WaveRace64Recompiled-PS5-00.001.000.zip",
+  "sha256": "db05bfaa4937bb6adbbbf1de87f4c181fbd85b5250164332121454681e1a0820",
+  "icon_url": "https://raw.githubusercontent.com/Marice/wave-race-64-ps5/b8125c47fd01edbe6f4b49fe04d74d6f849d8ece/sce_sys/icon0.png"
+}

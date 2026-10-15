@@ -1,7 +1,7 @@
 {
   "titleid": "PPSA99312",
   "name": "Super Mario Sunshine",
-  "kind": "app",
+  "kind": "game",
   "description": "Super Mario Sunshine (GameCube) for PlayStation 5: a homebrew port of chasem-dev's sms-pc-port on the PS5 OpenGL SDK, 4K at 60 fps. Bring your own disc image.",
   "license": "GPL-3.0",
   "author": "Gary Riches",

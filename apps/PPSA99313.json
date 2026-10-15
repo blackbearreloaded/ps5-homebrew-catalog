@@ -1,7 +1,7 @@
 {
   "titleid": "PPSA99313",
   "name": "Doom 3 BFG",
-  "kind": "app",
+  "kind": "game",
   "description": "Doom 3 BFG Edition for PlayStation 5: a homebrew port of RBDoom3BFG on Vulkan (RADV) at 4K, with Doom 3, Resurrection of Evil and The Lost Mission. Bring your own BFG Edition data.",
   "license": "GPL-3.0",
   "author": "Gary Riches",
