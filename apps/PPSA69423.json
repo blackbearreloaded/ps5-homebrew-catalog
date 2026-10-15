@@ -5,9 +5,9 @@
   "description": "Native PS5 port of Rush 2 Recompiled, the N64 racer recompiled with 4K output and 60 fps; needs your own Rush 2: Extreme Racing USA (USA) ROM.",
   "license": "GPL-3.0-or-later",
   "author": "Marice",
-  "version": "00.001.000",
+  "version": "00.002.000",
   "source_repo": "https://github.com/Marice/rush2-ps5",
-  "artifact_url": "https://github.com/Marice/rush2-ps5/releases/download/v00.001.000/Rush2Recompiled-PS5-00.001.000.zip",
-  "sha256": "8f1166217bd1f222cca9298c2b96df97ee67fb6c18907395bf7a497e1e753c26",
+  "artifact_url": "https://github.com/Marice/rush2-ps5/releases/download/v00.002.000/Rush2Recompiled-PS5-00.002.000.zip",
+  "sha256": "7bef24a8fa8fd1c3e69ab1446beffa7586d8bb78ae89fc716d3dee68f6c87a49",
   "icon_url": "https://raw.githubusercontent.com/Marice/rush2-ps5/952b3728f4a7285ee3d6a971e652545918a5b20f/sce_sys/icon0.png"
 }
