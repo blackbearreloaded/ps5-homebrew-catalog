@@ -284,7 +284,9 @@ can verify it is genuine before installing from it.
 Listing means the automated checks passed and a maintainer reviewed the
 submission's publisher and provenance. It is **not** a security audit of the
 app's code. See the **[review policy](docs/review-policy.md)** for how listings,
-updates, title ID disputes and withdrawals are handled.
+updates, title ID disputes and withdrawals are handled. Forks are welcome as
+long as they are distinct apps: a fork that only renames or re-themes a listed
+app is not listed, and its changes belong in the original project.
 
 Report a broken or incorrect listing with an
 [issue](https://github.com/blackbearreloaded/ps5-homebrew-catalog/issues/new/choose).

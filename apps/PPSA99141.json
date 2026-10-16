@@ -5,9 +5,9 @@
   "description": "A native Jellyfin client for the PS5 with a cover-wheel interface, HDR and surround sound passthrough. Beta.",
   "license": "GPL-3.0",
   "author": "mortaljinx",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "source_repo": "https://github.com/mortaljinx/mortalfin",
-  "artifact_url": "https://github.com/mortaljinx/mortalfin/releases/download/1.0.0-beta.4/Mortalfin-1.0.0-beta.4.zip",
-  "sha256": "b19a3a379a1625b53def1f8f556ab0f31e7f62d3e2f90e93a1f0e71dbb9fc55c",
-  "icon_url": "https://raw.githubusercontent.com/mortaljinx/mortalfin/1.0.0-beta.4/ps5/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/mortaljinx/mortalfin/releases/download/1.0.0-beta.5/Mortalfin-1.0.0-beta.5.zip",
+  "sha256": "acaba3bb0d14acbff26a8a66982e1c2727e2fe342d8078e36ecdb69c1e49abfe",
+  "icon_url": "https://raw.githubusercontent.com/mortaljinx/mortalfin/1.0.0-beta.5/ps5/sce_sys/icon0.png"
 }

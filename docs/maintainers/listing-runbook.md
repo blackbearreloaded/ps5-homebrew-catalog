@@ -169,6 +169,7 @@ Report these to the maintainer instead of opening a pull request:
 | The main file is a payload (`.elf`, `.bin`, `.lua`) or a PS4 package | Out of scope: native apps only. |
 | The title ID is already listed by a different project | Title IDs are first come, first served; a maintainer decides. |
 | The repository is a fork or repackage of another developer's app | Provenance must be the original developer. |
+| The app builds on an app that is already listed and differs only in name, theme, icon or settings | Not a distinct app under the review policy. |
 | The app is obviously for piracy, contains commercial content, or the README asks not to be redistributed | Refused by the review policy. |
 | The only file that would be listed ships emulators or files that look extracted from commercial games | Commercial content can't be linked. Backup managers themselves are in scope: list only the app's own file (use `--asset`), never a companion pack, and say so in the pull request. |
 | The repository is archived with no recent release | Probably abandoned; a maintainer decides. |

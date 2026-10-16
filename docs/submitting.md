@@ -20,6 +20,12 @@ then reviews and merges it.
   in your repository, in the PlayStation format (`01.000.070`). It isn't
   required for a listing, but it is how a console knows an installed copy is
   outdated; see [App versions](versioning.md).
+- **A distinct app.** A fork or derivative of a listed app must be
+  substantially different for the user (a different core or engine, a
+  different purpose, or features the original doesn't have and won't take),
+  not only a new name, theme or icon; contribute those to the original
+  project instead. Its name doesn't include the listed app's name. See the
+  [review policy](review-policy.md#maintainer-review).
 - A **title ID** no other listed app uses.
 - A **square icon** at a stable HTTPS URL: PNG, JPEG or WebP, **512×512
   recommended** (256×256 at least), at most 2 MiB. That is exactly the PS5's
