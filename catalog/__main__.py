@@ -14,7 +14,7 @@ import tempfile
 from pathlib import Path
 
 from .github import GitHub, GitHubError
-from .policy import Change, check_changes, check_publisher, is_maintainer
+from .policy import Change, check_changes, check_publisher, derivative_notes, is_maintainer
 from .records import MAX_FILE_BYTES, RECORD_PATH, Record, load_catalog, load_record, repo_parts
 from .report import Report
 from .verify import newer_release, verify_record
@@ -366,6 +366,7 @@ def cmd_pr(args) -> int:
                 holders[filename] = reservation_holder(f"apps/{filename}", github)
             return holders[filename]
 
+        listed = None
         if any(r.reserved for r in records.values()):
             base_reserved = [r for r in load_catalog(APPS, Report()) if r.reserved]
         else:
@@ -383,6 +384,12 @@ def cmd_pr(args) -> int:
                             holder=holder_of(new.path.name) if old and old.reserved else None, held=held)
             if report.count("error") == before:
                 verify_record(new, github, report, previous=old)
+            # A new app, or a reservation being released: does it build on one that is listed?
+            if (old is None or old.reserved) and report.count("error") == before:
+                if listed is None:
+                    listed = load_catalog(APPS, Report())
+                for note in derivative_notes(new, listed, github):
+                    report.notice(f"apps/{new.path.name}", note)
     return report.emit("Pull request check", "The submission meets every automated requirement; "
                                              "a maintainer will review it.")
 

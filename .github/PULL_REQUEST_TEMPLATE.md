@@ -3,6 +3,7 @@
 **Title ID:** <!-- e.g. PPSA01234 -->
 **New listing, update or reservation:** <!-- new / update / reservation -->
 **What the app does:** <!-- one or two sentences for the reviewer -->
+**Fork or derivative of an app in the catalog?** <!-- no / yes: which one, and what it does that the original doesn't -->
 
 - [ ] The app is a native PS5 app (its own title with `eboot.bin` and `sce_sys/`), not a payload, PS4 package or backport.
 - [ ] I am opening this PR from the account that owns `source_repo` (or I am a public member of the owning organization).
@@ -11,4 +12,5 @@
 - [ ] For a release: `sha256` is the digest of the exact asset in `artifact_url`, and I won't replace that asset.
 - [ ] For a release: `contentVersion` in my repository's `sce_sys/param.json` is in the `01.000.070` format and higher than my previous release's, so consoles see updates ([App versions](https://github.com/blackbearreloaded/ps5-homebrew-catalog/blob/main/docs/versioning.md)).
 - [ ] I have the right to distribute this build under the stated license.
+- [ ] If it builds on an app in the catalog, it is a distinct app (not only a new name, theme or icon) and its name doesn't include that app's name.
 - [ ] I have read the [review policy](https://github.com/blackbearreloaded/ps5-homebrew-catalog/blob/main/docs/review-policy.md).

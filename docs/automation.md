@@ -37,6 +37,10 @@ For a pull request the checker:
    (`version`, `artifact_url`, `sha256` and `icon_url`, same `source_repo`) is
    accepted from any account, because the repository's owner published that
    release. This is what lets the release-update bot's pull requests through.
+   For a new app, or a reservation being released, it also notes for the
+   reviewer when the repository is a fork of a listed app, or when the name
+   contains a listed app's name ([a distinct app](review-policy.md#maintainer-review)).
+   These are notices, never errors.
 4. **Verifies the release.** Through the GitHub API: the repository is public
    and the URL is canonical, the license agrees with GitHub's detection, the tag
    is a published release, and the asset exists and is at most 2 GiB.
