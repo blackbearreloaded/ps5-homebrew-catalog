@@ -2,6 +2,7 @@
   "titleid": "PPSA99555",
   "name": "TokenStation5",
   "kind": "app",
+  "category": "ai",
   "description": "Local AI endpoint for PS5 built on ts5, a from-scratch Vulkan LLM engine, serving an OpenAI-compatible API on your network.",
   "license": "GPL-3.0",
   "author": "ThatRetiredDude",

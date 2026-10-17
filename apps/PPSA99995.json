@@ -2,6 +2,7 @@
   "titleid": "PPSA99995",
   "name": "Prospero Win",
   "kind": "app",
+  "category": "utilities",
   "description": "Windows compatibility runtime for native PlayStation 5 homebrew.",
   "license": "LGPL-2.1",
   "author": "mpereiraesaa",

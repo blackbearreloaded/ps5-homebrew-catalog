@@ -2,6 +2,7 @@
   "titleid": "PPSA74207",
   "name": "The Simpsons Game",
   "kind": "game",
+  "category": "console-ports",
   "description": "Create a PS5-ready The Simpsons Game folder from your Xbox 360 game files, with graphics settings and optional frame generation.",
   "license": "GPL-3.0",
   "author": "ZazaMastro",

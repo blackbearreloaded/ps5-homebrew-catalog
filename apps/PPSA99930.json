@@ -2,6 +2,7 @@
   "titleid": "PPSA99930",
   "name": "Forwarder Manager",
   "kind": "tool",
+  "category": "utilities",
   "description": "Create and edit home-screen forwarders that launch emulators and other apps with custom art, music and arguments.",
   "license": "GPL-3.0",
   "author": "heydemoura",

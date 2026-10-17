@@ -2,6 +2,7 @@
   "titleid": "PPSA99305",
   "name": "Dusklight",
   "kind": "game",
+  "category": "console-ports",
   "description": "Dusklight for PlayStation 5: a homebrew port on RADV (Aurora, Dawn WebGPU, SDL3). Bring your own disc image.",
   "license": "GPL-3.0",
   "author": "Gary Riches",

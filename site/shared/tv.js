@@ -148,6 +148,7 @@
     view = apps.filter(function (app) {
       if (state.kind === "all") return true;
       if (state.kind === "soon") return app.soon;
+      if (state.kind.indexOf("cat:") === 0) return app.category === state.kind.slice(4) && !app.soon;
       return app.kind === state.kind && !app.soon;
     }).sort(compare);
   }
@@ -170,7 +171,7 @@
     img.loading = position < 20 ? "eager" : "lazy";
     img.decoding = "async";
     art.appendChild(img);
-    art.appendChild(make("span", "tv-tile__badge" + (app.soon ? " tv-tile__badge--soon" : ""), app.soon ? "Soon" : app.kind_label));
+    art.appendChild(make("span", "tv-tile__badge" + (app.soon ? " tv-tile__badge--soon" : ""), app.soon ? "Soon" : app.category_label || app.kind_label));
     item.appendChild(art);
     item.appendChild(make("p", "tv-tile__name", app.name));
     item.appendChild(make("p", "tv-tile__meta", app.soon ? app.author : app.author + " · " + app.version_label));
@@ -215,6 +216,8 @@
     if (zone === "rail") {
       state.rail = Math.max(0, Math.min(index, railItems.length - 1));
       target = railItems[state.rail];
+      // The rail scrolls when the categories make it taller than the screen.
+      if (target.scrollIntoView) target.scrollIntoView({ block: "nearest" });
       el.crossHint.textContent = target.dataset.action === "sort" ? "Change sort" : target.dataset.action === "exit" ? "Exit" : "Browse";
     } else {
       if (!view.length) return setFocus("rail", state.rail);
@@ -282,7 +285,7 @@
     d.appendChild(art);
 
     var info = make("div", "tv-detail__info");
-    info.appendChild(make("p", "tv-kicker", (app.soon ? "Coming soon" : app.kind_label) + " · " + app.titleid));
+    info.appendChild(make("p", "tv-kicker", (app.soon ? "Coming soon" : app.category_label || app.kind_label) + " · " + app.titleid));
     var name = make("h2", "tv-detail__name", app.name);
     name.id = "tv-detail-name";
     info.appendChild(name);
@@ -546,6 +549,7 @@
     } catch (error) { /* storage blocked */ }
     var data = JSON.parse($("tv-data").textContent);
     apps = data.apps;
+    (data.categories || []).forEach(function (category) { HEADINGS["cat:" + category.key] = category.label; });
     apps.forEach(function (app) { app.sort_name = app.name.toLowerCase(); app.likes = 0; app.comments = 0; });
     el = {
       grid: $("tv-grid"), main: $("tv-main"), empty: $("tv-empty"), heading: $("tv-heading"),

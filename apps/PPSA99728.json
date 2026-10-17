@@ -2,6 +2,7 @@
   "titleid": "PPSA99728",
   "name": "OpenRCT2 Native Port",
   "kind": "game",
+  "category": "pc-ports",
   "description": "OpenRCT2, the open-source RollerCoaster Tycoon 2, running natively on the PS5 and played with the DualSense alone. Send your own game files, even the GOG installer, from a PC or phone browser.",
   "license": "GPL-3.0",
   "author": "lowbit",

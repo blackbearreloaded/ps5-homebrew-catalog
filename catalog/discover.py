@@ -68,6 +68,19 @@ KIND_WORDS = (
                         re.I)),
     ("game", re.compile(r"\b(games?|puzzles?|chess|arcade|platformer|shooter|doom|quake|half-life)\b", re.I)),
 )
+# A category from the same words; the first match wins, so the narrow ones come first.
+CATEGORY_WORDS = (
+    ("ai", re.compile(r"\b(llm|llama|gguf|language models?|chatbot)\b", re.I)),
+    ("emulators", re.compile(r"\b(emulat\w*|retroarch|libretro|pcsx2|dolphin|ppsspp)\b", re.I)),
+    ("streaming", re.compile(r"\b(remote play|moonlight|chiaki|cloud gaming|game streaming|geforce now)\b", re.I)),
+    ("console-ports", re.compile(r"\b(decomp\w*|recomp\w*|n64|gamecube|wii u|your own rom|disc image)\b", re.I)),
+    ("music", re.compile(r"\b(music|radio|spotify|navidrome|audio player)\b", re.I)),
+    ("video", re.compile(r"\b(video|iptv|jellyfin|plex|emby|kodi|stremio|youtube|twitch|media player|movies)\b", re.I)),
+    ("tools", re.compile(r"\b(tester|test patterns?|calibrat\w*|diagnos\w*|benchmark)\b", re.I)),
+    ("utilities", re.compile(r"\b(file manager|explorer|ftp|backup|installer|launcher|manager|utilit\w*)\b", re.I)),
+    ("pc-ports", re.compile(r"\b(source port|doom|quake|half-life|xash)\b", re.I)),
+)
+DEFAULT_CATEGORY = {"app": "utilities", "game": "homebrew-games", "tool": "utilities"}
 MARKDOWN_LINK = re.compile(r"!?\[([^\]]*)\]\([^)]*\)")
 # Release files built for a desktop OS or CPU are tools or libraries, not console titles.
 DESKTOP_BUILD = re.compile(r"(?<![a-z])(linux|windows|win(32|64)|macos|osx|darwin|mac|x86_64|x64|amd64|arm64|"
@@ -284,13 +297,21 @@ def complete(candidate: Candidate, github: GitHub) -> str | None:
         if match:
             kind, word = option, match.group(0)
             break
-    record["kind"], record["description"] = kind, description
+    category, clue = DEFAULT_CATEGORY[kind], ""
+    for option, pattern in CATEGORY_WORDS:
+        match = pattern.search(haystack)
+        if match:
+            category, clue = option, match.group(0)
+            break
+    record["kind"], record["category"], record["description"] = kind, category, description
     problems = record_problems(record)
     if problems:
         return "the drafted record is invalid: " + "; ".join(problems)
     candidate.record = record
     candidate.guesses = [
         f"kind `{kind}`: " + (f"guessed from the word \"{_text(word, 30)}\"" if word else "the default; no keyword matched"),
+        f"category `{category}`: " + (f"guessed from the word \"{_text(clue, 30)}\"" if clue
+                                     else f"the default for a {kind}; no keyword matched"),
         f"description: taken from {source}",
         f"author `{_text(record['author'], 64)}`: the GitHub profile name",
     ]

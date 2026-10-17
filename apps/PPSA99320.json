@@ -2,6 +2,7 @@
   "titleid": "PPSA99320",
   "name": "Ship of Harkinian (Vulkan)",
   "kind": "game",
+  "category": "console-ports",
   "description": "Ship of Harkinian (Ocarina of Time PC port) on Vulkan: converts your own ROM on the console, 60 FPS at 4K, HD texture packs, right-stick camera and PS button prompts; tested on firmware 13.60.",
   "license": "GPL-3.0",
   "author": "damiantw",

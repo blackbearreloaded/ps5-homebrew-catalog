@@ -17,7 +17,7 @@ from urllib.parse import quote, urlsplit
 
 from . import artifacts
 from .github import GitHub
-from .records import FIELDS, TITLE_ID, load_catalog, tag_version
+from .records import CATEGORIES, FIELDS, TITLE_ID, load_catalog, tag_version
 from .report import Report
 from .updates import newest_release
 
@@ -157,6 +157,7 @@ def draft_record(repo_value: str, github: GitHub, apps_dir: Path, tag: str | Non
                       "(README, release notes)")
     draft.todo.append("write `description`: one factual sentence, at most 200 characters, based on the README")
     draft.todo.append("set `kind` to app, game or tool")
+    draft.todo.append("set `category` to one of: " + ", ".join(CATEGORIES))
 
     # Clashes with the catalog.
     existing = {r.titleid: r for r in load_catalog(apps_dir, Report())}

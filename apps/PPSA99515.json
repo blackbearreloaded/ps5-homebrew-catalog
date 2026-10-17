@@ -2,6 +2,7 @@
   "titleid": "PPSA99515",
   "name": "Emby5",
   "kind": "app",
+  "category": "video",
   "description": "A native Emby client for PlayStation 5 with media playback and optional Seerr requests.",
   "license": "GPL-3.0",
   "author": "bornaradusin",

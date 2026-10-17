@@ -2,6 +2,7 @@
   "titleid": "PPSA99575",
   "name": "PS5LM",
   "kind": "app",
+  "category": "ai",
   "description": "Runs language and decision models on the PS5's GPU with llama.cpp and serves them to your network over OpenAI and Anthropic APIs. Decision models powered by Ollaya.",
   "license": "GPL-3.0",
   "author": "Mert Cobanov",

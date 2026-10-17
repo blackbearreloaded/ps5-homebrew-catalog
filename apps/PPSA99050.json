@@ -2,6 +2,7 @@
   "titleid": "PPSA99050",
   "name": "Homebrew UI Lab",
   "kind": "app",
+  "category": "showcases",
   "description": "A gallery of 21 complete, working interface designs for PS5 homebrew, drawn with OpenGL, with 30 themes and a reusable widget kit. Switch designs with L1 and R1.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",

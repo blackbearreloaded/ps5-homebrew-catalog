@@ -2,6 +2,7 @@
   "titleid": "PPSA98511",
   "name": "ReKHCoM",
   "kind": "game",
+  "category": "console-ports",
   "description": "Native PS5 port of Kingdom Hearts: Chain of Memories (The GBA Version). The European, US and Japanese cartridges are supported; the version is detected from the ROM you provide (no ROM is included).",
   "license": "CC0-1.0",
   "author": "AngelXex",

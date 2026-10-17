@@ -65,7 +65,7 @@ still published and unchanged; new clients should use the API.
 }
 ```
 
-The first eleven fields after `schema` are the app's record, exactly as in
+The first twelve fields after `schema` are the app's record, exactly as in
 [Metadata format](metadata.md). The build adds the rest:
 
 | Field | Type | Meaning |
@@ -177,6 +177,7 @@ badge in lists.
       "status": "available",
       "name": "ProsperoLight",
       "kind": "app",
+      "category": "streaming",
       "author": "BlackBearReloaded",
       "version": "01.000.070",
       "content_version": "01.000.070",
@@ -462,9 +463,12 @@ main site.
 
 - **The path is the contract.** Everything under `/api/v1/` keeps its paths,
   field names, types and meanings.
-- **Additions don't break it.** New fields and new files can appear at any
-  time. `schema` is raised when they do, so a client can tell whether a field
-  it wants exists yet. Clients must ignore fields they don't know.
+- **Additions don't break it.** New fields can appear at any time, and new
+  files as long as they stay out of `manifest.json` (stores up to 1.000.050
+  refuse a manifest that names a file they don't know). Clients must ignore
+  fields they don't know, and test for a field rather than for the `schema`
+  number: released stores accept exactly `schema` 3, so it is not raised for
+  additions.
 - **A breaking change gets a new path**, `/api/v2/`: removing or renaming a
   field, changing its type or meaning, or changing the update rule. `/api/v1/`
   keeps being published next to it for at least six months after `v2` is
@@ -481,6 +485,7 @@ main site.
 | 3 | 2026-10-07 | Added `safety` to app files and `sandbox` to index entries: what the release scan found. `schema` stays 3. |
 | 3 | 2026-10-07 | `icon` and `icon_small` end in `?v=<icon_hash>`, so an icon's address changes with its picture. No field was added or renamed. |
 | 3 | 2026-10-11 | Added `added` to app files and index entries, and the signed `news.json` beside the catalog (not in the manifest). `schema` stays 3. |
+| 3 | 2026-10-16 | Added `category` to app files (it is a record field) and index entries: the app's shelf, one of the keys in [Metadata format](metadata.md#categories). `schema` stays 3. |
 | 3 | 2026-10-05 | Added `release_notes` and `release_notes_truncated` to app files. `schema` stays 3: a released store accepts only that exact number, so it is raised with the next change that store has been prepared for. Test for the field, not for the number. |
 
 ## Where the values come from

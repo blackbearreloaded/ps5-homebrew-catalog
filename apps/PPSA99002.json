@@ -2,6 +2,7 @@
   "titleid": "PPSA99002",
   "name": "ProsperoLight",
   "kind": "app",
+  "category": "streaming",
   "description": "Unofficial Moonlight game streaming port for PS5.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",

@@ -2,6 +2,7 @@
   "titleid": "PPSA99620",
   "name": "Ship of Harkinian (Ocarina of Time)",
   "kind": "game",
+  "category": "console-ports",
   "description": "Native PS5 port of Ship of Harkinian for Ocarina of Time; requires your own game assets.",
   "license": "GPL-3.0",
   "author": "mshivam019",

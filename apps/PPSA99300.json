@@ -2,6 +2,7 @@
   "titleid": "PPSA99300",
   "name": "Spider-Man: Edge of Time",
   "kind": "game",
+  "category": "console-ports",
   "description": "Unofficial native PS5 port of Spider-Man: Edge of Time. Requires game files from your own copy.",
   "license": "MIT",
   "author": "KongaTime",

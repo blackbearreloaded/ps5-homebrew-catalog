@@ -2,6 +2,7 @@
   "titleid": "PPSA99640",
   "name": "Twilight Princess (Dusklight)",
   "kind": "game",
+  "category": "console-ports",
   "description": "Native PS5 port of Dusklight for Twilight Princess; requires your own USA GameCube game data.",
   "license": "CC0-1.0",
   "author": "mshivam019",

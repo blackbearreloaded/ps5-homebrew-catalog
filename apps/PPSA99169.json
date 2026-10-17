@@ -2,6 +2,7 @@
   "titleid": "PPSA99169",
   "name": "RetroArch",
   "kind": "app",
+  "category": "emulators",
   "description": "Native RetroArch port for PS5 with cores for NES, SNES, GBA, Genesis, arcade, PSP, GameCube/Wii and PS2.",
   "license": "GPL-3.0-or-later",
   "author": "Mihawk",

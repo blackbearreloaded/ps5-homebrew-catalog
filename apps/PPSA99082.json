@@ -2,6 +2,7 @@
   "titleid": "PPSA99082",
   "name": "OpenNOW PS5 - Prototype",
   "kind": "app",
+  "category": "streaming",
   "description": "Experimental native PS5 GeForce NOW client: a working, console-tested prototype with hardware decoding and GPU presentation.",
   "license": "GPL-3.0",
   "author": "Portablelle",

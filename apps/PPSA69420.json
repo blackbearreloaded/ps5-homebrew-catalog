@@ -2,6 +2,7 @@
   "titleid": "PPSA69420",
   "name": "ScreenTester5",
   "kind": "tool",
+  "category": "tools",
   "description": "Screen tester: solid colours and test patterns to find dead or stuck pixels, check uniformity and geometry, and run stuck-pixel recovery.",
   "license": "GPL-3.0-or-later",
   "author": "Marice",

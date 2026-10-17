@@ -2,6 +2,7 @@
   "titleid": "PPSA98766",
   "name": "DriftCheck",
   "kind": "tool",
+  "category": "tools",
   "description": "Controller tester: live sticks with circularity, a rest test that measures stick drift and suggests a deadzone, triggers, buttons, touchpad and motion sensors.",
   "license": "GPL-3.0",
   "author": "Felipe Melchior",

@@ -15,7 +15,7 @@ body:
       options:
         - Download is missing or fails
         - Icon is missing or wrong
-        - Name, description, author or license is wrong
+        - Name, description, category, author or license is wrong
         - App doesn't work as described
         - Other
     validations:

@@ -2,6 +2,7 @@
   "titleid": "PPSA99061",
   "name": "Spot5",
   "kind": "app",
+  "category": "music",
   "description": "Unofficial native Spotify player, not affiliated with Spotify: Home, Your Library, playlists, artists, Now Playing and more, with Spotify Connect. Needs Premium.",
   "license": "GPL-3.0-or-later",
   "author": "abhi245y",

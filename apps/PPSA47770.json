@@ -1,13 +1,14 @@
 {
-    "titleid": "PPSA47770",
-    "name": "Afterglow",
-    "kind": "app",
-    "description": "Internet radio with 220+ stations and 56 full-screen music visualizer scenes.",
-    "license": "GPL-3.0",
-    "author": "DevvNirvana",
-    "version": "01.000.006",
-    "source_repo": "https://github.com/DevvNirvana/afterglow",
-    "artifact_url": "https://github.com/DevvNirvana/afterglow/releases/download/01.000.006/PPSA47770.zip",
-    "sha256": "3c6d57ab42829577ccfde9a7f530ec8e3860e456f1c1244f93a1341d4969e47f",
-    "icon_url": "https://raw.githubusercontent.com/DevvNirvana/afterglow/01.000.006/sce_sys/icon0.png"
+  "titleid": "PPSA47770",
+  "name": "Afterglow",
+  "kind": "app",
+  "category": "music",
+  "description": "Internet radio with 220+ stations and 56 full-screen music visualizer scenes.",
+  "license": "GPL-3.0",
+  "author": "DevvNirvana",
+  "version": "01.000.006",
+  "source_repo": "https://github.com/DevvNirvana/afterglow",
+  "artifact_url": "https://github.com/DevvNirvana/afterglow/releases/download/01.000.006/PPSA47770.zip",
+  "sha256": "3c6d57ab42829577ccfde9a7f530ec8e3860e456f1c1244f93a1341d4969e47f",
+  "icon_url": "https://raw.githubusercontent.com/DevvNirvana/afterglow/01.000.006/sce_sys/icon0.png"
 }

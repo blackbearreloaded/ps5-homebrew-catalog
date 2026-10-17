@@ -510,3 +510,16 @@ html:not(.js) .sort { display: none; }
   .stage { --glow: color-mix(in srgb, color-mix(in srgb, var(--tint) 82%, var(--ink)) 40%, transparent); }
   .page { --glow: color-mix(in srgb, color-mix(in srgb, var(--tone) 82%, var(--ink)) 34%, transparent); }
 }
+
+/* Categories: the chips over a grid, a shelf's "See all", the link on an app's page. */
+.cats { display: flex; flex-wrap: wrap; gap: calc(12 * var(--u)); margin: calc(-12 * var(--u)) 0 calc(34 * var(--u)); }
+.cats[hidden] { display: none; }
+.cat { display: inline-flex; align-items: center; gap: calc(10 * var(--u)); height: calc(42 * var(--u)); min-height: 30px; padding: 0 calc(18 * var(--u)); border: 1.5px solid rgba(244, 239, 230, 0.22); border-radius: 999px; background: rgba(244, 239, 230, 0.06); font: 600 calc(20 * var(--u))/1 var(--body); color: rgba(244, 239, 230, 0.82); cursor: pointer; transition: background-color 0.2s, border-color 0.2s, color 0.2s; }
+.cat span { font-weight: 500; color: rgba(244, 239, 230, 0.5); }
+.cat:hover { border-color: rgba(244, 239, 230, 0.5); color: var(--ink); }
+.cat[aria-pressed="true"] { border-color: var(--ink); background: var(--ink); color: #14121c; }
+.cat[aria-pressed="true"] span { color: rgba(20, 18, 28, 0.6); }
+.shelf__all { margin-left: calc(20 * var(--u)); font: 600 calc(20 * var(--u))/1 var(--body); color: var(--accent); text-decoration: none; }
+.shelf__all:hover { text-decoration: underline; }
+.kicker a { color: inherit; text-decoration: none; }
+.kicker a:hover { text-decoration: underline; }

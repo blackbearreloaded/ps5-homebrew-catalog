@@ -2,6 +2,7 @@
   "titleid": "PPSA99001",
   "name": "ProsperoRadio",
   "kind": "app",
+  "category": "music",
   "description": "Internet radio player for PS5.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",

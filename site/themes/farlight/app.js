@@ -42,6 +42,7 @@
     else if (path === base || path === base + "index.html") {
       var kinds = { apps: "app", games: "game", tools: "tool", soon: "soon" };
       if (kinds[params.get("section")]) state.set("kind", kinds[params.get("section")]);
+      if (/^[a-z-]+$/.test(params.get("category") || "")) state.set("kind", "cat:" + params.get("category"));
       if (params.get("sort") === "updated") state.set("sort", "updated");
     } else return; // other pages (404) stay as they are
     var hash = state.toString();
@@ -139,6 +140,9 @@
         author: item.getAttribute("data-by"),
         kind: item.getAttribute("data-app-kind"),
         kindLabel: item.getAttribute("data-kind-label"),
+        category: item.getAttribute("data-category") || "",
+        categoryLabel: item.getAttribute("data-category-label") || "",
+        categoryRank: Number(item.getAttribute("data-category-rank")) || 0,
         soon: item.getAttribute("data-status") === "soon",
         updated: item.getAttribute("data-updated") || "",
         text: (item.getAttribute("data-search-text") || "").toLowerCase(),
@@ -159,9 +163,16 @@
     var ORDERS = { name: { label: "Name", by: byName }, updated: { label: "Recently updated", by: byUpdated },
                    liked: { label: "Most liked", by: byLikes } };
     var likesKnown = false; // "Most liked" is offered once the likes have arrived
+    // The categories, in the catalog's order, as the tiles carry them.
+    var categories = [];
+    apps.forEach(function (app) {
+      if (app.category && !categoryNamed(app.category)) categories.push({ key: app.category, label: app.categoryLabel, rank: app.categoryRank });
+    });
+    categories.sort(function (a, b) { return a.rank - b.rank; });
+    function categoryNamed(key) { return categories.filter(function (one) { return one.key === key; })[0]; }
 
     var search = $("[data-search]");
-    var state = { section: "discover", query: "", sort: "name" };
+    var state = { section: "discover", query: "", sort: "name", category: "" };
 
     function readAddress() {
       var params = new URLSearchParams(window.location.search);
@@ -169,11 +180,13 @@
       state.section = SECTIONS[section] ? section : "discover";
       state.query = (params.get("q") || "").trim();
       state.sort = ORDERS[params.get("sort")] ? params.get("sort") : "name";
+      state.category = categoryNamed(params.get("category") || "") ? params.get("category") : "";
       if (search && search.value !== state.query) search.value = state.query;
     }
     function writeAddress(push) {
       var params = new URLSearchParams();
       if (state.section !== "discover") params.set("section", state.section);
+      if (state.category) params.set("category", state.category);
       if (state.query) params.set("q", state.query);
       if (state.sort !== "name") params.set("sort", state.sort);
       var address = base + (params.toString() ? "?" + params.toString() : "");
@@ -191,6 +204,7 @@
       var section = SECTIONS[state.section];
       var shown = apps.filter(function (app) {
         if (terms.length) return terms.every(function (term) { return app.text.indexOf(term) !== -1; });
+        if (state.category && app.category !== state.category) return false;
         if (section.soon) return app.soon;
         if (section.kind) return app.kind === section.kind && !app.soon;
         return true;
@@ -204,11 +218,48 @@
         var tile = app.item.firstElementChild;
         if (tile && !calm) tile.style.animationDelay = Math.min(index, 11) * 35 + "ms";
       });
-      title.textContent = terms.length ? "Results for “" + state.query + "”" : section.title === "Discover" ? "PS5 homebrew" : section.title;
+      var category = !terms.length && state.category ? categoryNamed(state.category) : null;
+      var heading = section.title === "Discover" ? "PS5 homebrew" : section.title;
+      if (category) heading = section.title === "Discover" ? category.label : section.title + " · " + category.label;
+      title.textContent = terms.length ? "Results for “" + state.query + "”" : heading;
       count.textContent = shown.length;
       empty.hidden = shown.length !== 0;
       sortName.textContent = ORDERS[state.sort].label;
-      document.title = (terms.length ? "Search" : section.title) + " — PS5 Homebrew Store";
+      document.title = (terms.length ? "Search" : category ? category.label : section.title) + " — PS5 Homebrew Store";
+      paintCategories(terms.length > 0);
+    }
+
+    /* The category chips over a grid: those the section has, each with how many it holds. */
+    var categoryBox = $("[data-cats]");
+    function paintCategories(searching) {
+      if (!categoryBox) return;
+      var section = SECTIONS[state.section];
+      var pool = apps.filter(function (app) {
+        if (section.soon) return app.soon;
+        if (section.kind) return app.kind === section.kind && !app.soon;
+        return true;
+      });
+      var present = categories.filter(function (one) { return pool.some(function (app) { return app.category === one.key; }); });
+      categoryBox.textContent = "";
+      categoryBox.hidden = searching || (present.length < 2 && !state.category);
+      if (categoryBox.hidden) return;
+      [{ key: "", label: "All" }].concat(present).forEach(function (one) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "cat";
+        button.setAttribute("aria-pressed", String(state.category === one.key));
+        button.textContent = one.label;
+        var number = document.createElement("span");
+        number.textContent = one.key ? pool.filter(function (app) { return app.category === one.key; }).length : pool.length;
+        button.appendChild(number);
+        button.addEventListener("click", function () { showCategory(one.key); });
+        categoryBox.appendChild(button);
+      });
+    }
+    function showCategory(key) {
+      state.category = key;
+      writeAddress(true);
+      render();
     }
 
     /* Discover: the shelves, made once from the same tiles. */
@@ -222,8 +273,8 @@
       var fresh = available.slice().sort(byUpdated).slice(0, NEW_AND_UPDATED);
       featured = fresh.slice(0, FEATURED);
       addShelf({ title: "New and updated", apps: fresh });
-      ["apps", "games", "tools"].forEach(function (key) {
-        addShelf({ title: SECTIONS[key].title, apps: available.filter(function (app) { return app.kind === SECTIONS[key].kind; }).sort(byName) });
+      categories.forEach(function (one) {
+        addShelf({ title: one.label, category: one.key, apps: available.filter(function (app) { return app.category === one.key; }).sort(byName) });
       });
       addShelf({ title: "Coming soon", apps: apps.filter(function (app) { return app.soon; }).sort(byName) });
       paintStats();
@@ -243,6 +294,19 @@
       number.className = "count";
       number.textContent = shelf.apps.length;
       heading.appendChild(number);
+      if (shelf.category) {
+        var all = document.createElement("a");
+        all.className = "shelf__all";
+        all.href = base + "?category=" + encodeURIComponent(shelf.category);
+        all.textContent = "See all";
+        all.addEventListener("click", function (event) {
+          if (event.metaKey || event.ctrlKey || event.shiftKey || event.button) return;
+          event.preventDefault();
+          showCategory(shelf.category);
+          window.scrollTo({ top: 0, behavior: calm ? "auto" : "smooth" });
+        });
+        heading.appendChild(all);
+      }
       var row = document.createElement("div");
       row.className = "shelf__row";
       var tiles = document.createElement("ul");
@@ -361,12 +425,12 @@
     function kickerFor(app, featuredNow) {
       if (app.soon) return "Coming soon";
       if (featuredNow) return banner === 0 ? "New release" : "Featured";
-      return app.kindLabel;
+      return app.categoryLabel || app.kindLabel;
     }
     function fillWords(app, kicker) {
       $("[data-stage-kicker]", stage).textContent = kicker;
       $("[data-stage-title]", stage).textContent = app.name;
-      var meta = [app.author, app.kindLabel];
+      var meta = [app.author, app.categoryLabel || app.kindLabel];
       if (app.version) meta.push(app.version.replace(/^v(?=\d)/, ""));
       if (app.size) meta.push(app.size);
       $("[data-stage-meta]", stage).textContent = meta.join("  ·  ");
@@ -425,7 +489,7 @@
       clearInterval(bannerTimer);
       if (featured.length < 2 || calm) return;
       bannerTimer = setInterval(function () {
-        if (!held && !document.hidden && state.section === "discover" && !state.query) showBanner(banner + 1);
+        if (!held && !document.hidden && state.section === "discover" && !state.query && !state.category) showBanner(banner + 1);
       }, BANNER_SECONDS * 1000);
     }
     function hold(tile) {
@@ -456,7 +520,7 @@
     });
 
     function render() {
-      var discover = state.section === "discover" && !state.query;
+      var discover = state.section === "discover" && !state.query && !state.category;
       body.classList.toggle("is-discover", discover);
       moveLine(state.query ? "" : state.section);
       if (discover) {
@@ -476,6 +540,7 @@
         event.preventDefault();
         state.section = tab.getAttribute("data-section");
         state.query = "";
+        state.category = "";
         if (search) search.value = "";
         writeAddress(true);
         render();

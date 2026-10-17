@@ -26,6 +26,9 @@ then reviews and merges it.
   not only a new name, theme or icon; contribute those to the original
   project instead. Its name doesn't include the listed app's name. See the
   [review policy](review-policy.md#maintainer-review).
+- A **category**: the shelf your app is shown on, one of the eleven in
+  [Categories](metadata.md#categories). Pick the one people would look in
+  first; the reviewer may suggest another.
 - A **title ID** no other listed app uses.
 - A **square icon** at a stable HTTPS URL: PNG, JPEG or WebP, **512×512
   recommended** (256×256 at least), at most 2 MiB. That is exactly the PS5's
@@ -100,6 +103,7 @@ Fork this repository and add `apps/<TITLEID>.json`:
   "titleid": "PPSA01234",
   "name": "Example App",
   "kind": "app",
+  "category": "utilities",
   "description": "One short sentence about the app.",
   "license": "GPL-3.0",
   "author": "Example Dev",

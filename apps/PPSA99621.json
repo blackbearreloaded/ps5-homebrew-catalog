@@ -2,6 +2,7 @@
   "titleid": "PPSA99621",
   "name": "2 Ship 2 Harkinian (Majora's Mask)",
   "kind": "game",
+  "category": "console-ports",
   "description": "Native PS5 port of 2 Ship 2 Harkinian for Majora's Mask; requires your own game assets.",
   "license": "GPL-3.0",
   "author": "mshivam019",

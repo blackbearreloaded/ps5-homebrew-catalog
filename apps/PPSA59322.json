@@ -2,6 +2,7 @@
   "titleid": "PPSA59322",
   "name": "ccleste",
   "kind": "game",
+  "category": "pc-ports",
   "description": "This is a C source port of the original celeste (Celeste classic) for the PICO-8, designed to be portable. Now you can enjoy the port on your PS5.",
   "license": "MIT",
   "author": "AngelXex",

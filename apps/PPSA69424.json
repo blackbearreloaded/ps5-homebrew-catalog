@@ -2,6 +2,7 @@
   "titleid": "PPSA69424",
   "name": "Wave Race 64 Recompiled",
   "kind": "game",
+  "category": "console-ports",
   "description": "Native PS5 port of Wave Race 64: Recompiled, the N64 jet ski racer recompiled with 4K output, 60 fps and a modern water renderer; needs your own Wave Race 64 (USA) (Rev A) ROM.",
   "license": "GPL-3.0-or-later",
   "author": "Marice",

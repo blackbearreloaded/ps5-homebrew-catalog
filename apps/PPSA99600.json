@@ -2,6 +2,7 @@
   "titleid": "PPSA99600",
   "name": "Cloud Play",
   "kind": "app",
+  "category": "streaming",
   "description": "A Chiaki-based cloud streaming client for PS5 that streams games from the PS Plus Premium catalog.",
   "license": "GPL-3.0-or-later",
   "author": "tertiumndatur",

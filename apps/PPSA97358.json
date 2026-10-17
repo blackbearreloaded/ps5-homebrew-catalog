@@ -2,6 +2,7 @@
   "titleid": "PPSA97358",
   "name": "XPSemu",
   "kind": "app",
+  "category": "emulators",
   "description": "Original Xbox emulator for PS5, based on xemu.",
   "license": "GPL-2.0",
   "author": "AZiZ",

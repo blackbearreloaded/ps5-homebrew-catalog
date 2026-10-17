@@ -2,6 +2,7 @@
   "titleid": "PPSA99203",
   "name": "PS5SX2",
   "kind": "app",
+  "category": "emulators",
   "description": "PCSX2 port for PS5 that runs PS2 games natively with a Vulkan renderer, up to 6x resolution and settings from your phone. Bring your own BIOS and games.",
   "license": "GPL-3.0",
   "author": "Sword",

@@ -2,6 +2,7 @@
   "titleid": "PPSA99505",
   "name": "Jelly5",
   "kind": "app",
+  "category": "video",
   "description": "A native Jellyfin client for jailbroken PS5: its own liquid-glass interface, hardware-decoded 4K HDR",
   "license": "GPL-3.0",
   "author": "02dnot",

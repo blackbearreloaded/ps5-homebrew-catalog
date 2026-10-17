@@ -2,6 +2,7 @@
   "titleid": "PPSA99011",
   "name": "PS5 FSR4 Showcase",
   "kind": "app",
+  "category": "showcases",
   "description": "Shows AMD FSR 4 upscaling on the PS5: a city at dusk rendered small and upscaled at 60 fps, with settings to compare it against bilinear and native rendering.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",

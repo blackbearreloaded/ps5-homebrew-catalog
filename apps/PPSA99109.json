@@ -2,6 +2,7 @@
   "titleid": "PPSA99109",
   "name": "Prospero Explorer",
   "kind": "tool",
+  "category": "utilities",
   "description": "File explorer for PS5 that manages files and archives, plays media, edits text, installs packages and serves files over the network.",
   "license": "GPL-3.0",
   "author": "SvenGDK",
