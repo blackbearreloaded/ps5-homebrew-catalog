@@ -145,6 +145,8 @@
         categoryRank: Number(item.getAttribute("data-category-rank")) || 0,
         soon: item.getAttribute("data-status") === "soon",
         updated: item.getAttribute("data-updated") || "",
+        added: item.getAttribute("data-added") || "",
+        released: item.getAttribute("data-released") || "",
         text: (item.getAttribute("data-search-text") || "").toLowerCase(),
         url: item.getAttribute("data-url"),
         icon: item.getAttribute("data-icon"),
@@ -159,8 +161,14 @@
     });
     var byName = function (a, b) { return a.sortName < b.sortName ? -1 : a.sortName > b.sortName ? 1 : 0; };
     var byUpdated = function (a, b) { return a.updated < b.updated ? 1 : a.updated > b.updated ? -1 : byName(a, b); };
+    // "Recently updated" means a newer release, not an edit to the listing: the release's own date.
+    var byReleased = function (a, b) {
+      var x = a.released || a.updated, y = b.released || b.updated;
+      return x < y ? 1 : x > y ? -1 : byName(a, b);
+    };
+    var byAdded = function (a, b) { return a.added < b.added ? 1 : a.added > b.added ? -1 : byName(a, b); };
     var byLikes = function (a, b) { return b.likes - a.likes || byName(a, b); };
-    var ORDERS = { name: { label: "Name", by: byName }, updated: { label: "Recently updated", by: byUpdated },
+    var ORDERS = { name: { label: "Name", by: byName }, updated: { label: "Recently updated", by: byReleased },
                    liked: { label: "Most liked", by: byLikes } };
     var likesKnown = false; // "Most liked" is offered once the likes have arrived
     // The categories, in the catalog's order, as the tiles carry them.
@@ -266,13 +274,29 @@
     var shelvesBox = $("[data-shelves]");
     var featured = [];
     var shelvesReady = false;
+    var topShelves = 1; // "Most liked" goes after the new and updated shelves
     function buildShelves() {
       if (shelvesReady) return;
       shelvesReady = true;
       var available = apps.filter(function (app) { return !app.soon; });
-      var fresh = available.slice().sort(byUpdated).slice(0, NEW_AND_UPDATED);
-      featured = fresh.slice(0, FEATURED);
-      addShelf({ title: "New and updated", apps: fresh });
+      // New in the catalog: listed in the thirty days before the newest listing, newest first.
+      var newest = available.reduce(function (top, app) { return app.added > top ? app.added : top; }, "");
+      var since = newest ? new Date(Date.parse(newest) - 30 * 86400000).toISOString().slice(0, 19) + "Z" : "";
+      var fresh = available.filter(function (app) { return app.added && app.added >= since; }).sort(byAdded).slice(0, NEW_AND_UPDATED);
+      // Recently updated: a release published after the app was listed, newest first, and not one of the new apps.
+      var renewed = available.filter(function (app) {
+        return fresh.indexOf(app) < 0 && app.released && (!app.added || app.released > app.added);
+      }).sort(byReleased).slice(0, NEW_AND_UPDATED);
+      featured = available.filter(function (app) { return app.released; }).sort(byReleased).slice(0, FEATURED);
+      addShelf({ title: "New in the catalog", apps: fresh });
+      addShelf({ title: "Recently updated", apps: renewed });
+      // A build without dates (offline) keeps the one shelf of the last changes.
+      if (!fresh.length && !renewed.length) {
+        var changed = available.slice().sort(byUpdated).slice(0, NEW_AND_UPDATED);
+        featured = changed.slice(0, FEATURED);
+        addShelf({ title: "New and updated", apps: changed });
+      }
+      topShelves = shelvesBox.children.length;
       categories.forEach(function (one) {
         addShelf({ title: one.label, category: one.key, apps: available.filter(function (app) { return app.category === one.key; }).sort(byName) });
       });
@@ -405,7 +429,7 @@
         likes.textContent = "▲ " + app.likes;
         line.appendChild(likes);
         line.appendChild(document.createTextNode((app.likes === 1 ? " like" : " likes") + "  ·  " + app.comments + (app.comments === 1 ? " comment" : " comments")));
-      } }, shelvesBox.children[1]);
+      } }, shelvesBox.children[topShelves]);
     }
 
     /* The stage: the featured apps in turn, or the tile the pointer is on. */

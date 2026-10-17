@@ -767,6 +767,10 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
                 f' data-name="{e(record.data["name"].casefold())}" data-titleid="{values["titleid"]}"'
                 f' data-author="{e(record.data["author"].casefold())}"'
                 f' data-updated="{values["updated_iso"]}" data-search-text="{values["search_text"]}"'
+                # When the catalog listed it, and when the release it lists was published: Discover
+                # tells new apps from updated ones with them, not with the record's last change.
+                f' data-added="{e(_utc(added.get(record.path.name)) or "")}"'
+                f' data-released="{e(known[record.titleid][0].released or "")}"'
             )
             name = template.replace(".html", "-soon.html") if record.reserved else template
             rendered.append(theme_obj.render(name, values))
@@ -846,6 +850,7 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
                 "license": d["license"] or "", "soon": record.reserved, "icon": icons[record.titleid],
                 "updated": display_date(updated[record.path.name]) if record.path.name in updated else "",
                 "updated_iso": updated.get(record.path.name, ""), "short_url": host + page_url(record),
+                "released_iso": known[record.titleid][0].released or "",
             }
             if not record.reserved:
                 item.update(format_label=FORMAT_LABELS[artifact_format(record)], sha256=d["sha256"],
