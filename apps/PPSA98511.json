@@ -6,9 +6,9 @@
   "description": "Native PS5 port of Kingdom Hearts: Chain of Memories (The GBA Version). The European, US and Japanese cartridges are supported; the version is detected from the ROM you provide (no ROM is included).",
   "license": "CC0-1.0",
   "author": "AngelXex",
-  "version": "ps5-v1.0.3",
+  "version": "ps5-v1.0.5",
   "source_repo": "https://github.com/darkxex/ReKHCom-PS5",
-  "artifact_url": "https://github.com/darkxex/ReKHCom-PS5/releases/download/ps5-v1.0.3/PPSA98511.zip",
-  "sha256": "d5d7eb8e945b39d7d971eba663cfdf0bd278e6a0b17e5eec3aabbd843c2f1e60",
+  "artifact_url": "https://github.com/darkxex/ReKHCom-PS5/releases/download/ps5-v1.0.5/PPSA98511.zip",
+  "sha256": "7c3d989c1e4ce72bb4e0095ceced5e9b0b0f3fb819ad95e1b4ca176d8f972043",
   "icon_url": "https://raw.githubusercontent.com/darkxex/ReKHCom-PS5/master/port/ps5/sce_sys/icon0.png"
 }
