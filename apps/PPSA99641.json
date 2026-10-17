@@ -2,6 +2,7 @@
   "titleid": "PPSA99641",
   "name": "Wind Waker HD",
   "kind": "game",
+  "category": "console-ports",
   "description": "Native PS5 port of Wind Waker HD. Requires game files prepared from your own USA Wii U dump.",
   "license": "MPL-2.0",
   "author": "mshivam019",

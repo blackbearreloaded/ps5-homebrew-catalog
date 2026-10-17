@@ -17,7 +17,7 @@ from urllib.parse import unquote, urlsplit
 from .report import Report
 
 FIELDS = (
-    "titleid", "name", "kind", "description", "license", "author",
+    "titleid", "name", "kind", "category", "description", "license", "author",
     "version", "source_repo", "artifact_url", "sha256", "icon_url",
 )
 RESERVATION_NULL = ("source_repo", "artifact_url", "icon_url", "sha256")
@@ -41,7 +41,7 @@ CATEGORIES = {
     "showcases": "Showcases",
 }
 # Fields a record may carry besides FIELDS while they are being introduced; checked when present.
-OPTIONAL_FIELDS = ("category",)
+OPTIONAL_FIELDS = ()
 MAX_FILE_BYTES = 8192
 MAX_LENGTH = {
     "titleid": 9, "name": 64, "kind": 4, "category": 16, "description": 200, "license": 64,

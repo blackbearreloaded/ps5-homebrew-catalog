@@ -145,14 +145,14 @@ the [store API](api.md).
   "homepage": "https://homebrew.page/",
   "source": { "repository": "https://github.com/…/ps5-homebrew-catalog", "commit": "<sha>" },
   "apps": [
-    { "…all eleven record fields…": "",
+    { "…all twelve record fields…": "",
       "format": "zip | ffpkg | ffpfsc",
       "updated": "2026-09-28T22:30:46-04:00",
       "page": "https://homebrew.page/app/PPSA01234/",
       "icon": "https://homebrew.page/assets/icon-PPSA01234.<hash>.webp" }
   ],
   "coming_soon": [
-    { "…all eleven fields, links and sha256 null…": "", "updated": "…", "page": "…", "icon": "…" }
+    { "…all twelve fields, links and sha256 null…": "", "updated": "…", "page": "…", "icon": "…" }
   ]
 }
 ```

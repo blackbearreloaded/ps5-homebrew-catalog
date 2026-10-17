@@ -2,6 +2,7 @@
   "titleid": "PPSA99510",
   "name": "GyroAim",
   "kind": "tool",
+  "category": "tools",
   "description": "Gyro aiming in any game: the controller's gyroscope drives the stick, tuned from your phone while you play.",
   "license": "GPL-3.0",
   "author": "jmelovich",

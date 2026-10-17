@@ -71,6 +71,8 @@ class RecordTests(unittest.TestCase):
         self.assertRejected(record(name="x" * 65), "longer than 64")
         self.assertRejected(record(kind="demo"), "kind must be")
         self.assertRejected(record(category="games"), "category must be")
+        self.assertRejected(record(category="Emulators"), "category must be")
+        self.assertRejected({k: v for k, v in record().items() if k != "category"}, "category")
         self.assertRejected(record(name=""), "must not be empty")
         self.assertRejected(record(version=5), "must be a string")
 

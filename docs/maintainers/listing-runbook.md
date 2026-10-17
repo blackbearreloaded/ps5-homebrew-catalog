@@ -104,6 +104,7 @@ the app, and ignore vendored examples.
 | --- | --- |
 | `name` | The `titleName` from `param.json` (drafted). Change it only to avoid a clash with an existing listing. |
 | `kind` | `game` for games, `tool` for utilities and system tools, `app` for everything else (players, emulators, clients). |
+| `category` | The shelf people would look in first, from [Categories](../metadata.md#categories): a console game rebuilt from a decompilation or recompilation is `console-ports`, a game that came from PC is `pc-ports`, a game made for the PS5 is `homebrew-games`. |
 | `description` | One factual sentence, at most 200 characters, from the README. No marketing, no claims the README doesn't make, no emoji. |
 | `author` | How the developer credits themselves in the README or release notes (the draft suggests the GitHub profile name). |
 | `license` | GitHub's detected SPDX identifier (drafted). If GitHub detects none, use the SPDX identifier the README or source headers state for the project's own code, and quote that text in the pull request. If no license is stated anywhere, stop. |

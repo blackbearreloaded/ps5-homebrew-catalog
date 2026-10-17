@@ -2,6 +2,7 @@
   "titleid": "PPSA99303",
   "name": "Quake3e",
   "kind": "game",
+  "category": "pc-ports",
   "description": "Native PS5 port of Quake3e, the improved Quake III Arena engine, drawing with Vulkan at up to 4K with DualSense or USB mouse and keyboard input. Needs your own Quake III Arena game data.",
   "license": "GPL-3.0",
   "author": "Gary Riches",

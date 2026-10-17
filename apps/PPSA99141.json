@@ -2,6 +2,7 @@
   "titleid": "PPSA99141",
   "name": "Mortalfin",
   "kind": "app",
+  "category": "video",
   "description": "A native Jellyfin client for the PS5 with a cover-wheel interface, HDR and surround sound passthrough. Beta.",
   "license": "GPL-3.0",
   "author": "mortaljinx",

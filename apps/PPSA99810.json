@@ -2,6 +2,7 @@
   "titleid": "PPSA99810",
   "name": "PSBox Cloud Gaming",
   "kind": "app",
+  "category": "streaming",
   "description": "Unofficial Xbox Cloud Gaming client: stream the cloud catalog, your own games and your own Xbox (Remote Play) at 1080p60 with sound, using the DualSense as an Xbox controller.",
   "license": "GPL-3.0",
   "author": "RafaelNGP",

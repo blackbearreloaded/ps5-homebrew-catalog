@@ -2,6 +2,7 @@
   "titleid": "PPSA99360",
   "name": "PS5CEMU-HAR",
   "kind": "app",
+  "category": "emulators",
   "description": "Wii U and 3DS emulation for jailbroken PS5, built on Cemu and Azahar, with one launcher for both.",
   "license": "GPL-3.0",
   "author": "premohq",

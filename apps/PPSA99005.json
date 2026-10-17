@@ -2,6 +2,7 @@
   "titleid": "PPSA99005",
   "name": "PS5 OpenGL Showcase",
   "kind": "app",
+  "category": "showcases",
   "description": "Native OpenGL graphics showcase for PS5.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",

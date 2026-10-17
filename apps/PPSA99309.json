@@ -2,6 +2,7 @@
   "titleid": "PPSA99309",
   "name": "Wind Waker",
   "kind": "game",
+  "category": "console-ports",
   "description": "The Wind Waker (GameCube) for PlayStation 5: a homebrew port of SwitchWaker on RADV (Aurora, Dawn WebGPU, SDL3), 4K at 60 fps. Bring your own disc image.",
   "license": "GPL-3.0",
   "author": "Gary Riches",

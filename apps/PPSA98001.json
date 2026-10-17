@@ -2,6 +2,7 @@
   "titleid": "PPSA98001",
   "name": "PokeMMO Prospero",
   "kind": "game",
+  "category": "pc-ports",
   "description": "Runs the official, unmodified PokeMMO Linux client natively on a jailbroken PS5.",
   "license": "GPL-3.0",
   "author": "Shabbypenguin",

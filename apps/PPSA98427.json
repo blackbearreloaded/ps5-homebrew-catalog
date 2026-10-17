@@ -2,6 +2,7 @@
   "titleid": "PPSA98427",
   "name": "CD Player",
   "kind": "app",
+  "category": "music",
   "description": "Rediscover your audio CDs and fall in love with your music again: a native PS5 player with USB drive support, album art and reactive visuals.",
   "license": "GPL-3.0",
   "author": "LoZazaMastro",

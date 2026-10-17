@@ -2,6 +2,7 @@
   "titleid": "PPSA99006",
   "name": "ProsperoPuzzles",
   "kind": "game",
+  "category": "homebrew-games",
   "description": "Collection of puzzle games for PS5.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",

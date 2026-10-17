@@ -2,6 +2,7 @@
   "titleid": "PPSA99000",
   "name": "ProsperoStore",
   "kind": "app",
+  "category": "utilities",
   "description": "Native app store for PS5 homebrew: browse this catalog, install apps and keep them up to date.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",

@@ -2,6 +2,7 @@
   "titleid": "PPSA99288",
   "name": "Nuvio Max'd",
   "kind": "app",
+  "category": "video",
   "description": "An unofficial native Nuvio client for PS5 with synced watch progress, addon streams, episode skipping and experimental HDR10 playback.",
   "license": "GPL-3.0",
   "author": "HandshakeHackin",

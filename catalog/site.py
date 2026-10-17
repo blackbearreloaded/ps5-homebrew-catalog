@@ -38,7 +38,7 @@ from string import Template
 from urllib.parse import quote, unquote
 
 from . import artifacts
-from .records import KINDS, Record, load_catalog
+from .records import CATEGORIES, KINDS, Record, load_catalog
 from .report import Report
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -53,7 +53,7 @@ LEGACY_BASES = ("/ps5/",)
 MARKER = ".catalog-site"
 FEED_SCHEMA = 1
 API_VERSION = "v1"         # path of the store API; a breaking change gets a new path
-API_SCHEMA = 3             # raised when fields are added; clients ignore fields they don't know
+API_SCHEMA = 3             # not raised for additions: released stores accept exactly 3 (docs/api.md)
 API_ICON_SIZES = (512, 256)
 ICON_SIZE = 512
 FONT_URL = "https://fonts.googleapis.com/css2?{families}&display=swap"
@@ -548,7 +548,7 @@ def write_api(root: Path, url: str, records: list[Record], report: Report, *, up
         }
         _write_json(root / "apps" / f"{titleid}.json", app)
         index.append({key: app[key] for key in (
-            "titleid", "status", "name", "kind", "author", "version", "content_version", "format", "size",
+            "titleid", "status", "name", "kind", "category", "author", "version", "content_version", "format", "size",
             "released", "updated", "added", "icon_small", "icon_hash")}
             | {"sandbox": ((safety or {}).get(titleid) or {}).get("sandbox")})
         if not record.reserved:
@@ -719,6 +719,8 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
             url=e(page_url(record)),
             icon=e(icons[record.titleid]),
             kind_label=e(KIND_LABELS[d["kind"]]),
+            category_label=e(CATEGORIES[d["category"]]),
+            category_rank=str(list(CATEGORIES).index(d["category"])),
             status="soon" if record.reserved else "available",
             format="",
             ambient=e(ambients.get(record.titleid, "")),
@@ -746,7 +748,8 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
             updated=e(display_date(updated[record.path.name])) if record.path.name in updated else "—",
             updated_iso=e(updated.get(record.path.name, "")),
             total=f"{total:03d}",
-            search_text=e(" ".join((d["name"], d["author"], d["titleid"], d["description"], d["kind"]))),
+            search_text=e(" ".join((d["name"], d["author"], d["titleid"], d["description"], d["kind"],
+                                    CATEGORIES[d["category"]]))),
         )
         return values
 
@@ -760,6 +763,7 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
             values["grid_attrs"] = (
                 f' data-app data-app-kind="{values["kind"]}" data-status="{values["status"]}"'
                 f' data-format="{values["format"]}"'
+                f' data-category="{values["category"]}" data-category-rank="{values["category_rank"]}"'
                 f' data-name="{e(record.data["name"].casefold())}" data-titleid="{values["titleid"]}"'
                 f' data-author="{e(record.data["author"].casefold())}"'
                 f' data-updated="{values["updated_iso"]}" data-search-text="{values["search_text"]}"'
@@ -836,6 +840,7 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
             d = record.data
             item = {
                 "titleid": d["titleid"], "name": d["name"], "kind": d["kind"], "kind_label": KIND_LABELS[d["kind"]],
+                "category": d["category"], "category_label": CATEGORIES[d["category"]],
                 "description": d["description"], "author": d["author"], "version": d["version"] or "",
                 "version_label": version_label(d["version"]) if d["version"] else "",
                 "license": d["license"] or "", "soon": record.reserved, "icon": icons[record.titleid],
@@ -853,7 +858,14 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
         rail.append(("soon", "Coming soon", total - len(available)))
         rail_html = "\n".join(f'  <button type="button" class="tv-rail__item" data-kind="{kind}" tabindex="-1">'
                               f'{label}<span>{count}</span></button>' for kind, label, count in rail if count)
-        data = json.dumps({"apps": tv_apps}, ensure_ascii=False, separators=(",", ":"))
+        # Then the categories, each a section of its own (tv.js reads "cat:<key>").
+        shelf = {key: sum(1 for r in available if r.data["category"] == key) for key in CATEGORIES}
+        if any(shelf.values()):
+            rail_html += '\n  <p class="tv-rail__label">Categories</p>\n' + "\n".join(
+                f'  <button type="button" class="tv-rail__item tv-rail__item--cat" data-kind="cat:{key}" tabindex="-1">'
+                f'{e(label)}<span>{shelf[key]}</span></button>' for key, label in CATEGORIES.items() if shelf[key])
+        data = json.dumps({"apps": tv_apps, "categories": [{"key": key, "label": label} for key, label in CATEGORIES.items()]},
+                          ensure_ascii=False, separators=(",", ":"))
         (root / "tv").mkdir()
         (root / "tv" / "index.html").write_text(tv_template.substitute(
             shared, canonical=e(site_url + base + "tv/"), rail=rail_html,

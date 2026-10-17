@@ -2,6 +2,7 @@
   "titleid": "PPSA99004",
   "name": "ProsperoAI",
   "kind": "app",
+  "category": "ai",
   "description": "Local LLM chat app for PS5.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",

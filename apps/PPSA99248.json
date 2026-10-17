@@ -2,6 +2,7 @@
   "titleid": "PPSA99248",
   "name": "PSSwanStation",
   "kind": "app",
+  "category": "emulators",
   "description": "A PlayStation (PS1) emulator built on SwanStation, with a controller-first library, network shares, USB disc drives, CRT shaders and RetroAchievements.",
   "license": "GPL-3.0-or-later",
   "author": "Press5elect",

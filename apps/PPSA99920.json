@@ -2,6 +2,7 @@
   "titleid": "PPSA99920",
   "name": "Prospero Vibrate",
   "kind": "app",
+  "category": "tools",
   "description": "Controller vibration studio for PS5 with live motor control, preset patterns, a custom pattern editor and timed playback.",
   "license": "GPL-3.0",
   "author": "SvenGDK",

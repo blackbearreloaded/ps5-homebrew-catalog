@@ -2,6 +2,7 @@
   "titleid": "PPSA69421",
   "name": "SuperTuxKart",
   "kind": "game",
+  "category": "pc-ports",
   "description": "Alpha port of the open-source kart racer SuperTuxKart 1.5, with story mode and local races; network play is switched off.",
   "license": "GPL-3.0-or-later",
   "author": "Marice",

@@ -2,6 +2,7 @@
   "titleid": "PPSA99764",
   "name": "Porpoise",
   "kind": "app",
+  "category": "emulators",
   "description": "A native GameCube and Wii emulator for jailbroken PS5, powered by Dolphin. Cover-flow library, box art, memory cards, original music.",
   "license": "GPL-3.0",
   "author": "Ruben Ripalda",

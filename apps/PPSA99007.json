@@ -2,6 +2,7 @@
   "titleid": "PPSA99007",
   "name": "Yamagi Quake II",
   "kind": "game",
+  "category": "pc-ports",
   "description": "Native PS5 port of Yamagi Quake II.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",

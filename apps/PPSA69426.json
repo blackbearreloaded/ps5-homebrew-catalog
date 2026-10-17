@@ -2,6 +2,7 @@
   "titleid": "PPSA69426",
   "name": "Signal Companion",
   "kind": "app",
+  "category": "utilities",
   "description": "Set the colour of your PS5's light and edit the startup beep tune and light show of the ps5-signal payload, which the app can start itself or add to ps5-autoloader.",
   "license": "GPL-3.0-or-later",
   "author": "Marice",

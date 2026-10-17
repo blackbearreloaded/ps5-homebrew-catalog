@@ -2,6 +2,7 @@
   "titleid": "PPSA99177",
   "name": "PS5VR",
   "kind": "app",
+  "category": "video",
   "description": "Native VR video player for PS VR2 on jailbroken PS5: 8K, 180/360, 3D, spatial audio",
   "license": "GPL-3.0",
   "author": "Husam Osman",

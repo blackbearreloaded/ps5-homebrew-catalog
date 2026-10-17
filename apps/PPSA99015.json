@@ -2,6 +2,7 @@
   "titleid": "PPSA99015",
   "name": "Media Player Classic PS5",
   "kind": "app",
+  "category": "video",
   "description": "Media Player Classic Home Cinema's window and controls as a native PS5 app, playing local, USB, SMB and network media with FFmpeg.",
   "license": "GPL-3.0",
   "author": "MisterTemaki",

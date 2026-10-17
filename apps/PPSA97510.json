@@ -2,6 +2,7 @@
   "titleid": "PPSA97510",
   "name": "PSXS5",
   "kind": "app",
+  "category": "emulators",
   "description": "PSXS5 (PlayStation X Super 5): a PlayStation 1 emulator running natively on jailbroken PS5, based on PCSX-ReARMed. Cover-flow shelf, xBR upscaling, RetroAchievements, cheats.",
   "license": "GPL-3.0",
   "author": "SynoPiia",

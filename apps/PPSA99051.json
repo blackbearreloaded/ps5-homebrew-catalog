@@ -2,6 +2,7 @@
   "titleid": "PPSA99051",
   "name": "Surround Sound Studio",
   "kind": "app",
+  "category": "tools",
   "description": "Sends Dolby Digital, Dolby Digital Plus, DTS, AAC and TrueHD to your receiver untouched over HDMI, plus a speaker test lab with a 3D sound field.",
   "license": "GPL-3.0",
   "author": "sain.saji",

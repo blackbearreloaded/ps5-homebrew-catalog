@@ -2,6 +2,7 @@
   "titleid": "PPSA99012",
   "name": "ProsperoTube",
   "kind": "app",
+  "category": "video",
   "description": "An unofficial SmartTube port for PS5.",
   "license": null,
   "author": "BlackBearReloaded",

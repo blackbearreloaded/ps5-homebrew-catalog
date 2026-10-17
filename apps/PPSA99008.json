@@ -2,6 +2,7 @@
   "titleid": "PPSA99008",
   "name": "ProsperoEden",
   "kind": "app",
+  "category": "emulators",
   "description": "Unofficial Eden emulator port for PS5.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",

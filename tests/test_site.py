@@ -270,6 +270,29 @@ class SiteBuildTests(unittest.TestCase):
         self.assertIn('href="/tv/?layout=tv"', (self.out / "index.html").read_text(encoding="utf-8"))
         self.assertIn('href="/?layout=web"', html)
 
+    def test_categories(self):
+        self.build()
+        home = (self.out / "index.html").read_text(encoding="utf-8")
+        self.assertIn('data-category="utilities" data-category-rank="8"', home)
+        self.assertIn('data-category-label="Utilities"', home)
+        self.assertIn("data-cats", home)
+        page = (self.out / "app" / "PPSA04321" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('href="/?category=utilities">Utilities</a>', page)
+        self.assertIn("<dt>Category</dt><dd>Utilities</dd>", page)
+        tv = (self.out / "tv" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('data-kind="cat:utilities"', tv)
+        self.assertNotIn('data-kind="cat:emulators"', tv)  # a category without apps gets no entry
+        raw = tv.split('<script type="application/json" id="tv-data">', 1)[1].split("</script>", 1)[0]
+        data = json.loads(raw)
+        self.assertEqual(data["categories"][0], {"key": "console-ports", "label": "Console game ports"})
+        self.assertEqual({a["category_label"] for a in data["apps"]}, {"Utilities", "Homebrew games"})
+        # The API carries the key as an added field: same paths, same schema.
+        index = json.loads((self.out / "api" / "v1" / "index.json").read_text(encoding="utf-8"))
+        self.assertEqual(index["schema"], 3)
+        self.assertEqual({a["category"] for a in index["apps"]}, {"utilities", "homebrew-games"})
+        app = json.loads((self.out / "api" / "v1" / "apps" / "PPSA04321.json").read_text(encoding="utf-8"))
+        self.assertEqual(app["category"], "utilities")
+
     def test_feed(self):
         self.build()
         feed = json.loads((self.out / "catalog" / "v1.json").read_text(encoding="utf-8"))

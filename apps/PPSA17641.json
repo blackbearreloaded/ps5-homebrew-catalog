@@ -2,6 +2,7 @@
   "titleid": "PPSA17641",
   "name": "SymphonyStation5",
   "kind": "app",
+  "category": "music",
   "description": "A native Navidrome music client for the PlayStation 5.",
   "license": "GPL-3.0",
   "author": "TsvetomirGT",

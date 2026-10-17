@@ -2,6 +2,7 @@
   "titleid": "PPSA69423",
   "name": "Rush 2 Recompiled",
   "kind": "game",
+  "category": "console-ports",
   "description": "Native PS5 port of Rush 2 Recompiled, the N64 racer recompiled with 4K output and 60 fps; needs your own Rush 2: Extreme Racing USA (USA) ROM.",
   "license": "GPL-3.0-or-later",
   "author": "Marice",

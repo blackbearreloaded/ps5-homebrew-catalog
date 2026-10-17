@@ -2,6 +2,7 @@
   "titleid": "PPSA98510",
   "name": "SwanStationPS5",
   "kind": "app",
+  "category": "emulators",
   "description": "SwanStationPS5 is a PlayStation 1 emulator that runs all games using SwanStation core.",
   "license": "GPL-3.0-or-later",
   "author": "AngelXex",

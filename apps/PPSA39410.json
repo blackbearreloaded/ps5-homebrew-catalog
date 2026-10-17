@@ -2,6 +2,7 @@
   "titleid": "PPSA39410",
   "name": "VITA5",
   "kind": "app",
+  "category": "streaming",
   "description": "Play a PS Vita on the PS5 over one USB cable.",
   "license": "GPL-3.0",
   "author": "StonedModder",
