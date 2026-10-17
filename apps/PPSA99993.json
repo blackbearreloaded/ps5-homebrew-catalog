@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA99993",
+  "name": "Pulse",
+  "kind": "game",
+  "category": "homebrew-games",
+  "description": "A Beat Saber-style rhythm game for PS VR2 and Sense controllers that turns any MP3 into note maps on the console.",
+  "license": "GPL-3.0",
+  "author": "shwan-ps5",
+  "version": null,
+  "source_repo": null,
+  "artifact_url": null,
+  "sha256": null,
+  "icon_url": null
+}
