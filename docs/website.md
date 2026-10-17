@@ -20,8 +20,11 @@ dist/
 
 - **One catalog page, as a store front.** `/` opens on **Discover**: a stage
   that shows one app big (the five newest in turn, eight seconds each, or the
-  tile under the pointer) over shelves: New and updated, Apps, Games, Tools,
-  Coming soon. The tabs in the top bar switch to a section, which is a grid of
+  tile under the pointer) over shelves: New in the catalog (apps listed in the
+  last thirty days), Recently updated (apps with a release published after
+  they were listed, by the release's date), Most liked, one shelf per
+  category, Coming soon. Editing a listing, such as a new category or a
+  corrected description, doesn't make an app "updated". The tabs in the top bar switch to a section, which is a grid of
   the same tiles. The section, the search and the order live in the URL
   (`?section=games&q=…&sort=updated`), so any view can be linked. The old
   `/list/` and `?view=list` addresses open the catalog. The site used to live

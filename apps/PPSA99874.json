@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA99874",
+  "name": "PS5 Minecraft Java",
+  "kind": "game",
+  "category": "pc-ports",
+  "description": "Experimental Minecraft Java Edition server on a native PS5 OpenJDK 25 port; under development, with world startup still being validated.",
+  "license": null,
+  "author": "mateo-cogeanu",
+  "version": null,
+  "source_repo": null,
+  "artifact_url": null,
+  "sha256": null,
+  "icon_url": null
+}

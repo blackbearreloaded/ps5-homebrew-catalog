@@ -293,6 +293,14 @@ class SiteBuildTests(unittest.TestCase):
         app = json.loads((self.out / "api" / "v1" / "apps" / "PPSA04321.json").read_text(encoding="utf-8"))
         self.assertEqual(app["category"], "utilities")
 
+    def test_tiles_carry_listing_and_release_dates(self):
+        self.build()
+        home = (self.out / "index.html").read_text(encoding="utf-8")
+        self.assertIn("data-added=", home)
+        self.assertIn("data-released=", home)
+        tv = (self.out / "tv" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('"released_iso":', tv)
+
     def test_feed(self):
         self.build()
         feed = json.loads((self.out / "catalog" / "v1.json").read_text(encoding="utf-8"))

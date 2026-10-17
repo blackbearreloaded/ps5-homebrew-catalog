@@ -138,7 +138,8 @@
   /* The list */
 
   function compare(a, b) {
-    if (state.sort === "updated") return (b.updated_iso || "").localeCompare(a.updated_iso || "") || a.sort_name.localeCompare(b.sort_name);
+    // "Recently updated" is the release's date; the record's last change only when that is unknown.
+    if (state.sort === "updated") return (b.released_iso || b.updated_iso || "").localeCompare(a.released_iso || a.updated_iso || "") || a.sort_name.localeCompare(b.sort_name);
     if (state.sort === "author") return a.author.toLowerCase().localeCompare(b.author.toLowerCase()) || a.sort_name.localeCompare(b.sort_name);
     if (state.sort === "liked") return (b.likes || 0) - (a.likes || 0) || a.sort_name.localeCompare(b.sort_name);
     return a.sort_name.localeCompare(b.sort_name) || a.titleid.localeCompare(b.titleid);

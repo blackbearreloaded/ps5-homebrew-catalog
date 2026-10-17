@@ -6,9 +6,9 @@
   "description": "A TV remote for your self-hosted media stack: Sonarr, Radarr, Seerr and Jellyfin at a glance, with request approval, playback diagnosis and an optional cleanup.",
   "license": "GPL-3.0",
   "author": "Vivian",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "source_repo": "https://github.com/viviandsx/regie5",
-  "artifact_url": "https://github.com/viviandsx/regie5/releases/download/v0.5.0/PPSA99520.zip",
-  "sha256": "32fd8c094b30a6c2cae671471ea2940c1b324cc396e720c78d703846874a0bf8",
-  "icon_url": "https://raw.githubusercontent.com/viviandsx/regie5/v0.5.0/ps5/app/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/viviandsx/regie5/releases/download/v0.5.1/PPSA99520.zip",
+  "sha256": "75f6fced1dd15c1d16c31d5632c053801374514a23a70ca1fcbbada812abfb2b",
+  "icon_url": "https://raw.githubusercontent.com/viviandsx/regie5/v0.5.1/ps5/app/sce_sys/icon0.png"
 }

@@ -6,9 +6,9 @@
   "description": "An unofficial native Nuvio client for PS5 with synced watch progress, addon streams, episode skipping and experimental HDR10 playback.",
   "license": "GPL-3.0",
   "author": "HandshakeHackin",
-  "version": "0.5.28-native-experimental",
+  "version": "0.5.29-native-experimental",
   "source_repo": "https://github.com/HandshakeHackin/Nuvio-maxd-releases",
-  "artifact_url": "https://github.com/HandshakeHackin/Nuvio-maxd-releases/releases/download/v0.5.28-native-experimental/PPSA99288.zip",
-  "sha256": "753d8ee3b183f470c56595e0c4ec52c117e1142a9861ee0b8e5a6c9c2860b908",
-  "icon_url": "https://raw.githubusercontent.com/HandshakeHackin/Nuvio-maxd-releases/v0.5.28-native-experimental/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/HandshakeHackin/Nuvio-maxd-releases/releases/download/v0.5.29-native-experimental/PPSA99288.zip",
+  "sha256": "30d84c11dc2e4299f6c088ce98b308f21a6321187c4ae2c8f2ce93a1d24f9440",
+  "icon_url": "https://raw.githubusercontent.com/HandshakeHackin/Nuvio-maxd-releases/v0.5.29-native-experimental/sce_sys/icon0.png"
 }

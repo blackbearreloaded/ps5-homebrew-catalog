@@ -6,9 +6,9 @@
   "description": "Runs local language models (GGUF, llama.cpp) on the PS5's GPU, with a dashboard on the TV, model downloads, and a chat and OpenAI-compatible API for your network.",
   "license": "GPL-3.0-or-later",
   "author": "Abhiram",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "source_repo": "https://github.com/abhi245y/PS5LM-Plus",
-  "artifact_url": "https://github.com/abhi245y/PS5LM-Plus/releases/download/v0.8.3/ps5lm-app-v0.8.3.zip",
-  "sha256": "42acffcacc33f371b10a4cfaa6ede0100a677231de171712b9a879bc104b6ef9",
-  "icon_url": "https://raw.githubusercontent.com/abhi245y/PS5LM-Plus/v0.8.3/ps5/app/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/abhi245y/PS5LM-Plus/releases/download/v0.8.4/ps5lm-plus-v0.8.4.zip",
+  "sha256": "5f4b4aad87c3b9e4b29a9bafd056e510e7805cf87522af1a34a4d01be1b628d2",
+  "icon_url": "https://raw.githubusercontent.com/abhi245y/PS5LM-Plus/v0.8.4/ps5/app/sce_sys/icon0.png"
 }

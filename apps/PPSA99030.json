@@ -6,9 +6,9 @@
   "description": "Battle.net launcher for World of Warcraft: Forever; press L3+R3 together to open the on-screen keyboard; other games may install, but keyboard support is in development.",
   "license": "GPL-3.0",
   "author": "bizkut",
-  "version": "01.000.009",
+  "version": "01.000.012",
   "source_repo": "https://github.com/bizkut/ps5-forever",
-  "artifact_url": "https://github.com/bizkut/ps5-forever/releases/download/01.000.009/PPSA99030.zip",
-  "sha256": "dfa59e0b9b8b5ac54a8a8357a4a4cde9725ef0b0256a0d31f131d8f9b852eb35",
-  "icon_url": "https://raw.githubusercontent.com/bizkut/ps5-forever/01.000.009/ps5/title/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/bizkut/ps5-forever/releases/download/01.000.012/PPSA99030.zip",
+  "sha256": "4ff417178419b9301f8207335708c7b19fb29d4134fd0e00a191e464c7456acb",
+  "icon_url": "https://raw.githubusercontent.com/bizkut/ps5-forever/01.000.012/ps5/title/sce_sys/icon0.png"
 }
