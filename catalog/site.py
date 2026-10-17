@@ -706,7 +706,7 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
         more = "Read the full notes on GitHub" if cut else "See this release on GitHub"
         return ('<h2 id="notes-title">Release notes</h2>\n'
                 f'<div class="notes">\n{body}\n</div>\n'
-                f'<p class="notes__source">For {e(version_label(record.data["version"]))}. '
+                f'<p class="notes__source">Written by {e(record.data["author"])} for {e(version_label(record.data["version"]))}. '
                 f'<a href="{e(release_url)}" rel="nofollow">{more}</a></p>')
 
     def page_url(record: Record) -> str:
