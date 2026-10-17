@@ -25,9 +25,26 @@ RESERVATION_NULLABLE = ("version", "license")
 MAX_RESERVATIONS_PER_ACCOUNT = 5
 RESERVATION_STALE_DAYS = 180
 KINDS = ("app", "game", "tool")
+# The shelves of the website and the store, in the order they are shown. A record names the key;
+# the label is what people read (docs/metadata.md, Categories).
+CATEGORIES = {
+    "console-ports": "Console game ports",
+    "pc-ports": "PC game ports",
+    "homebrew-games": "Homebrew games",
+    "emulators": "Emulators",
+    "streaming": "Game streaming",
+    "video": "Video & TV",
+    "music": "Music & audio",
+    "ai": "AI",
+    "utilities": "Utilities",
+    "tools": "Tools & tests",
+    "showcases": "Showcases",
+}
+# Fields a record may carry besides FIELDS while they are being introduced; checked when present.
+OPTIONAL_FIELDS = ("category",)
 MAX_FILE_BYTES = 8192
 MAX_LENGTH = {
-    "titleid": 9, "name": 64, "kind": 4, "description": 200, "license": 64,
+    "titleid": 9, "name": 64, "kind": 4, "category": 16, "description": 200, "license": 64,
     "author": 64, "version": 32, "source_repo": 200, "artifact_url": 500,
     "sha256": 64, "icon_url": 500,
 }
@@ -156,6 +173,8 @@ def _check_fields(data: dict) -> list[str]:
                         "choose a unique title ID")
     if data["kind"] not in KINDS:
         problems.append(f"kind must be one of: {', '.join(KINDS)}")
+    if "category" in data and data["category"] not in CATEGORIES:
+        problems.append(f"category must be one of: {', '.join(CATEGORIES)}")
     if data["version"] is not None and not VERSION.fullmatch(data["version"]):
         problems.append("version may contain only letters, digits and . + _ -")
     if data["license"] is not None and not LICENSE.fullmatch(data["license"]):
@@ -202,7 +221,7 @@ def _check_fields(data: dict) -> list[str]:
 def _field_set_problems(data: dict) -> list[str]:
     problems = []
     missing = [f for f in FIELDS if f not in data]
-    extra = sorted(set(data) - set(FIELDS))
+    extra = sorted(set(data) - set(FIELDS) - set(OPTIONAL_FIELDS))
     if missing:
         problems.append(f"missing field(s): {', '.join(missing)}")
     if extra:
