@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA99403",
+  "name": "NFS Most Wanted",
+  "kind": "game",
+  "category": "pc-ports",
+  "description": "Need for Speed: Most Wanted (2005), the PC version through prospero-win, installed from your own copy with widescreen, DualSense and optional Xbox 360 graphics mods.",
+  "license": "GPL-3.0",
+  "author": "lavavex",
+  "version": "01.000.000",
+  "source_repo": "https://github.com/lavavex/nfs-blackbox-ps5",
+  "artifact_url": "https://github.com/lavavex/nfs-blackbox-ps5/releases/download/01.000.000/PPSA99403.zip",
+  "sha256": "03a69011cfd999b0128799dfd15ae675a251ce79ae803c6230932619f40fe840",
+  "icon_url": "https://raw.githubusercontent.com/lavavex/nfs-blackbox-ps5/01.000.000/art/nfs-most-wanted-2005.png"
+}
