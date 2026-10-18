@@ -395,13 +395,14 @@ def cmd_pr(args) -> int:
 
 
 def cmd_automerge(args) -> int:
-    """CI: merge a pull request that only moves the author's own app to its newest release.
+    """CI: merge a pull request that moves the author's own app to its newest release, or adds
+    another app of theirs when they already have one in the catalog.
 
     Base-branch code; the pull request's files are read only as data. It runs after the submission
     check and the release scan passed; their warnings don't hold it back. Whatever it
     decides, it never fails the pull request: a pull request it leaves alone waits for a maintainer.
     """
-    from .automerge import bump_reasons
+    from .automerge import bump_reasons, new_app_reasons
     event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
     pull = event["pull_request"]
     number, author, sha = pull["number"], pull["user"]["login"], pull["head"]["sha"]
@@ -419,15 +420,20 @@ def cmd_automerge(args) -> int:
         reasons.append("it changed while it was being checked")
     changes = diff_changes(git("merge-base", "HEAD", head).strip(), head)
     old = new = None
-    if len(changes) == 1 and changes[0].status == "M" and RECORD_PATH.fullmatch(changes[0].path):
+    adds = len(changes) == 1 and changes[0].status == "A" and bool(RECORD_PATH.fullmatch(changes[0].path))
+    if len(changes) == 1 and changes[0].status in ("M", "A") and RECORD_PATH.fullmatch(changes[0].path):
         path = changes[0].path
-        if int(git("cat-file", "-s", f"{head}:{path}")) <= MAX_FILE_BYTES and (ROOT / path).is_file():
-            old = load_record(ROOT / path, Report())
+        if int(git("cat-file", "-s", f"{head}:{path}")) <= MAX_FILE_BYTES and (adds or (ROOT / path).is_file()):
+            if not adds:
+                old = load_record(ROOT / path, Report())
             with tempfile.TemporaryDirectory(prefix="catalog-bump-") as tmp:
                 proposed = Path(tmp) / Path(path).name
                 proposed.write_bytes(git_bytes("show", f"{head}:{path}"))
                 new = load_record(proposed, Report())
-    reasons += bump_reasons(author, changes, old, new, GitHub())
+    if adds:
+        reasons += new_app_reasons(author, changes, new, load_catalog(APPS, Report()), GitHub())
+    else:
+        reasons += bump_reasons(author, changes, old, new, GitHub())
 
     output = os.environ.get("GITHUB_OUTPUT")
     if output:
@@ -438,18 +444,23 @@ def cmd_automerge(args) -> int:
             report.notice(name, "left for a maintainer: " + reason)
         return report.emit("Automatic merge", "Nothing was merged.")
     if not args.merge:
-        report.notice(name, f"@{author} moves their own app to its newest release, and no check had a warning")
+        report.notice(name, f"@{author} " + ("adds another app of their own" if adds
+                                             else "moves their own app to its newest release") + ", and every check passed")
         return report.emit("Automatic merge", "This pull request can be merged without a maintainer.")
     bot = GitHub(os.environ["MERGE_TOKEN"])
     repository = os.environ["GITHUB_REPOSITORY"]
     try:
         bot.approve_pull(repository, number, sha,
-                         "A release bump by the app's developer: only the version, file, sha256 and icon "
-                         "changed, the release is the newest of the app's repository, and the submission "
-                         "check and the release scan passed. Merged automatically; it is published with the "
-                         "catalog's next publication.")
+                         ("A new app by a developer who already has one in the catalog, from their own "
+                          "repository; the submission check and the release scan passed."
+                          if adds else
+                          "A release bump by the app's developer: only the version, file, sha256 and icon "
+                          "changed, the release is the newest of the app's repository, and the submission "
+                          "check and the release scan passed.")
+                         + " Merged automatically; it is published with the catalog's next publication.")
         bot.merge_pull(repository, number, sha, f"{pull['title']} (#{number})")
-        report.notice(name, f"merged: @{author} moved their own app to its newest release")
+        report.notice(name, f"merged: @{author} " + ("added another app of their own" if adds
+                                                      else "moved their own app to its newest release"))
     except GitHubError as error:
         report.warning(name, f"meets every rule, but could not be merged: {error}")
     return report.emit("Automatic merge", "Done.")
