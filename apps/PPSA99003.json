@@ -7,8 +7,8 @@
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",
   "version": "01.000.070",
-  "source_repo": "https://github.com/blackbearreloaded/ProsperoTV",
-  "artifact_url": "https://github.com/blackbearreloaded/ProsperoTV/releases/download/01.000.070/PPSA99003.zip",
+  "source_repo": "https://github.com/ThatGuyKalvin/ProsperoTV",
+  "artifact_url": "https://github.com/ThatGuyKalvin/ProsperoTV/releases/download/01.000.070/PPSA99003.zip",
   "sha256": "775b2ece55f0f4591c97eeb6a2c89a91cdcd6540933ac90a3c070c064bc35fea",
-  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ProsperoTV/01.000.070/sce_sys/icon0.png"
+  "icon_url": "https://raw.githubusercontent.com/ThatGuyKalvin/ProsperoTV/01.000.070/sce_sys/icon0.png"
 }
