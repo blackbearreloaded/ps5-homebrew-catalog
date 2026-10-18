@@ -6,7 +6,7 @@ library and run by four workflows.
 | Workflow | Trigger | Runs |
 | --- | --- | --- |
 | [Submission check](../.github/workflows/pull-request.yml) | Pull requests (`pull_request_target`) | `python3 -m catalog pr`, and in a second job the [release scan](#release-scan), `python3 -m catalog scan-pr`; then [merges a developer's release bump](#automatic-merge-of-a-developers-release-bump), `python3 -m catalog automerge` |
-| [CI](../.github/workflows/ci.yml) | Pull requests; publishing is started by hand on `main` | Tests, `catalog check` and a website build; a manual run on `main` also does `catalog push`, then the [website deployment](website.md#deployment) |
+| [CI](../.github/workflows/ci.yml) | Pull requests; every merge to `main`, and by hand | Tests, `catalog check` and a website build; on `main` it also does `catalog push`, then the [website deployment](website.md#deployment) |
 | [Comments](../.github/workflows/comments.yml) | Every hour, and on every discussion comment | `python3 -m catalog comments --sync`: one discussion per listed app, likes and comments written to the `comments-data` branch; see [Comments and likes](#comments-and-likes) |
 | [Scan the catalog](../.github/workflows/scan-catalog.yml) | Manual only | `catalog scan`: one report on every listed app, or on the title IDs given; see [Release scan](#release-scan) |
 | [Catalog health](../.github/workflows/health.yml) | Daily 06:17 UTC and manual | `catalog health --slice today` |
@@ -236,8 +236,8 @@ python3 -m catalog scan --zip app.zip PPSA12345
 
 ## Publishing from `main`
 
-A merge starts nothing. The site is published by a run started by hand (Actions >
-CI > Run workflow on `main`), so several merges can go out together. That run
+Every merge to `main` publishes the site; a run started by hand (Actions > CI >
+Run workflow on `main`) publishes it again without a merge. That run
 does the tests and the offline check, then fully verifies the records changed
 since the commit that is online (the store API's index names it); when that
 commit can't be read, it verifies every record. This also covers maintainer

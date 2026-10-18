@@ -2,7 +2,7 @@
 
 The store at <https://darkxex.github.io/ps5-homebrew-catalog/> is a static site generated from
 `apps/` by `python3 -m catalog build` and published to the repository's GitHub Pages site by GitHub
-Actions when a maintainer starts the CI workflow on `main` by hand. There is no server-side code, database or tracking.
+Actions after every merge to `main`. There is no server-side code, database or tracking.
 
 ## What the build produces
 
@@ -196,7 +196,8 @@ feed and canonical links), `--out`.
 
 ## Deployment
 
-The manual publish (Actions > CI > Run workflow on `main`) runs the tests and
+Every merge to `main` (or a run started by hand: Actions > CI > Run workflow on
+`main`) runs the tests and
 verifies the changed records, then the **Build and sign the website** job builds
 the site for `https://darkxex.github.io/ps5-homebrew-catalog/`, signs the store API with `CATALOG_SIGNING_KEY` (a
 secret of the environment still named `cloudflare-pages`, which accepts only
