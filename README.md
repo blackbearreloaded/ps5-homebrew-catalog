@@ -99,6 +99,9 @@ Read **[Submitting an app](docs/submitting.md)**. In short:
 3. Add `apps/<TITLEID>.json` from the account that owns that repository.
 4. Open a pull request and fix anything the checks report.
 
+Not sure why your app isn't listed yet? See
+[Why isn't my app listed?](docs/submitting.md#why-isnt-my-app-listed).
+
 ## Write release notes
 
 The text you write on your GitHub release is your app's **release notes** in

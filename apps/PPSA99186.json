@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA99186",
+  "name": "ProsperoEden Switch UI",
+  "kind": "app",
+  "category": "emulators",
+  "description": "An independent Switch-inspired PS5 interface edition of BlackBearReloaded's ProsperoEden emulator.",
+  "license": "GPL-3.0",
+  "author": "KernelForgeLabs",
+  "version": null,
+  "source_repo": null,
+  "artifact_url": null,
+  "sha256": null,
+  "icon_url": null
+}

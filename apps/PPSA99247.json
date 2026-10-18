@@ -6,9 +6,9 @@
   "description": "Flycast (Dreamcast, NAOMI and Atomiswave) as a standalone PS5 title on RADV, with a controller-only interface.",
   "license": "GPL-2.0-only",
   "author": "Press5elect",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "source_repo": "https://github.com/Press5elect/PSFlycast",
-  "artifact_url": "https://github.com/Press5elect/PSFlycast/releases/download/v1.1.0/PSFlyCast-v1.1.0.zip",
-  "sha256": "bb3a4798350e1fd3d0cc03218fbe97469bfde09e4d6636af114510d1484c60a0",
-  "icon_url": "https://raw.githubusercontent.com/Press5elect/PSFlycast/v1.1.0/shell/ps5/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/Press5elect/PSFlycast/releases/download/v1.2.0/PSFlyCast-v1.2.0.zip",
+  "sha256": "4685e6fe23c80c860e45202d3dbba6bc31f6a3e8e331383e810db6d2b8787c06",
+  "icon_url": "https://raw.githubusercontent.com/Press5elect/PSFlycast/v1.2.0/shell/ps5/sce_sys/icon0.png"
 }

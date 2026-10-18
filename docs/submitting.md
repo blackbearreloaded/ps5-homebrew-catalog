@@ -191,6 +191,29 @@ Moving an app to a different repository owner requires a maintainer; open an
 The catalog lists one current release per app. Older releases stay available in
 your repository.
 
+## Why isn't my app listed?
+
+The daily [discovery job](automation.md#discovery) looks for native PS5 apps on
+GitHub and reports the ones it can't list yet. Nobody is contacted: if your
+project turns up there, the report names what blocks it. Fix it in your own
+repository and publish a new release; the next scan picks it up, or you can
+[open the pull request](#6-open-the-pull-request) yourself.
+
+| What the report says | What to do |
+| --- | --- |
+| No published release | Publish a GitHub release (not a draft) with a `.zip` of the app folder attached. Files in the repository and CI artifacts aren't enough. |
+| The release has several installable files | Attach one `.zip` of the app folder. Keep other files (`.elf` payloads, installers, source archives) out of the release, or name the app's file the way your README says. |
+| No `sce_sys/param.json` at the release tag | Commit `sce_sys/param.json` with your `titleId` and `contentVersion`. If your build generates it, commit a copy where the catalog can read it, at the root or in the folder the README names as the app. |
+| `param.json` is in a sample or test folder | Put the app's own `sce_sys/param.json` at the root, or point your README at the folder that holds the app. |
+| The title ID isn't a PS5 (`PPSA`) title ID | Use a `PPSA` plus five digits title ID, such as `PPSA01234`. |
+| GitHub detects no license | Add a `LICENSE` file GitHub recognizes (an SPDX license such as `GPL-3.0` or `MIT`). |
+| No description to draft from | Add a repository description or a short README paragraph saying what the app does. |
+| Native, but no release yet | Publish your first release as above. Only you can do that. |
+| The name or title ID is already listed | Choose a distinct name or title ID; see [Common check failures](#common-check-failures). |
+
+A `.ffpkg` or `.ffpfsc` image isn't accepted yet; use a `.zip`
+([artifact formats](artifact-formats.md)).
+
 ## Common check failures
 
 | Message contains | Fix |
