@@ -21,7 +21,7 @@ installs as a title with its own title ID (`eboot.bin` and `sce_sys/`). ELF
 payloads, PS4 packages, backports, emulator ROMs and web pages aren't listed.
 
 The records here are the source of the [PS5 homebrew website](https://prosperostore.net/)
-and of the store API that [ProsperoStore](https://github.com/blackbearreloaded/ProsperoStore)
+and of the store API that [ProsperoStore](https://github.com/darkxex/ProsperoStore)
 reads to install listed apps on the console.
 
 ## How it works
@@ -79,7 +79,7 @@ flowchart TB
 4. A maintainer reviews and merges; nothing is listed automatically. The website
    (store front, app pages and TV mode) and the signed [store API](docs/api.md)
    are rebuilt from `main`.
-5. People browse the website; [ProsperoStore](https://github.com/blackbearreloaded/ProsperoStore)
+5. People browse the website; [ProsperoStore](https://github.com/darkxex/ProsperoStore)
    reads the store API on the PS5 to browse, install and update apps; and a
    listed app can read it to tell its user that an update exists.
 6. A daily health check re-verifies the listed releases (the whole catalog each
@@ -348,7 +348,7 @@ Third-party components, authors and licenses are listed in
 
 ## License
 
-Copyright © 2026 BlackBearReloaded. Licensed under GPL-3.0-or-later; see [LICENSE](LICENSE). Third-party components keep their own licenses. Each listed app is distributed by its own developer under the license in its record.
+Copyright © 2026 BlackBearReloaded. Maintained since October 2026 by darkxex. Licensed under GPL-3.0-or-later; see [LICENSE](LICENSE). Third-party components keep their own licenses. Each listed app is distributed by its own developer under the license in its record.
 
 ## Disclaimer
 
