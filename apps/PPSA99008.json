@@ -6,9 +6,9 @@
   "description": "Unofficial Eden emulator port for PS5.",
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",
-  "version": "1.004.000",
+  "version": "1.005.000",
   "source_repo": "https://github.com/blackbearreloaded/ProsperoEden",
-  "artifact_url": "https://github.com/blackbearreloaded/ProsperoEden/releases/download/v1.004.000/ProsperoEden-v1.004.000.zip",
-  "sha256": "04257f1adac12db3c2c6199ad155e98abf797da5ecafd37909d199e4477188ce",
-  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ProsperoEden/v1.004.000/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/blackbearreloaded/ProsperoEden/releases/download/v1.005.000/ProsperoEden-v1.005.000.zip",
+  "sha256": "9a726c3a4238bfc9651a8c2bd3952cf07972495a3f930cc6d0a5b487140a5991",
+  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ProsperoEden/v1.005.000/sce_sys/icon0.png"
 }
