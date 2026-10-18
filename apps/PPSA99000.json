@@ -7,8 +7,8 @@
   "license": "GPL-3.0",
   "author": "BlackBearReloaded",
   "version": "1.000.080",
-  "source_repo": "https://github.com/blackbearreloaded/ProsperoStore",
-  "artifact_url": "https://github.com/blackbearreloaded/ProsperoStore/releases/download/v1.000.080/PPSA99000.zip",
+  "source_repo": "https://github.com/darkxex/ProsperoStore",
+  "artifact_url": "https://github.com/darkxex/ProsperoStore/releases/download/v1.000.080/PPSA99000.zip",
   "sha256": "9b98936ebc44bc20076a8c1abf936d845a6e9c1870912a9732386f18cf5f5ebb",
-  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ProsperoStore/v1.000.080/sce_sys/icon0.png"
+  "icon_url": "https://raw.githubusercontent.com/darkxex/ProsperoStore/v1.000.080/sce_sys/icon0.png"
 }
