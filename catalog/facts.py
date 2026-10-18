@@ -7,7 +7,8 @@ from the release in GitHub's API, and the content version from the
 
 The content version (`contentVersion`, "01.000.070") is what a console reports
 for an installed title, so it is the value clients compare to find updates. It
-is `None` when the repository has no param.json for this title at the tag, or
+is `None` when neither the repository at the tag nor the release's ZIP (read with range
+requests, never downloaded whole) has a param.json for this title, or
 its contentVersion isn't in the PlayStation format; clients then can't tell
 whether an installed copy is current.
 
@@ -92,6 +93,15 @@ def find_content_version(record: Record, github: GitHub, fetch=None) -> tuple[st
         found = _content_version(github.file_text(record.owner, record.repo, path, record.tag) or "", data["titleid"])
         if found:
             return found, path
+    # A repository that doesn't commit param.json still ships it inside the release's ZIP.
+    if data["artifact_url"].lower().endswith(".zip"):
+        try:
+            member = artifacts.read_zip_member(data["artifact_url"], "sce_sys/param.json", MAX_PARAM_BYTES)
+        except (artifacts.DownloadError, OSError):
+            member = None
+        found = member and _content_version(member[1].decode("utf-8", errors="replace"), data["titleid"])
+        if found:
+            return found, "release:" + member[0]
     # Releases tagged with the content version itself need no param.json in the repository.
     if CONTENT_VERSION.fullmatch(data["version"]):
         return data["version"], "version"

@@ -27,7 +27,9 @@ have no common format and no defined order.
    numbers, left to right: `01.000.009` < `01.000.010` < `01.001.000` <
    `02.000.000`.
 4. **Keep `param.json` in your repository**, with the value the release
-   actually ships, in the commit your release tag points at.
+   actually ships, in the commit your release tag points at. If you don't, the
+   catalog falls back to the copy inside your release's `.zip` (see below), but
+   a committed file is the reliable way.
 
 ```json
 {
@@ -56,22 +58,28 @@ instead; then rules 2 and 4 are what make updates work:
 
 ## How the catalog reads it
 
-Nothing is downloaded. When a release is listed, the catalog looks in your
-repository **at the release tag** for a `sce_sys/param.json` whose `titleId` is
-your app's:
+The release is never downloaded: the `sha256` is GitHub's own digest of the
+file. When a release is listed, the catalog looks for a `sce_sys/param.json`
+whose `titleId` is your app's, first in your repository **at the release tag**:
 
 1. next to the icon, when `icon_url` points at `…/sce_sys/icon0.png` in the
    same repository;
 2. otherwise anywhere in the repository, nearest the root first (other titles'
    `param.json` files, such as vendored samples, are skipped);
-3. otherwise, if the record's `version` is already in the `NN.NNN.NNN` format,
+3. otherwise, inside the release's `.zip`, at `sce_sys/param.json` (nearest the
+   top first). Only the ZIP's file list and that one small file are fetched,
+   with HTTP range requests, never the whole archive. This also lets a
+   submission whose repository holds no `sce_sys/` folder pass the `param.json`
+   check; reviewers are told it was read from the ZIP;
+4. otherwise, if the record's `version` is already in the `NN.NNN.NNN` format,
    that is used.
 
 If none of these gives a well-formed value, `content_version` is `null` in the
 API. The app is still listed and installable; clients just can't tell whether
 an installed copy is current.
 
-If your build generates `param.json`, do one of these: commit the generated
+If your build generates `param.json` and ships it only in the ZIP, it is read
+from there. Otherwise, do one of these: commit the generated
 file, commit a `sce_sys/param.json` with the right `titleId` and
 `contentVersion` and have the build start from it, or tag releases with the
 content version.

@@ -2,6 +2,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from catalog import artifacts
 from catalog.facts import Facts, cached, content_version_key, find_content_version, lookup, prune, update_note
@@ -49,6 +50,21 @@ def no_download(url, limit):
 class ContentVersionTests(unittest.TestCase):
     def setUp(self):
         self.record = Record(Path("apps/PPSA01234.json"), DATA)
+        patcher = mock.patch.object(artifacts, "read_zip_member", return_value=None)
+        self.zip_member = patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def test_falls_back_to_the_release_zip_when_the_repository_has_none(self):
+        self.zip_member.return_value = ("PPSA01234/sce_sys/param.json", param(version="01.000.033").encode())
+        self.assertEqual(find_content_version(self.record, FakeGitHub(), fetch=no_download),
+                         ("01.000.033", "release:PPSA01234/sce_sys/param.json"))
+        self.assertEqual(self.zip_member.call_args.args[:2], (DATA["artifact_url"], "sce_sys/param.json"))
+
+    def test_the_release_zip_must_hold_this_titles_param_json(self):
+        self.zip_member.return_value = ("sce_sys/param.json", param("PPSA09999").encode())
+        self.assertEqual(find_content_version(self.record, FakeGitHub(), fetch=no_download), (None, None))
+        self.zip_member.side_effect = artifacts.DownloadError("no ranges")
+        self.assertEqual(find_content_version(self.record, FakeGitHub(), fetch=no_download), (None, None))
 
     def test_read_next_to_the_icon_without_an_api_request(self):
         github = FakeGitHub()

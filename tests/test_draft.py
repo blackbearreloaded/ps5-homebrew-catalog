@@ -53,6 +53,9 @@ class DraftTests(unittest.TestCase):
         patcher = mock.patch.object(draft_module.artifacts, "fetch_small", lambda url, limit: PNG)
         patcher.start()
         self.addCleanup(patcher.stop)
+        zipped = mock.patch.object(draft_module.artifacts, "read_zip_member", return_value=None)
+        self.zip_member = zipped.start()
+        self.addCleanup(zipped.stop)
 
     def tearDown(self):
         self.tmp.cleanup()
@@ -89,6 +92,14 @@ class DraftTests(unittest.TestCase):
         for expected, github in cases.items():
             with self.subTest(expected=expected):
                 self.assertTrue(any(expected in b for b in draft_record("Dev/Example", github, self.apps).blockers))
+
+    def test_param_json_is_read_from_the_release_zip_when_the_repository_has_none(self):
+        self.zip_member.return_value = ("Example/sce_sys/param.json", json.dumps(PARAM).encode())
+        result = draft_record("Dev/Example", FakeGitHub(paths=["README.md"]), self.apps)
+        self.assertEqual(result.blockers, [])
+        self.assertEqual((result.record["titleid"], result.record["name"]), ("PPSA07777", "Example Port"))
+        self.assertEqual(result.param_path, "Example-v1.2.0.zip:Example/sce_sys/param.json")
+        self.assertTrue(any("read from inside" in item for item in result.todo))
 
     def test_already_listed_title_id_blocks(self):
         github = FakeGitHub(param=dict(PARAM, titleId="PPSA01234"))

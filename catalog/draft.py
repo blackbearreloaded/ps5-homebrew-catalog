@@ -22,6 +22,7 @@ from .report import Report
 from .updates import newest_release
 
 ARTIFACT_EXTENSIONS = (".zip", ".ffpkg", ".ffpfsc")
+PARAM_BYTES = 65536
 PAYLOAD_EXTENSIONS = (".elf", ".bin", ".lua", ".js")
 LICENSE_HEADING = re.compile(r"^#{1,6}\s.*\blicen[cs]", re.IGNORECASE)
 
@@ -113,16 +114,32 @@ def draft_record(repo_value: str, github: GitHub, apps_dir: Path, tag: str | Non
     record["version"] = tag_version(tag)
     draft.facts.append(f"file: {asset['name']} ({asset.get('size', 0):,} bytes), GitHub digest {digest}")
 
-    # Native title evidence: sce_sys/param.json at the release tag.
+    # Native title evidence: sce_sys/param.json at the release tag, else inside the release's ZIP.
     params = find_param_json(github.tree(owner, name, tag))
-    if not params:
-        draft.blockers.append(f"no sce_sys/param.json at {tag}: no evidence this is a native PS5 title")
-        return draft
-    param_path = draft.param_path = params[0]
-    if len(params) > 1:
-        draft.todo.append(f"several param.json files {params}; {param_path} was used, confirm it is the app's")
+    in_release = False
+    if params:
+        param_path = draft.param_path = params[0]
+        if len(params) > 1:
+            draft.todo.append(f"several param.json files {params}; {param_path} was used, confirm it is the app's")
+        param_text = github.file_text(owner, name, param_path, tag) or ""
+    else:
+        member = None
+        if asset["name"].lower().endswith(".zip"):
+            try:
+                member = artifacts.read_zip_member(record["artifact_url"], "sce_sys/param.json", PARAM_BYTES)
+            except (artifacts.DownloadError, OSError):
+                pass
+        if member is None:
+            draft.blockers.append(f"no sce_sys/param.json at {tag} or in {asset['name']}: "
+                                  "no evidence this is a native PS5 title")
+            return draft
+        in_release = True
+        param_path = draft.param_path = f"{asset['name']}:{member[0]}"
+        param_text = member[1].decode("utf-8", errors="replace")
+        draft.todo.append(f"the repository has no sce_sys/param.json at {tag}; it was read from inside "
+                          f"{asset['name']}. Ask the developer to commit it (docs/versioning.md)")
     try:
-        param = json.loads(github.file_text(owner, name, param_path, tag) or "")
+        param = json.loads(param_text)
     except ValueError:
         draft.blockers.append(f"{param_path} is not valid JSON")
         return draft
@@ -138,7 +155,7 @@ def draft_record(repo_value: str, github: GitHub, apps_dir: Path, tag: str | Non
     record["titleid"] = titleid
     record["name"] = title_name
 
-    icon_path = param_path.rsplit("/", 1)[0] + "/icon0.png"
+    icon_path = "sce_sys/icon0.png" if in_release else param_path.rsplit("/", 1)[0] + "/icon0.png"
     icon_url = f"https://raw.githubusercontent.com/{full_name}/{quote(tag, safe='')}/{quote(icon_path)}"
     try:
         image_format, warnings = artifacts.inspect_icon(artifacts.fetch_small(icon_url, artifacts.MAX_ICON_BYTES))
