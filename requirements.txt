@@ -1,3 +1,3 @@
 # Used only by the website build (python3 -m catalog build) to resize icons to WebP.
-# Cloudflare Pages installs this automatically. The checker itself needs no dependencies.
+# The publish job installs it. The checker itself needs no dependencies.
 pillow==12.3.0

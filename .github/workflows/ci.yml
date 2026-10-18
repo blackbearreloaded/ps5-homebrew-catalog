@@ -99,12 +99,9 @@ jobs:
   deploy:
     name: Build and sign the website
     # Only trusted code on main reaches this job, and only in a run started by hand: it never
-    # runs for pull requests or for a merge. It is the job that holds the signing key (the
-    # cloudflare-pages environment). The website and its store API go to the repository's GitHub
-    # Pages site (the next job). While the repository variable CLOUDFLARE_PAGES_PROJECT is set, the
-    # store API is also published at homebrew.page, the address released ProsperoStore builds read,
-    # and every page there is sent on to the website.
-    # deploy-fallback.yml repeats the homebrew.page steps for an Actions outage: change both together.
+    # runs for pull requests or for a merge. It is the job that holds the signing key (in the
+    # environment still named cloudflare-pages). The website and its store API go to the
+    # repository's GitHub Pages site, published by the next job.
     # The scan job may fail or be skipped: the site is then built without safety labels.
     needs: [tests, verify, scan]
     if: >-
@@ -117,7 +114,7 @@ jobs:
     environment:
       name: cloudflare-pages
     concurrency:
-      group: deploy-cloudflare-pages
+      group: deploy-website
       cancel-in-progress: false
     env:
       OWNER: ${{ github.repository_owner }}
@@ -161,53 +158,6 @@ jobs:
         with:
           path: site-build/${{ github.event.repository.name }}
 
-      # homebrew.page: the store API once more, for the stores released before the move, with
-      # its own manifest and signature (its icon addresses differ), and its pages sent on.
-      - name: Build the store API for homebrew.page
-        if: vars.CLOUDFLARE_PAGES_PROJECT != ''
-        run: >-
-          python3 -m catalog build --out legacy-build --icon-cache .icon-cache --scans scans
-          --site-url https://homebrew.page --base / --pages-url "https://${OWNER}.github.io/${REPOSITORY}/"
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-      - name: Sign the homebrew.page API
-        if: vars.CLOUDFLARE_PAGES_PROJECT != ''
-        run: python3 -m catalog sign --out legacy-build --require
-        env:
-          CATALOG_SIGNING_KEY: ${{ secrets.CATALOG_SIGNING_KEY }}
-      - name: Keep only the API there, and send every page to the website
-        if: vars.CLOUDFLARE_PAGES_PROJECT != ''
-        run: |
-          mkdir legacy
-          cp -r legacy-build/api legacy/api
-          cp legacy-build/_headers legacy/_headers
-          site="https://${OWNER}.github.io/${REPOSITORY}"
-          printf '%s\n' "/ ${site}/ 301" "/app/* ${site}/app/:splat 301" "/tv/* ${site}/tv/:splat 301" \
-            "/catalog/* ${site}/catalog/:splat 301" "/ps5/* ${site}/:splat 301" > legacy/_redirects
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        if: vars.CLOUDFLARE_PAGES_PROJECT != ''
-        with:
-          node-version: '22'
-      - name: Upload to Cloudflare Pages
-        if: vars.CLOUDFLARE_PAGES_PROJECT != ''
-        # This repository's Actions logs are public. Wrangler's output can
-        # mention account details, so only a redacted error summary is printed.
-        run: |
-          if npx --yes wrangler@4.143.0 pages deploy legacy \
-              --project-name "$PROJECT" --branch main \
-              --commit-hash "$GITHUB_SHA" --commit-dirty=false \
-              > "$RUNNER_TEMP/wrangler.log" 2>&1; then
-            echo "Deployed to Cloudflare Pages."
-          else
-            echo "::error::Cloudflare Pages deployment failed. Redacted wrangler errors:"
-            python3 -m catalog.redact "$RUNNER_TEMP/wrangler.log"
-            exit 1
-          fi
-        env:
-          PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          WRANGLER_SEND_METRICS: 'false'
 
   pages:
     name: Publish the website to GitHub Pages

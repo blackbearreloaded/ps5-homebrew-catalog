@@ -409,19 +409,11 @@ icon, as for any other file, at the cost of one request per icon.
 
 ## homebrew.page
 
-The API used to live at `https://homebrew.page/api/v1/`, and ProsperoStore
-builds released before the move read it there. While the repository variable
-`CLOUDFLARE_PAGES_PROJECT` is set, every publication puts the API there too:
-
-- **Same files, same meaning,** under the same paths, with icon addresses that
-  name `homebrew.page` and `page` links that name the website.
-- **Its own manifest and signature,** made with the same keys. Because the icon
-  addresses differ, its files have different hashes: verify a file against the
-  manifest it was published with. `sequence` is the same number on both.
-- **Only the API.** Every other address there is sent on to the website.
-
-New clients use `https://darkxex.github.io/ps5-homebrew-catalog/api/v1/`. GitHub Pages sets its own cache lifetime
-(about ten minutes) and ignores the site's header rules.
+The API used to live at `https://homebrew.page/api/v1/`. It is no longer
+updated there: everything is published at `https://darkxex.github.io/ps5-homebrew-catalog/api/v1/`. A client that
+still reads the old address sees the catalog as it was on the day of the move.
+GitHub Pages sets its own cache lifetime (about ten minutes) and ignores the
+site's header rules.
 
 ## Requests
 

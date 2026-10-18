@@ -8,7 +8,6 @@ library and run by four workflows.
 | [Submission check](../.github/workflows/pull-request.yml) | Pull requests (`pull_request_target`) | `python3 -m catalog pr`, and in a second job the [release scan](#release-scan), `python3 -m catalog scan-pr`; then [merges a developer's release bump](#automatic-merge-of-a-developers-release-bump), `python3 -m catalog automerge` |
 | [CI](../.github/workflows/ci.yml) | Pull requests; publishing is started by hand on `main` | Tests, `catalog check` and a website build; a manual run on `main` also does `catalog push`, then the [website deployment](website.md#deployment) |
 | [Comments](../.github/workflows/comments.yml) | Every hour, and on every discussion comment | `python3 -m catalog comments --sync`: one discussion per listed app, likes and comments written to the `comments-data` branch; see [Comments and likes](#comments-and-likes) |
-| [Deploy fallback](../.github/workflows/deploy-fallback.yml) | Manual only, by the repository owner | The same deploy on the maintainer's own runner, for an Actions outage; see [Fallback deploy](website.md#fallback-deploy) |
 | [Scan the catalog](../.github/workflows/scan-catalog.yml) | Manual only | `catalog scan`: one report on every listed app, or on the title IDs given; see [Release scan](#release-scan) |
 | [Catalog health](../.github/workflows/health.yml) | Daily 06:17 UTC and manual | `catalog health --slice today` |
 | [Release updates](../.github/workflows/updates.yml) | Daily 07:37 UTC and manual | `catalog updates --open-prs` |
@@ -255,7 +254,7 @@ The deploy then **signs the catalog**. The build has written
 `api/v1/manifest.json`, the hash of every JSON file of the API; a separate
 step, the only one that sees the key, signs it with `openssl` and writes
 `manifest.sig` (`python3 -m catalog sign --require`). The key is the
-`CATALOG_SIGNING_KEY` secret of the `cloudflare-pages` environment, an Ed25519
+`CATALOG_SIGNING_KEY` secret of the environment still named `cloudflare-pages`, an Ed25519
 private key in PEM form that is never in the repository. The step fails, and
 nothing is deployed, if the key is missing or isn't one of the public keys in
 [`keys/`](../keys): consoles would refuse such a catalog. A second key pair
