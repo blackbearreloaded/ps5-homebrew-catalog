@@ -769,7 +769,7 @@ def cmd_discover(args) -> int:
     if args.issue:
         print("Discovery report:", publish(GitHub(os.environ["ISSUE_TOKEN"]), repository, result))
     else:
-        print(render(result, repository=repository or "blackbearreloaded/ps5-homebrew-catalog"))
+        print(render(result, repository=repository or "darkxex/ps5-homebrew-catalog"))
     for candidate in ready:
         print(f"ready: {candidate.repo} {candidate.record['titleid']} {candidate.note}")
     return 0

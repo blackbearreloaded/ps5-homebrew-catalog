@@ -1,7 +1,7 @@
 # Website
 
-The store at <https://homebrew.page/> is a static site generated from
-`apps/` by `python3 -m catalog build` and deployed to Cloudflare Pages by GitHub
+The store at <https://darkxex.github.io/ps5-homebrew-catalog/> is a static site generated from
+`apps/` by `python3 -m catalog build` and published to the repository's GitHub Pages site by GitHub
 Actions when a maintainer starts the CI workflow on `main` by hand. There is no server-side code, database or tracking.
 
 ## What the build produces
@@ -145,14 +145,14 @@ the [store API](api.md).
 {
   "schema": 1,
   "name": "PS5 Homebrew Catalog",
-  "homepage": "https://homebrew.page/",
+  "homepage": "https://darkxex.github.io/ps5-homebrew-catalog/",
   "source": { "repository": "https://github.com/…/ps5-homebrew-catalog", "commit": "<sha>" },
   "apps": [
     { "…all twelve record fields…": "",
       "format": "zip | ffpkg | ffpfsc",
       "updated": "2026-09-28T22:30:46-04:00",
-      "page": "https://homebrew.page/app/PPSA01234/",
-      "icon": "https://homebrew.page/assets/icon-PPSA01234.<hash>.webp" }
+      "page": "https://darkxex.github.io/ps5-homebrew-catalog/app/PPSA01234/",
+      "icon": "https://darkxex.github.io/ps5-homebrew-catalog/assets/icon-PPSA01234.<hash>.webp" }
   ],
   "coming_soon": [
     { "…all twelve fields, links and sha256 null…": "", "updated": "…", "page": "…", "icon": "…" }
@@ -221,14 +221,21 @@ access to this repository.
   and the project's `*.pages.dev` name. Keep WHOIS privacy on for the domain;
   Cloudflare Registrar redacts owner details by default.
 
-### API mirror
+### GitHub Pages and homebrew.page
 
-After the site is uploaded, the same job builds the store API once more for
-this repository's GitHub Pages address, signs it, and a second job publishes
-it there. It exists for consoles whose network blocks the main site
-([Store API: mirror](api.md#mirror)). Only the API is published; the mirror's
-front page is one static file, `site/mirror/index.html`. GitHub Pages must be
-enabled for the repository with "GitHub Actions" as its source.
+The website, TV mode and the store API are published to this repository's
+GitHub Pages site, `https://darkxex.github.io/ps5-homebrew-catalog/`, by the
+**Publish the website to GitHub Pages** job, from what the deploy job built and
+signed. In the repository's **Settings → Pages**, the source must be **GitHub
+Actions**. GitHub Pages ignores `_headers` and `_redirects`, so the security
+headers, the cache rules and the redirects of withdrawn apps apply only where a
+host reads them.
+
+While the repository variable `CLOUDFLARE_PAGES_PROJECT` is set, the deploy job
+also publishes the store API at `homebrew.page` on Cloudflare Pages, for the
+ProsperoStore builds that read it there, and sends every other address there on
+to the website ([Store API: homebrew.page](api.md#homebrewpage)). The sections
+below describe that Cloudflare project.
 
 ### Fallback deploy
 

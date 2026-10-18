@@ -186,7 +186,7 @@ open a pull request that edits your record's `version`, `artifact_url`,
 `sha256` and, if needed, `icon_url`. The same
 ownership rule applies: only the owner of the listed repository can update it.
 Moving an app to a different repository owner requires a maintainer; open an
-[ownership transfer issue](https://github.com/blackbearreloaded/ps5-homebrew-catalog/issues/new/choose).
+[ownership transfer issue](https://github.com/darkxex/ps5-homebrew-catalog/issues/new/choose).
 
 The catalog lists one current release per app. Older releases stay available in
 your repository.

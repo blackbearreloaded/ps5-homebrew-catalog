@@ -4,7 +4,7 @@
 
 If a listed app contains malware, behaves maliciously, or its release appears to
 have been tampered with, report it privately through
-[GitHub private vulnerability reporting](https://github.com/blackbearreloaded/ps5-homebrew-catalog/security/advisories/new).
+[GitHub private vulnerability reporting](https://github.com/darkxex/ps5-homebrew-catalog/security/advisories/new).
 Include the title ID, what you observed, and how to reproduce it.
 
 Don't post details publicly while a listing may still be installed from the

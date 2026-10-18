@@ -1,7 +1,7 @@
 # Store API
 
 The catalog publishes itself as static JSON under
-`https://homebrew.page/api/v1/`, for a console store, for apps that check
+`https://darkxex.github.io/ps5-homebrew-catalog/api/v1/`, for a console store, for apps that check
 whether they have an update, and for any other client. This page is the
 specification: the files, every field, how to find updates, and what stays
 stable.
@@ -14,11 +14,11 @@ API itself, and there is no server behind it, only files on a CDN.
 
 | Path | Holds | Size | Use it to |
 | --- | --- | --- | --- |
-| [`/api/v1/versions.json`](https://homebrew.page/api/v1/versions.json) | The current version of every available app | about 65 bytes per app | check many installed apps for updates in one request |
-| [`/api/v1/index.json`](https://homebrew.page/api/v1/index.json) | One compact entry per app, reservations included | about 330 bytes per app | show the catalog as a list |
+| [`/api/v1/versions.json`](https://darkxex.github.io/ps5-homebrew-catalog/api/v1/versions.json) | The current version of every available app | about 65 bytes per app | check many installed apps for updates in one request |
+| [`/api/v1/index.json`](https://darkxex.github.io/ps5-homebrew-catalog/api/v1/index.json) | One compact entry per app, reservations included | about 330 bytes per app | show the catalog as a list |
 | `/api/v1/apps/<TITLEID>.json` | Everything about one app | about 1 KB | show one app, install it, or let an app check itself |
-| [`/api/v1/manifest.json`](https://homebrew.page/api/v1/manifest.json) and `manifest.sig` | The hash of every JSON file above, the catalog's sequence number, and a signature over both | about 90 bytes per app | verify that the catalog is genuine before installing from it |
-| [`/api/v1/news.json`](https://homebrew.page/api/v1/news.json) and `news.sig` | Short messages from the catalog's maintainers, newest first, and a signature over the file | under 64 KB | show what is new; see [News](#news-newsjson) |
+| [`/api/v1/manifest.json`](https://darkxex.github.io/ps5-homebrew-catalog/api/v1/manifest.json) and `manifest.sig` | The hash of every JSON file above, the catalog's sequence number, and a signature over both | about 90 bytes per app | verify that the catalog is genuine before installing from it |
+| [`/api/v1/news.json`](https://darkxex.github.io/ps5-homebrew-catalog/api/v1/news.json) and `news.sig` | Short messages from the catalog's maintainers, newest first, and a signature over the file | under 64 KB | show what is new; see [News](#news-newsjson) |
 | `/api/v1/icons/<TITLEID>.png` | The app's icon as PNG, at most 512 px on its longer side | varies | show the icon without a WebP decoder |
 | `/api/v1/icons/<TITLEID>-256.png` | The same, at most 256 px | varies | lists and grids |
 
@@ -58,9 +58,9 @@ still published and unchanged; new clients should use the API.
   "release_notes_truncated": true,
   "safety": {"sandbox": "leaves", "routes": ["service"], "helpers": 0, "helpers_unapproved": 0, "network": true, "build": "developer", "build_workflow": null},
   "updated": "2026-09-29T17:20:37Z",
-  "page": "https://homebrew.page/app/PPSA99039/",
-  "icon": "https://homebrew.page/api/v1/icons/PPSA99039.png?v=5b0c1e7a9d3f4a26",
-  "icon_small": "https://homebrew.page/api/v1/icons/PPSA99039-256.png?v=5b0c1e7a9d3f4a26",
+  "page": "https://darkxex.github.io/ps5-homebrew-catalog/app/PPSA99039/",
+  "icon": "https://darkxex.github.io/ps5-homebrew-catalog/api/v1/icons/PPSA99039.png?v=5b0c1e7a9d3f4a26",
+  "icon_small": "https://darkxex.github.io/ps5-homebrew-catalog/api/v1/icons/PPSA99039-256.png?v=5b0c1e7a9d3f4a26",
   "icon_hash": "5b0c1e7a9d3f4a26"
 }
 ```
@@ -185,7 +185,7 @@ badge in lists.
       "size": 36383357,
       "released": "2026-10-01T01:50:46Z",
       "updated": "2026-10-01T04:17:55Z",
-      "icon_small": "https://homebrew.page/api/v1/icons/PPSA99002-256.png",
+      "icon_small": "https://darkxex.github.io/ps5-homebrew-catalog/api/v1/icons/PPSA99002-256.png",
       "icon_hash": "9f2c4d7e1a6b3c58"
     }
   ]
@@ -280,7 +280,7 @@ Clients can still show the app and install it.
 
 ### An app checking itself
 
-1. `GET https://homebrew.page/api/v1/apps/<your title ID>.json`.
+1. `GET https://darkxex.github.io/ps5-homebrew-catalog/api/v1/apps/<your title ID>.json`.
 2. If the answer isn't HTTP 200, `status` isn't `available`, or
    `content_version` is `null`, stop: there is nothing to report.
 3. Compare `content_version` with the `contentVersion` of your own
@@ -300,7 +300,7 @@ verification, needs no elevation, and has been run on a PS5 against this API.
 ### A store checking what is installed
 
 0. Verify the catalog first ([Verifying the catalog](#verifying-the-catalog)).
-1. `GET https://homebrew.page/api/v1/versions.json`: one request, however many
+1. `GET https://darkxex.github.io/ps5-homebrew-catalog/api/v1/versions.json`: one request, however many
    apps are installed, and the catalog never learns which ones they are.
 2. For each installed title ID that is in `apps`, apply the rule.
 3. Fetch `apps/<TITLEID>.json` only for the apps the user opens or updates.
@@ -374,7 +374,7 @@ The key ID is the first 16 hexadecimal characters of the SHA-256 of the 32 key
 bytes. The files are the same keys in PEM form, for `openssl`:
 
 ```sh
-curl -sO https://homebrew.page/api/v1/manifest.json -O https://homebrew.page/api/v1/manifest.sig
+curl -sO https://darkxex.github.io/ps5-homebrew-catalog/api/v1/manifest.json -O https://darkxex.github.io/ps5-homebrew-catalog/api/v1/manifest.sig
 openssl pkeyutl -verify -pubin -inkey keys/catalog-signing-1.pub.pem -rawin -in manifest.json -sigfile manifest.sig
 ```
 
@@ -407,34 +407,21 @@ opaque string; only equality matters.
 A client that keeps no fingerprints can still send `If-None-Match` for each
 icon, as for any other file, at the cost of one request per icon.
 
-## Mirror
+## homebrew.page
 
-The whole API is published a second time at
+The API used to live at `https://homebrew.page/api/v1/`, and ProsperoStore
+builds released before the move read it there. While the repository variable
+`CLOUDFLARE_PAGES_PROJECT` is set, every publication puts the API there too:
 
-```
-https://blackbearreloaded.github.io/ps5-homebrew-catalog/api/v1/
-```
-
-for consoles on networks that can't reach `homebrew.page`. It is rebuilt and
-signed by the same deploy, a moment after the main site.
-
-- **Same files, same meaning.** `index.json`, `versions.json`, `apps/<TITLEID>.json`,
-  the icons, `manifest.json` and `manifest.sig` are all there, under the same paths.
-- **Icon addresses name the mirror.** `icon` and `icon_small` point at the mirror,
-  so a client that can only reach the mirror can still fetch icons. `page` still
-  names the website. Everything else is identical.
+- **Same files, same meaning,** under the same paths, with icon addresses that
+  name `homebrew.page` and `page` links that name the website.
 - **Its own manifest and signature,** made with the same keys. Because the icon
-  addresses differ, the mirror's files have different hashes: verify a mirror
-  file against the mirror's manifest, never against the main site's. `sequence`
-  is the same number on both.
-- **Use it only as a fallback.** Ask `homebrew.page` first; use the mirror when
-  that fails. A client must accept exactly this host and path prefix, not any
-  `github.io` address.
-- **Only the API is mirrored.** There are no app pages there.
+  addresses differ, its files have different hashes: verify a file against the
+  manifest it was published with. `sequence` is the same number on both.
+- **Only the API.** Every other address there is sent on to the website.
 
-GitHub Pages sets its own cache lifetime (about ten minutes) and ignores the
-site's header rules, so the [Requests](#requests) notes on caching describe the
-main site.
+New clients use `https://darkxex.github.io/ps5-homebrew-catalog/api/v1/`. GitHub Pages sets its own cache lifetime
+(about ten minutes) and ignores the site's header rules.
 
 ## Requests
 

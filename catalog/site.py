@@ -43,11 +43,13 @@ from .report import Report
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
-REPO_URL = "https://github.com/blackbearreloaded/ps5-homebrew-catalog"
+REPO_URL = "https://github.com/darkxex/ps5-homebrew-catalog"
 # Likes and comments, written by the Comments workflow to a branch of their own (catalog/comments.py).
 COMMENTS_URL = REPO_URL.replace("https://github.com/", "https://raw.githubusercontent.com/") + "/comments-data/v1/"
-DEFAULT_SITE_URL = "https://homebrew.page"
-DEFAULT_BASE = "/"
+# The website is the repository's GitHub Pages site. homebrew.page, the address released
+# ProsperoStore builds read, carries the store API only (built with --site-url there).
+DEFAULT_SITE_URL = "https://darkxex.github.io"
+DEFAULT_BASE = "/ps5-homebrew-catalog/"
 # Base paths the site used to be served under; their URLs redirect to the current base.
 LEGACY_BASES = ("/ps5/",)
 MARKER = ".catalog-site"
@@ -695,7 +697,7 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
                 f'<ul class="safety" aria-label="Scan results">{"".join(chips)}</ul>\n'
                 f'<div class="safety__text">{text}<p class="notes__source">From an automatic scan of the release '
                 'file, which is read and never run. It can miss things: it is not a guarantee. '
-                '<a href="https://github.com/blackbearreloaded/ps5-homebrew-catalog/blob/main/docs/automation.md#release-scan">'
+                '<a href="https://github.com/darkxex/ps5-homebrew-catalog/blob/main/docs/automation.md#release-scan">'
                 'How the scan works</a></p></div>')
 
     def notes_section(record: Record, release_url: str) -> str:

@@ -33,7 +33,11 @@ jobs:
       # The runner's own Python is used (it needs Pillow and cryptography); nothing is installed.
       - run: python3 -m unittest discover -s tests
       - run: python3 -m catalog check
-      - run: python3 -m catalog build --out dist --icon-cache .icon-cache
+      # The store API at homebrew.page, as the normal deploy builds it; the website itself is on
+      # GitHub Pages, which only Actions can publish.
+      - run: >-
+          python3 -m catalog build --out dist --icon-cache .icon-cache --site-url https://homebrew.page --base /
+          --pages-url "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
         env:
           GITHUB_TOKEN: ${{ github.token }}   # read-only: raises the API rate limit for release facts
       - name: Sign the store API

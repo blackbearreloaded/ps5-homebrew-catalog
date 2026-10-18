@@ -47,8 +47,19 @@ class SiteBuildTests(unittest.TestCase):
         report = Report()
         with mock.patch.dict("os.environ", {"CF_PAGES_COMMIT_SHA": "abc1234def"}):
             options.setdefault("fetch_icons", False)
+            options.setdefault("site_url", "https://homebrew.page")
+            options.setdefault("base", "/")
             count = build_site(self.out, self.apps, report, **options)
         return count, report
+
+    def test_the_default_site_is_the_repositorys_github_pages_site(self):
+        report = Report()
+        with mock.patch.dict("os.environ", {"CF_PAGES_COMMIT_SHA": "abc1234def"}):
+            build_site(self.out, self.apps, report, fetch_icons=False)
+        root = self.out / "ps5-homebrew-catalog"
+        self.assertTrue((root / "index.html").is_file())
+        app = json.loads((root / "api" / "v1" / "apps" / "PPSA01234.json").read_text(encoding="utf-8"))
+        self.assertEqual(app["page"], "https://darkxex.github.io/ps5-homebrew-catalog/app/PPSA01234/")
 
     def test_builds_pages_feed_and_config(self):
         count, report = self.build()
@@ -99,7 +110,7 @@ class SiteBuildTests(unittest.TestCase):
         self.assertIn('<a class="notice"', page)
         self.assertIn('href="https://github.com/blackbearreloaded/ProsperoStore"', page)
         tv = (self.out / "tv" / "index.html").read_text(encoding="utf-8")
-        self.assertIn('data-comments="https://raw.githubusercontent.com/blackbearreloaded/ps5-homebrew-catalog/comments-data/v1/"', tv)
+        self.assertIn('data-comments="https://raw.githubusercontent.com/darkxex/ps5-homebrew-catalog/comments-data/v1/"', tv)
         # The QR library is one of the site's own files and comes before the script that uses it.
         self.assertRegex(tv, r'<script src="/assets/qrcode\.[0-9a-f]+\.js" defer></script>\n<script src="/assets/tv\.')
         self.assertIn('<p class="tv-credit">Maintained by BlackBearReloaded · Built from abc1234 · last updated '
@@ -154,14 +165,14 @@ class SiteBuildTests(unittest.TestCase):
         self.assertIn("/api/*\n  Access-Control-Allow-Origin: *", (self.out / "_headers").read_text(encoding="utf-8"))
         # Likes and comments come from the comments branch: the page says where, and may fetch from there.
         home = (self.out / "index.html").read_text(encoding="utf-8")
-        self.assertIn('data-comments="https://raw.githubusercontent.com/blackbearreloaded/ps5-homebrew-catalog/comments-data/v1/"', home)
+        self.assertIn('data-comments="https://raw.githubusercontent.com/darkxex/ps5-homebrew-catalog/comments-data/v1/"', home)
         self.assertNotIn("data-likes-for", home)   # likes are on the "Most liked" shelf, which the script makes
         detail = (self.out / "app" / "PPSA01234" / "index.html").read_text(encoding="utf-8")
         self.assertIn('data-comments-for="PPSA01234"', detail)
         # The Like and Comment buttons come right after the release facts, before the description.
         self.assertLess(detail.index('data-react="likes"'), detail.index('class="article"'))
         self.assertIn('data-react="comments"', detail)
-        self.assertIn('href="https://github.com/blackbearreloaded/ps5-homebrew-catalog/discussions?discussions_q=PPSA01234"', detail)
+        self.assertIn('href="https://github.com/darkxex/ps5-homebrew-catalog/discussions?discussions_q=PPSA01234"', detail)
         self.assertIn("connect-src 'self' https://raw.githubusercontent.com;", (self.out / "_headers").read_text(encoding="utf-8"))
         self.assertIn("/api/*/manifest.sig\n  Content-Type: application/octet-stream",
                       (self.out / "_headers").read_text(encoding="utf-8"))
