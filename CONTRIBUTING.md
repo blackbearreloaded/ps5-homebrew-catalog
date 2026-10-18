@@ -8,7 +8,7 @@ that owns the app's source repository.
 
 ## Reporting a problem with a listing
 
-Use the [issue templates](https://github.com/blackbearreloaded/ps5-homebrew-catalog/issues/new/choose)
+Use the [issue templates](https://github.com/darkxex/ps5-homebrew-catalog/issues/new/choose)
 for broken downloads, wrong information, withdrawals and ownership transfers.
 Report malicious or compromised apps privately; see [SECURITY.md](SECURITY.md).
 

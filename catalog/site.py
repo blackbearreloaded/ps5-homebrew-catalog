@@ -43,10 +43,11 @@ from .report import Report
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
-REPO_URL = "https://github.com/blackbearreloaded/ps5-homebrew-catalog"
+REPO_URL = "https://github.com/darkxex/ps5-homebrew-catalog"
 # Likes and comments, written by the Comments workflow to a branch of their own (catalog/comments.py).
 COMMENTS_URL = REPO_URL.replace("https://github.com/", "https://raw.githubusercontent.com/") + "/comments-data/v1/"
-DEFAULT_SITE_URL = "https://homebrew.page"
+# The website: the repository's GitHub Pages site, under its own domain.
+DEFAULT_SITE_URL = "https://prosperostore.net"
 DEFAULT_BASE = "/"
 # Base paths the site used to be served under; their URLs redirect to the current base.
 LEGACY_BASES = ("/ps5/",)
@@ -117,9 +118,8 @@ WITHDRAWN_DAYS = 30  # how long a withdrawn app's page keeps redirecting
 def withdrawn_titleids(apps_dir: Path, listed: set[str]) -> list[str]:
     """Title IDs whose record was removed in the last WITHDRAWN_DAYS and isn't listed now, from git history.
 
-    Cloudflare Pages keeps serving a file for a while after a deployment drops it, so a withdrawn
-    app's page and API file would stay reachable; a redirect or a new file at the address takes
-    over at once.
+    A withdrawn app's API file is replaced by a small withdrawn file at the same address, so a
+    client that asks for it learns why it is gone.
     """
     log = _git("log", f"--since={WITHDRAWN_DAYS} days ago", "--diff-filter=D", "--name-only", "--format=",
                "--", str(apps_dir))
@@ -130,7 +130,7 @@ def withdrawn_titleids(apps_dir: Path, listed: set[str]) -> list[str]:
 def last_updated(apps_dir: Path) -> dict[str, str]:
     """Map record filename to the ISO commit date of the last commit that changed it.
 
-    CI and Cloudflare may clone shallowly, which would date every record to the
+    CI may clone shallowly, which would date every record to the
     newest commit, so the history is deepened first when possible. Records
     outside the repository, or without history, are left out.
     """
@@ -695,7 +695,7 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
                 f'<ul class="safety" aria-label="Scan results">{"".join(chips)}</ul>\n'
                 f'<div class="safety__text">{text}<p class="notes__source">From an automatic scan of the release '
                 'file, which is read and never run. It can miss things: it is not a guarantee. '
-                '<a href="https://github.com/blackbearreloaded/ps5-homebrew-catalog/blob/main/docs/automation.md#release-scan">'
+                '<a href="https://github.com/darkxex/ps5-homebrew-catalog/blob/main/docs/automation.md#release-scan">'
                 'How the scan works</a></p></div>')
 
     def notes_section(record: Record, release_url: str) -> str:
@@ -882,7 +882,7 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
             data=data.replace("<", "\\u003c"),
         ), encoding="utf-8")
 
-    # 404 page, served by Cloudflare Pages for unknown paths.
+    # 404 page, served by GitHub Pages for unknown paths.
     for target in {out / "404.html", root / "404.html"}:
         write_page(target, title="Not found — PS5 Homebrew Store", description="Page not found.",
                    canonical=site_url + base, body=theme_obj.render("404.html", shared), page_class="page-404")
@@ -916,7 +916,7 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
               github=github, cache=icon_cache, known=known, safety=safety,
               added=added, news=news_items)
 
-    # Cloudflare Pages configuration.
+    # Header and redirect rules, for a host that reads _headers and _redirects; GitHub Pages ignores them.
     csp = ("default-src 'self'; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com; "
            "font-src https://fonts.gstatic.com; script-src 'self'; "
            "connect-src 'self' https://raw.githubusercontent.com; "

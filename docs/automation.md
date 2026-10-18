@@ -6,9 +6,8 @@ library and run by four workflows.
 | Workflow | Trigger | Runs |
 | --- | --- | --- |
 | [Submission check](../.github/workflows/pull-request.yml) | Pull requests (`pull_request_target`) | `python3 -m catalog pr`, and in a second job the [release scan](#release-scan), `python3 -m catalog scan-pr`; then [merges a developer's release bump](#automatic-merge-of-a-developers-release-bump), `python3 -m catalog automerge` |
-| [CI](../.github/workflows/ci.yml) | Pull requests; publishing is started by hand on `main` | Tests, `catalog check` and a website build; a manual run on `main` also does `catalog push`, then the [website deployment](website.md#deployment) |
+| [CI](../.github/workflows/ci.yml) | Pull requests; every merge to `main`, and by hand | Tests, `catalog check` and a website build; on `main` it also does `catalog push`, then the [website deployment](website.md#deployment) |
 | [Comments](../.github/workflows/comments.yml) | Every hour, and on every discussion comment | `python3 -m catalog comments --sync`: one discussion per listed app, likes and comments written to the `comments-data` branch; see [Comments and likes](#comments-and-likes) |
-| [Deploy fallback](../.github/workflows/deploy-fallback.yml) | Manual only, by the repository owner | The same deploy on the maintainer's own runner, for an Actions outage; see [Fallback deploy](website.md#fallback-deploy) |
 | [Scan the catalog](../.github/workflows/scan-catalog.yml) | Manual only | `catalog scan`: one report on every listed app, or on the title IDs given; see [Release scan](#release-scan) |
 | [Catalog health](../.github/workflows/health.yml) | Daily 06:17 UTC and manual | `catalog health --slice today` |
 | [Release updates](../.github/workflows/updates.yml) | Daily 07:37 UTC and manual | `catalog updates --open-prs` |
@@ -74,21 +73,25 @@ Dependabot.
 The CI workflow does run PR code (tests), with the standard read-only
 `pull_request` token and no secrets.
 
-## Automatic merge of a developer's release bump
+## Automatic merge of a developer's pull request
 
-A developer who publishes a new release and updates their own record is not kept waiting for a
-maintainer. After the submission check and the release scan have both passed, two more jobs of
+A developer who publishes a new release and updates their own record, or who already has an app
+in the catalog and adds another of their own, is not kept waiting for a maintainer. After the submission check and the release scan have both passed, two more jobs of
 the same workflow run `python3 -m catalog automerge`, and the pull request is approved and
 squash-merged by the catalog's GitHub App when **all** of this holds:
 
-- it changes exactly one file, an existing `apps/<TITLEID>.json`: a new app, a removal or any
-  other file always waits for a maintainer;
-- only `version`, `artifact_url`, `sha256` and `icon_url` differ from the listed record, the
-  file is a new one, it is a release file of the same `source_repo`, and a changed icon stays
-  in that repository;
-- the release is the **newest** one of that repository;
-- the author owns `source_repo`, or is a public member of the organization that owns it. The
-  bot's own update pull requests and bumps sent by other accounts wait for a maintainer;
+- it changes exactly one file, an `apps/<TITLEID>.json`: a removal or any other file always
+  waits for a maintainer;
+- **a release bump** (the file exists): only `version`, `artifact_url`, `sha256` and `icon_url`
+  differ from the listed record, the file is a new one, it is a release file of the same
+  `source_repo`, a changed icon stays in that repository, and the release is the **newest** one
+  of that repository;
+- **a new app** (the file is added, and is not a reservation): the file is a release file of its
+  `source_repo`, its icon is in that repository, and the author already has an app in the
+  catalog, as the owner of its repository or a public member of the organization that owns it;
+- the author owns the app's `source_repo`, or is a public member of the organization that owns
+  it. The bot's own update pull requests and pull requests sent by other accounts wait for a
+  maintainer;
 - it is not a draft, it targets `main`, and it did not change while it was being checked: the
   approval and the merge name the commit that was checked, and GitHub refuses them otherwise;
 - the submission check and the release scan both passed. Their warnings do not hold it back:
@@ -237,8 +240,8 @@ python3 -m catalog scan --zip app.zip PPSA12345
 
 ## Publishing from `main`
 
-A merge starts nothing. The site is published by a run started by hand (Actions >
-CI > Run workflow on `main`), so several merges can go out together. That run
+Every merge to `main` publishes the site; a run started by hand (Actions > CI >
+Run workflow on `main`) publishes it again without a merge. That run
 does the tests and the offline check, then fully verifies the records changed
 since the commit that is online (the store API's index names it); when that
 commit can't be read, it verifies every record. This also covers maintainer
@@ -255,7 +258,7 @@ The deploy then **signs the catalog**. The build has written
 `api/v1/manifest.json`, the hash of every JSON file of the API; a separate
 step, the only one that sees the key, signs it with `openssl` and writes
 `manifest.sig` (`python3 -m catalog sign --require`). The key is the
-`CATALOG_SIGNING_KEY` secret of the `cloudflare-pages` environment, an Ed25519
+`CATALOG_SIGNING_KEY` secret of the environment still named `cloudflare-pages`, an Ed25519
 private key in PEM form that is never in the repository. The step fails, and
 nothing is deployed, if the key is missing or isn't one of the public keys in
 [`keys/`](../keys): consoles would refuse such a catalog. A second key pair

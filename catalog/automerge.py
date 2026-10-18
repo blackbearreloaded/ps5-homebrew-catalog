@@ -1,8 +1,11 @@
-"""Which pull requests are merged without a maintainer: a developer moving their own app to its newest release.
+"""Which pull requests are merged without a maintainer.
 
-Everything else waits for a maintainer, and so does anything this module is unsure about: a new
-app, a removal, a change to what the app is called or where it comes from, a pull request from
-an account that does not own the app's repository, or a check that had something to say.
+Two kinds are: a developer moving their own app to its newest release, and a developer who
+already has an app in the catalog adding another one of their own.
+
+Everything else waits for a maintainer, and so does anything this module is unsure about: a
+removal, a change to what the app is called or where it comes from, a pull request from an
+account that does not own the app's repository, or a check that failed.
 """
 
 from __future__ import annotations
@@ -18,6 +21,54 @@ def owns(author: str, record: Record, github: GitHub) -> bool:
     if author.casefold() == record.owner.casefold():
         return True
     return github.account_type(record.owner) == "Organization" and github.is_public_member(record.owner, author)
+
+
+def has_listed_app(author: str, listed: list[Record], github: GitHub) -> bool:
+    """True when the author owns, as owner or public organization member, an app that is already listed."""
+    owners = {}
+    for record in listed:
+        if not record.reserved:
+            owners.setdefault(record.owner.casefold(), record)
+    if author.casefold() in owners:
+        return True
+    return any(owns(author, record, github) for record in owners.values())
+
+
+def new_app_reasons(author: str, changes: list[Change], new: Record | None, listed: list[Record],
+                    github: GitHub) -> list[str]:
+    """Why a pull request that adds an app is left for a maintainer; an empty list means it may be merged.
+
+    new is the proposed record, for a pull request whose only change is one added record; listed is
+    the catalog on the base branch.
+    """
+    if len(changes) != 1:
+        return [f"it changes {len(changes)} files; a new app is one record"]
+    change = changes[0]
+    if not RECORD_PATH.fullmatch(change.path):
+        return [f"it changes {change.path}, which is not an app's record"]
+    if change.status != "A":
+        return ["it is not a new app"]
+    if change.mode != REGULAR_FILE_MODE:
+        return ["the record is not a regular file"]
+    if new is None:
+        return ["the proposed record could not be read"]
+    if new.reserved:
+        return ["it adds a reservation"]
+
+    reasons = []
+    try:
+        if not owns(author, new, github):
+            return [f"@{author} does not own {new.owner}/{new.repo}"]
+        if not has_listed_app(author, listed, github):
+            reasons.append(f"@{author} has no app in the catalog yet")
+    except GitHubError as error:
+        return [f"GitHub could not be asked: {error}"]
+    if not new.data["artifact_url"].startswith(new.data["source_repo"].rstrip("/") + "/releases/download/"):
+        reasons.append("the file is not a release file of the app's repository")
+    icons = f"https://raw.githubusercontent.com/{new.owner}/{new.repo}/"
+    if not new.data["icon_url"].casefold().startswith(icons.casefold()):
+        reasons.append("the icon is at an address outside the app's repository")
+    return reasons
 
 
 def bump_reasons(author: str, changes: list[Change], old: Record | None, new: Record | None,
