@@ -46,9 +46,9 @@ SITE = ROOT / "site"
 REPO_URL = "https://github.com/darkxex/ps5-homebrew-catalog"
 # Likes and comments, written by the Comments workflow to a branch of their own (catalog/comments.py).
 COMMENTS_URL = REPO_URL.replace("https://github.com/", "https://raw.githubusercontent.com/") + "/comments-data/v1/"
-# The website is the repository's GitHub Pages site.
-DEFAULT_SITE_URL = "https://darkxex.github.io"
-DEFAULT_BASE = "/ps5-homebrew-catalog/"
+# The website: the repository's GitHub Pages site, under its own domain.
+DEFAULT_SITE_URL = "https://prosperostore.net"
+DEFAULT_BASE = "/"
 # Base paths the site used to be served under; their URLs redirect to the current base.
 LEGACY_BASES = ("/ps5/",)
 MARKER = ".catalog-site"

@@ -11,7 +11,7 @@ own GitHub Releases. This repository stores no binaries.
 > **This catalog is an aggregator.** It lists apps; it doesn't build, maintain
 > or support them. Each app belongs to its own developer. For a bug, a question
 > or a feature request about an app, go to that app's GitHub repository (the
-> **Source code** link on its page at [homebrew.page](https://darkxex.github.io/ps5-homebrew-catalog/),
+> **Source code** link on its page at [prosperostore.net](https://prosperostore.net/),
 > or `source_repo` in its record) and contact its developer there. Issues here
 > are for the catalog itself: a wrong or broken listing, the website or the
 > store API.
@@ -20,7 +20,7 @@ own GitHub Releases. This repository stores no binaries.
 installs as a title with its own title ID (`eboot.bin` and `sce_sys/`). ELF
 payloads, PS4 packages, backports, emulator ROMs and web pages aren't listed.
 
-The records here are the source of the [PS5 homebrew website](https://darkxex.github.io/ps5-homebrew-catalog/)
+The records here are the source of the [PS5 homebrew website](https://prosperostore.net/)
 and of the store API that [ProsperoStore](https://github.com/blackbearreloaded/ProsperoStore)
 reads to install listed apps on the console.
 
@@ -39,7 +39,7 @@ flowchart TB
 
     checks["Automated checks<br/>format · publisher · release and tag · sha256 from GitHub's digest · icon"]
     review["Maintainer reviews and merges"]
-    build["Build from main, deployed to homebrew.page"]
+    build["Build from main, published to GitHub Pages"]
 
     subgraph out["What the build publishes"]
         direction LR
@@ -243,7 +243,7 @@ preview and the deployment.
 ## Comments and likes
 
 Every listed app has a comment thread and a like count, shown on its page and
-on its tile at [homebrew.page](https://darkxex.github.io/ps5-homebrew-catalog/).
+on its tile at [prosperostore.net](https://prosperostore.net/).
 
 - **You need a GitHub account.** The **Like** and **Comment** buttons on an
   app's page open that app's discussion in this repository's
@@ -266,7 +266,7 @@ How it works is in [Automation](docs/automation.md#comments-and-likes).
 ## Store API
 
 The same build publishes the catalog for programs at
-`https://darkxex.github.io/ps5-homebrew-catalog/api/v1/`: one small JSON file per app, a compact index, a
+`https://prosperostore.net/api/v1/`: one small JSON file per app, a compact index, a
 version map and PNG icons. It is what a console store reads, and what an app
 reads to tell its user that an update exists. Besides the records it carries
 each release's download size, release date, content version and the developer's
