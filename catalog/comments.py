@@ -24,7 +24,7 @@ ACTIVE = "App comments"      # the category the discussions of listed apps are i
 WITHDRAWN = "Withdrawn"      # where a discussion goes, locked, when its app leaves the catalog
 LATEST = 10                  # comments kept per app
 MAX_TEXT = 500               # characters kept per comment
-SITE = "https://darkxex.github.io/ps5-homebrew-catalog"
+SITE = "https://prosperostore.net"
 MARKER = re.compile(r"<!-- titleid: ([A-Z]{4}[0-9]{5}) -->")
 PAUSE = 3.0                  # seconds between two discussions created in a row (GitHub's content limit)
 

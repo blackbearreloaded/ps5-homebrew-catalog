@@ -52,14 +52,14 @@ class SiteBuildTests(unittest.TestCase):
             count = build_site(self.out, self.apps, report, **options)
         return count, report
 
-    def test_the_default_site_is_the_repositorys_github_pages_site(self):
+    def test_the_default_site_is_prosperostore_net(self):
         report = Report()
         with mock.patch.dict("os.environ", {"CF_PAGES_COMMIT_SHA": "abc1234def"}):
             build_site(self.out, self.apps, report, fetch_icons=False)
-        root = self.out / "ps5-homebrew-catalog"
+        root = self.out
         self.assertTrue((root / "index.html").is_file())
         app = json.loads((root / "api" / "v1" / "apps" / "PPSA01234.json").read_text(encoding="utf-8"))
-        self.assertEqual(app["page"], "https://darkxex.github.io/ps5-homebrew-catalog/app/PPSA01234/")
+        self.assertEqual(app["page"], "https://prosperostore.net/app/PPSA01234/")
 
     def test_builds_pages_feed_and_config(self):
         count, report = self.build()

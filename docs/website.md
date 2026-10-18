@@ -1,6 +1,6 @@
 # Website
 
-The store at <https://darkxex.github.io/ps5-homebrew-catalog/> is a static site generated from
+The store at <https://prosperostore.net/> is a static site generated from
 `apps/` by `python3 -m catalog build` and published to the repository's GitHub Pages site by GitHub
 Actions after every merge to `main`. There is no server-side code, database or tracking.
 
@@ -145,14 +145,14 @@ the [store API](api.md).
 {
   "schema": 1,
   "name": "PS5 Homebrew Catalog",
-  "homepage": "https://darkxex.github.io/ps5-homebrew-catalog/",
+  "homepage": "https://prosperostore.net/",
   "source": { "repository": "https://github.com/…/ps5-homebrew-catalog", "commit": "<sha>" },
   "apps": [
     { "…all twelve record fields…": "",
       "format": "zip | ffpkg | ffpfsc",
       "updated": "2026-09-28T22:30:46-04:00",
-      "page": "https://darkxex.github.io/ps5-homebrew-catalog/app/PPSA01234/",
-      "icon": "https://darkxex.github.io/ps5-homebrew-catalog/assets/icon-PPSA01234.<hash>.webp" }
+      "page": "https://prosperostore.net/app/PPSA01234/",
+      "icon": "https://prosperostore.net/assets/icon-PPSA01234.<hash>.webp" }
   ],
   "coming_soon": [
     { "…all twelve fields, links and sha256 null…": "", "updated": "…", "page": "…", "icon": "…" }
@@ -199,7 +199,7 @@ feed and canonical links), `--out`.
 Every merge to `main` (or a run started by hand: Actions > CI > Run workflow on
 `main`) runs the tests and
 verifies the changed records, then the **Build and sign the website** job builds
-the site for `https://darkxex.github.io/ps5-homebrew-catalog/`, signs the store API with `CATALOG_SIGNING_KEY` (a
+the site for `https://prosperostore.net/`, signs the store API with `CATALOG_SIGNING_KEY` (a
 secret of the environment still named `cloudflare-pages`, which accepts only
 `main`), and the **Publish the website to GitHub Pages** job publishes it. A
 broken or unverified catalog is never published, and a failed run leaves the
@@ -207,7 +207,8 @@ last good site online.
 
 One-time setup, by the repository's owner:
 
-- **Settings → Pages:** source **GitHub Actions**.
+- **Settings → Pages:** source **GitHub Actions**, custom domain `prosperostore.net`
+  (with its DNS pointing at GitHub Pages) and **Enforce HTTPS**.
 - **Settings → Environments:** `github-pages` allows deployments from `main`;
   the environment that holds `CATALOG_SIGNING_KEY` allows only `main`.
 

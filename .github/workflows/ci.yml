@@ -58,7 +58,7 @@ jobs:
         # The store API's index names the commit it was built from. When it cannot be read, or
         # that commit is not in this history, BEFORE stays empty and every record is verified.
         run: |
-          online=$(curl -fsS --retry 2 "https://${OWNER}.github.io/${REPOSITORY}/api/v1/index.json" \
+          online=$(curl -fsS --retry 2 https://prosperostore.net/api/v1/index.json \
             | python3 -c 'import json, sys; print(json.load(sys.stdin).get("commit", ""))' || true)
           if [[ $online =~ ^[0-9a-f]{40}$ ]] && git merge-base --is-ancestor "$online" "$GITHUB_SHA" 2>/dev/null; then
             echo "BEFORE=$online" >> "$GITHUB_ENV"
@@ -148,18 +148,18 @@ jobs:
       - name: Build the website
         run: >-
           python3 -m catalog build --out site-build --icon-cache .icon-cache --scans scans
-          --site-url "https://${OWNER}.github.io" --base "/${REPOSITORY}/"
+          --site-url https://prosperostore.net --base /
         env:
           GITHUB_TOKEN: ${{ github.token }}   # read-only: raises the API rate limit for release facts
       - name: Sign the store API
         # The only steps that see the signing key. They fail rather than publish a catalog
         # that consoles would refuse: unsigned, or signed with a key that isn't in keys/.
-        run: python3 -m catalog sign --out site-build --base "/${REPOSITORY}/" --require
+        run: python3 -m catalog sign --out site-build --base / --require
         env:
           CATALOG_SIGNING_KEY: ${{ secrets.CATALOG_SIGNING_KEY }}
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
-          path: site-build/${{ github.event.repository.name }}
+          path: site-build
 
 
   pages:
