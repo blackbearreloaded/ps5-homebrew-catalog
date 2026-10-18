@@ -523,3 +523,6 @@ html:not(.js) .sort { display: none; }
 .shelf__all:hover { text-decoration: underline; }
 .kicker a { color: inherit; text-decoration: none; }
 .kicker a:hover { text-decoration: underline; }
+
+/* The site's address as its name: as written, not in capitals, so it reads as an address. */
+.brand__name--address { letter-spacing: 0.01em; text-transform: none; white-space: nowrap; }

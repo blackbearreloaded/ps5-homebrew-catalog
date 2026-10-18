@@ -11,7 +11,7 @@ own GitHub Releases. This repository stores no binaries.
 > **This catalog is an aggregator.** It lists apps; it doesn't build, maintain
 > or support them. Each app belongs to its own developer. For a bug, a question
 > or a feature request about an app, go to that app's GitHub repository (the
-> **Source code** link on its page at [homebrew.page](https://darkxex.github.io/ps5-homebrew-catalog/),
+> **Source code** link on its page at [darkxex.github.io/ps5-homebrew-catalog](https://darkxex.github.io/ps5-homebrew-catalog/),
 > or `source_repo` in its record) and contact its developer there. Issues here
 > are for the catalog itself: a wrong or broken listing, the website or the
 > store API.
@@ -39,7 +39,7 @@ flowchart TB
 
     checks["Automated checks<br/>format · publisher · release and tag · sha256 from GitHub's digest · icon"]
     review["Maintainer reviews and merges"]
-    build["Build from main, deployed to homebrew.page"]
+    build["Build from main, published to GitHub Pages"]
 
     subgraph out["What the build publishes"]
         direction LR
@@ -243,7 +243,7 @@ preview and the deployment.
 ## Comments and likes
 
 Every listed app has a comment thread and a like count, shown on its page and
-on its tile at [homebrew.page](https://darkxex.github.io/ps5-homebrew-catalog/).
+on its tile at [darkxex.github.io/ps5-homebrew-catalog](https://darkxex.github.io/ps5-homebrew-catalog/).
 
 - **You need a GitHub account.** The **Like** and **Comment** buttons on an
   app's page open that app's discussion in this repository's

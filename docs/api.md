@@ -309,7 +309,7 @@ Installed titles that aren't in `versions.json` aren't listed in the catalog.
 
 ## Verifying the catalog
 
-HTTPS proves a client is talking to `homebrew.page`. The signature proves the
+HTTPS proves a client is talking to the catalog's site. The signature proves the
 catalog was produced by this repository's build, even if the website or its
 host were ever taken over. **A client that installs software should verify;**
 one that only displays information (an app checking itself for an update) can
@@ -407,11 +407,8 @@ opaque string; only equality matters.
 A client that keeps no fingerprints can still send `If-None-Match` for each
 icon, as for any other file, at the cost of one request per icon.
 
-## homebrew.page
+## Caching on GitHub Pages
 
-The API used to live at `https://homebrew.page/api/v1/`. It is no longer
-updated there: everything is published at `https://darkxex.github.io/ps5-homebrew-catalog/api/v1/`. A client that
-still reads the old address sees the catalog as it was on the day of the move.
 GitHub Pages sets its own cache lifetime (about ten minutes) and ignores the
 site's header rules.
 
