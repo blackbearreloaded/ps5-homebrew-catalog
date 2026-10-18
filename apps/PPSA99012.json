@@ -6,9 +6,9 @@
   "description": "An unofficial SmartTube port for PS5.",
   "license": "GPL-3.0-or-later",
   "author": "BlackBearReloaded",
-  "version": "01.000.000",
+  "version": "01.000.010",
   "source_repo": "https://github.com/blackbearreloaded/ProsperoTube",
-  "artifact_url": "https://github.com/blackbearreloaded/ProsperoTube/releases/download/v01.000.000/PPSA99012.zip",
-  "sha256": "ba549bd8141e16ddd49f19ffdcbe7ee66572fd72842faf257a433543adf1d4e3",
-  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ProsperoTube/v01.000.000/native/branding/icon0.png"
+  "artifact_url": "https://github.com/blackbearreloaded/ProsperoTube/releases/download/v01.000.010/PPSA99012.zip",
+  "sha256": "da5ec2af4a9ddea51fdc74d4ae33d390b5a974ef4b63bc1d3c2050581d430063",
+  "icon_url": "https://raw.githubusercontent.com/blackbearreloaded/ProsperoTube/v01.000.010/native/branding/icon0.png"
 }
