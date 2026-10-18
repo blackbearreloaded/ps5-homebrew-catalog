@@ -9,9 +9,9 @@ from pathlib import Path
 from unittest import mock
 
 import catalog.__main__ as cli
-from catalog.automerge import bump_reasons
+from catalog.automerge import bump_reasons, new_app_reasons
 from catalog.policy import Change
-from catalog.records import load_record
+from catalog.records import load_catalog, load_record
 from catalog.report import Report
 
 from helpers import record, reservation, write_record
@@ -91,6 +91,63 @@ class BumpReasonsTests(unittest.TestCase):
         self.assertEqual(self.reasons(hub=hub), ["GitHub could not be asked: down"])
 
 
+ADDED = [Change("A", "apps/PPSA04321.json", "100644")]
+
+
+def second(**fields):
+    """A second app of the same developer, from a repository of their own."""
+    return record(**{"titleid": "PPSA04321", "name": "Second App", "version": "01.000.000",
+                     "source_repo": "https://github.com/example/second-app",
+                     "artifact_url": "https://github.com/example/second-app/releases/download/01.000.000/PPSA04321.zip",
+                     "icon_url": "https://raw.githubusercontent.com/example/second-app/01.000.000/icon0.png",
+                     **fields})
+
+
+class NewAppReasonsTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        write_record(Path(self.tmp.name) / "apps", record())
+        self.listed = load_catalog(Path(self.tmp.name) / "apps", Report())
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def second(self, **fields):
+        return load_record(write_record(Path(self.tmp.name) / "new", second(**fields)), Report())
+
+    def reasons(self, author="example", changes=ADDED, new=None, hub=None):
+        return new_app_reasons(author, changes, new or self.second(), self.listed, hub or github())
+
+    def test_a_developer_with_a_listed_app_adding_another_of_their_own_is_merged(self):
+        self.assertEqual(self.reasons(), [])
+        self.assertEqual(self.reasons(author="Example"), [])
+
+    def test_a_member_of_the_organization_that_owns_a_listed_app_counts(self):
+        hub = github(owner_type="Organization", member=True)
+        self.assertEqual(self.reasons(author="member", hub=hub), [])
+
+    def test_a_developer_without_a_listed_app_is_left_for_a_maintainer(self):
+        hub = github(owner_type="Organization", member=False)
+        hub.account_type = lambda login: "User" if login == "newcomer" else "Organization"
+        new = self.second(source_repo="https://github.com/newcomer/app",
+                          artifact_url="https://github.com/newcomer/app/releases/download/01.000.000/PPSA04321.zip",
+                          icon_url="https://raw.githubusercontent.com/newcomer/app/01.000.000/icon0.png")
+        self.assertEqual(self.reasons(author="newcomer", new=new, hub=hub), ["@newcomer has no app in the catalog yet"])
+
+    def test_someone_who_does_not_own_the_new_apps_repository_is_left_for_a_maintainer(self):
+        self.assertEqual(self.reasons(author="stranger"), ["@stranger does not own example/second-app"])
+
+    def test_a_modification_a_removal_a_reservation_and_several_files_are_left_for_a_maintainer(self):
+        self.assertEqual(self.reasons(changes=MODIFIED), ["it is not a new app"])
+        self.assertIn("2 files", self.reasons(changes=ADDED + MODIFIED)[0])
+        self.assertEqual(self.reasons(changes=[Change("A", "apps/PPSA04321.json", "100755")]),
+                         ["the record is not a regular file"])
+        held = load_record(write_record(Path(self.tmp.name) / "held", reservation()), Report())
+        self.assertEqual(self.reasons(new=held), ["it adds a reservation"])
+        self.assertEqual(new_app_reasons("example", ADDED, None, self.listed, github()),
+                         ["the proposed record could not be read"])
+
+
 def run(cwd, *args):
     return subprocess.run(args, cwd=cwd, check=True, capture_output=True, text=True).stdout.strip()
 
@@ -155,9 +212,17 @@ class AutomergeCommandTests(unittest.TestCase):
         self.assertEqual(status, 0)
         writer.merge_pull.assert_not_called()
 
-    def test_a_new_app_is_left_for_a_maintainer(self):
-        data = record(titleid="PPSA04321", name="Second App")
-        status, writer, _ = self.automerge({"apps/PPSA04321.json": json.dumps(data)})
+    def second(self, **fields):
+        return {"apps/PPSA04321.json": json.dumps(second(**fields))}
+
+    def test_another_app_of_a_developer_who_has_one_is_approved_and_merged(self):
+        status, writer, sha = self.automerge(self.second())
+        self.assertEqual(status, 0)
+        self.assertEqual(writer.approve_pull.call_args.args[:3], ("owner/catalog", 1, sha))
+        writer.merge_pull.assert_called_once_with("owner/catalog", 1, sha, "Update Example App (#1)")
+
+    def test_a_new_app_of_someone_without_a_listed_app_is_left_for_a_maintainer(self):
+        status, writer, _ = self.automerge(self.second(), author="stranger")
         self.assertEqual(status, 0)
         writer.approve_pull.assert_not_called()
         writer.merge_pull.assert_not_called()
