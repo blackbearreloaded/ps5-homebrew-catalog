@@ -1,7 +1,7 @@
 # PS5 Homebrew Catalog
 
-[![CI](https://github.com/blackbearreloaded/ps5-homebrew-catalog/actions/workflows/ci.yml/badge.svg)](https://github.com/blackbearreloaded/ps5-homebrew-catalog/actions/workflows/ci.yml)
-[![Catalog health](https://github.com/blackbearreloaded/ps5-homebrew-catalog/actions/workflows/health.yml/badge.svg)](https://github.com/blackbearreloaded/ps5-homebrew-catalog/actions/workflows/health.yml)
+[![CI](https://github.com/darkxex/ps5-homebrew-catalog/actions/workflows/ci.yml/badge.svg)](https://github.com/darkxex/ps5-homebrew-catalog/actions/workflows/ci.yml)
+[![Catalog health](https://github.com/darkxex/ps5-homebrew-catalog/actions/workflows/health.yml/badge.svg)](https://github.com/darkxex/ps5-homebrew-catalog/actions/workflows/health.yml)
 
 A community-maintained index of **native PS5 homebrew apps**. Each app is one
 small JSON record that points to a release file its developer hosts in their
@@ -11,7 +11,7 @@ own GitHub Releases. This repository stores no binaries.
 > **This catalog is an aggregator.** It lists apps; it doesn't build, maintain
 > or support them. Each app belongs to its own developer. For a bug, a question
 > or a feature request about an app, go to that app's GitHub repository (the
-> **Source code** link on its page at [homebrew.page](https://homebrew.page/),
+> **Source code** link on its page at [prosperostore.net](https://prosperostore.net/),
 > or `source_repo` in its record) and contact its developer there. Issues here
 > are for the catalog itself: a wrong or broken listing, the website or the
 > store API.
@@ -20,7 +20,7 @@ own GitHub Releases. This repository stores no binaries.
 installs as a title with its own title ID (`eboot.bin` and `sce_sys/`). ELF
 payloads, PS4 packages, backports, emulator ROMs and web pages aren't listed.
 
-The records here are the source of the [PS5 homebrew website](https://homebrew.page/)
+The records here are the source of the [PS5 homebrew website](https://prosperostore.net/)
 and of the store API that [ProsperoStore](https://github.com/blackbearreloaded/ProsperoStore)
 reads to install listed apps on the console.
 
@@ -39,7 +39,7 @@ flowchart TB
 
     checks["Automated checks<br/>format · publisher · release and tag · sha256 from GitHub's digest · icon"]
     review["Maintainer reviews and merges"]
-    build["Build from main, deployed to homebrew.page"]
+    build["Build from main, published to GitHub Pages"]
 
     subgraph out["What the build publishes"]
         direction LR
@@ -233,22 +233,21 @@ to run on untrusted pull requests.
 
 ## Website
 
-GitHub Actions rebuilds the store from `main` and deploys it to Cloudflare Pages
-when a maintainer starts the run; merges are published together, not one by one. The front
+GitHub Actions rebuilds the store from `main` and publishes it to GitHub Pages
+after every merge. The front
 page is a store front: featured apps over shelves, with sections for apps, games
 and tools, search and sorting; each app has its own page, coloured from its icon; it works on phones, has a TV mode for the PS5 browser and smart TVs
 (controller-driven, inspired by [tv4play](https://github.com/ps5-payload-dev/tv4play)), and shows when each app was last updated. See **[Website](docs/website.md)** for the output, themes, local
-preview and the Cloudflare deployment (no Cloudflare credentials in the
-repository).
+preview and the deployment.
 
 ## Comments and likes
 
 Every listed app has a comment thread and a like count, shown on its page and
-on its tile at [homebrew.page](https://homebrew.page/).
+on its tile at [prosperostore.net](https://prosperostore.net/).
 
 - **You need a GitHub account.** The **Like** and **Comment** buttons on an
   app's page open that app's discussion in this repository's
-  [Discussions](https://github.com/blackbearreloaded/ps5-homebrew-catalog/discussions).
+  [Discussions](https://github.com/darkxex/ps5-homebrew-catalog/discussions).
   There you upvote the discussion (the arrow beside its title) to like the app,
   and reply to comment. Reading needs no account: the site shows the counts and
   the latest comments to everyone.
@@ -267,7 +266,7 @@ How it works is in [Automation](docs/automation.md#comments-and-likes).
 ## Store API
 
 The same build publishes the catalog for programs at
-`https://homebrew.page/api/v1/`: one small JSON file per app, a compact index, a
+`https://prosperostore.net/api/v1/`: one small JSON file per app, a compact index, a
 version map and PNG icons. It is what a console store reads, and what an app
 reads to tell its user that an update exists. Besides the records it carries
 each release's download size, release date, content version and the developer's
@@ -284,10 +283,12 @@ can verify it is genuine before installing from it.
 Listing means the automated checks passed and a maintainer reviewed the
 submission's publisher and provenance. It is **not** a security audit of the
 app's code. See the **[review policy](docs/review-policy.md)** for how listings,
-updates, title ID disputes and withdrawals are handled.
+updates, title ID disputes and withdrawals are handled. Forks are welcome as
+long as they are distinct apps: a fork that only renames or re-themes a listed
+app is not listed, and its changes belong in the original project.
 
 Report a broken or incorrect listing with an
-[issue](https://github.com/blackbearreloaded/ps5-homebrew-catalog/issues/new/choose).
+[issue](https://github.com/darkxex/ps5-homebrew-catalog/issues/new/choose).
 Report a malicious or compromised app privately as described in
 [SECURITY.md](SECURITY.md).
 
@@ -304,7 +305,7 @@ files: always read each app's release notes and documentation, linked from its
 page, before installing. Use homebrew at your own risk.
 
 If a listing infringes your rights or includes illegal content, report it
-through an [issue](https://github.com/blackbearreloaded/ps5-homebrew-catalog/issues/new/choose)
+through an [issue](https://github.com/darkxex/ps5-homebrew-catalog/issues/new/choose)
 or privately as described in [SECURITY.md](SECURITY.md); it will be withdrawn
 (see the [review policy](docs/review-policy.md#withdrawals)).
 

@@ -2,6 +2,7 @@
   "titleid": "PPSA01153",
   "name": "OliSe Player",
   "kind": "app",
+  "category": "music",
   "description": "Tracker music radio in FastTracker II style, streaming MOD, XM, S3M and IT from The Mod Archive.",
   "license": "GPL-3.0-or-later",
   "author": "Marice",

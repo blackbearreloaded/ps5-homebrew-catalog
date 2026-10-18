@@ -38,22 +38,23 @@ from string import Template
 from urllib.parse import quote, unquote
 
 from . import artifacts
-from .records import KINDS, Record, load_catalog
+from .records import CATEGORIES, KINDS, Record, load_catalog
 from .report import Report
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "site"
-REPO_URL = "https://github.com/blackbearreloaded/ps5-homebrew-catalog"
+REPO_URL = "https://github.com/darkxex/ps5-homebrew-catalog"
 # Likes and comments, written by the Comments workflow to a branch of their own (catalog/comments.py).
 COMMENTS_URL = REPO_URL.replace("https://github.com/", "https://raw.githubusercontent.com/") + "/comments-data/v1/"
-DEFAULT_SITE_URL = "https://homebrew.page"
+# The website: the repository's GitHub Pages site, under its own domain.
+DEFAULT_SITE_URL = "https://prosperostore.net"
 DEFAULT_BASE = "/"
 # Base paths the site used to be served under; their URLs redirect to the current base.
 LEGACY_BASES = ("/ps5/",)
 MARKER = ".catalog-site"
 FEED_SCHEMA = 1
 API_VERSION = "v1"         # path of the store API; a breaking change gets a new path
-API_SCHEMA = 3             # raised when fields are added; clients ignore fields they don't know
+API_SCHEMA = 3             # not raised for additions: released stores accept exactly 3 (docs/api.md)
 API_ICON_SIZES = (512, 256)
 ICON_SIZE = 512
 FONT_URL = "https://fonts.googleapis.com/css2?{families}&display=swap"
@@ -117,9 +118,8 @@ WITHDRAWN_DAYS = 30  # how long a withdrawn app's page keeps redirecting
 def withdrawn_titleids(apps_dir: Path, listed: set[str]) -> list[str]:
     """Title IDs whose record was removed in the last WITHDRAWN_DAYS and isn't listed now, from git history.
 
-    Cloudflare Pages keeps serving a file for a while after a deployment drops it, so a withdrawn
-    app's page and API file would stay reachable; a redirect or a new file at the address takes
-    over at once.
+    A withdrawn app's API file is replaced by a small withdrawn file at the same address, so a
+    client that asks for it learns why it is gone.
     """
     log = _git("log", f"--since={WITHDRAWN_DAYS} days ago", "--diff-filter=D", "--name-only", "--format=",
                "--", str(apps_dir))
@@ -130,7 +130,7 @@ def withdrawn_titleids(apps_dir: Path, listed: set[str]) -> list[str]:
 def last_updated(apps_dir: Path) -> dict[str, str]:
     """Map record filename to the ISO commit date of the last commit that changed it.
 
-    CI and Cloudflare may clone shallowly, which would date every record to the
+    CI may clone shallowly, which would date every record to the
     newest commit, so the history is deepened first when possible. Records
     outside the repository, or without history, are left out.
     """
@@ -548,7 +548,7 @@ def write_api(root: Path, url: str, records: list[Record], report: Report, *, up
         }
         _write_json(root / "apps" / f"{titleid}.json", app)
         index.append({key: app[key] for key in (
-            "titleid", "status", "name", "kind", "author", "version", "content_version", "format", "size",
+            "titleid", "status", "name", "kind", "category", "author", "version", "content_version", "format", "size",
             "released", "updated", "added", "icon_small", "icon_hash")}
             | {"sandbox": ((safety or {}).get(titleid) or {}).get("sandbox")})
         if not record.reserved:
@@ -695,7 +695,7 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
                 f'<ul class="safety" aria-label="Scan results">{"".join(chips)}</ul>\n'
                 f'<div class="safety__text">{text}<p class="notes__source">From an automatic scan of the release '
                 'file, which is read and never run. It can miss things: it is not a guarantee. '
-                '<a href="https://github.com/blackbearreloaded/ps5-homebrew-catalog/blob/main/docs/automation.md#release-scan">'
+                '<a href="https://github.com/darkxex/ps5-homebrew-catalog/blob/main/docs/automation.md#release-scan">'
                 'How the scan works</a></p></div>')
 
     def notes_section(record: Record, release_url: str) -> str:
@@ -719,6 +719,8 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
             url=e(page_url(record)),
             icon=e(icons[record.titleid]),
             kind_label=e(KIND_LABELS[d["kind"]]),
+            category_label=e(CATEGORIES[d["category"]]),
+            category_rank=str(list(CATEGORIES).index(d["category"])),
             status="soon" if record.reserved else "available",
             format="",
             ambient=e(ambients.get(record.titleid, "")),
@@ -746,7 +748,8 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
             updated=e(display_date(updated[record.path.name])) if record.path.name in updated else "—",
             updated_iso=e(updated.get(record.path.name, "")),
             total=f"{total:03d}",
-            search_text=e(" ".join((d["name"], d["author"], d["titleid"], d["description"], d["kind"]))),
+            search_text=e(" ".join((d["name"], d["author"], d["titleid"], d["description"], d["kind"],
+                                    CATEGORIES[d["category"]]))),
         )
         return values
 
@@ -760,9 +763,14 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
             values["grid_attrs"] = (
                 f' data-app data-app-kind="{values["kind"]}" data-status="{values["status"]}"'
                 f' data-format="{values["format"]}"'
+                f' data-category="{values["category"]}" data-category-rank="{values["category_rank"]}"'
                 f' data-name="{e(record.data["name"].casefold())}" data-titleid="{values["titleid"]}"'
                 f' data-author="{e(record.data["author"].casefold())}"'
                 f' data-updated="{values["updated_iso"]}" data-search-text="{values["search_text"]}"'
+                # When the catalog listed it, and when the release it lists was published: Discover
+                # tells new apps from updated ones with them, not with the record's last change.
+                f' data-added="{e(_utc(added.get(record.path.name)) or "")}"'
+                f' data-released="{e(known[record.titleid][0].released or "")}"'
             )
             name = template.replace(".html", "-soon.html") if record.reserved else template
             rendered.append(theme_obj.render(name, values))
@@ -836,11 +844,13 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
             d = record.data
             item = {
                 "titleid": d["titleid"], "name": d["name"], "kind": d["kind"], "kind_label": KIND_LABELS[d["kind"]],
+                "category": d["category"], "category_label": CATEGORIES[d["category"]],
                 "description": d["description"], "author": d["author"], "version": d["version"] or "",
                 "version_label": version_label(d["version"]) if d["version"] else "",
                 "license": d["license"] or "", "soon": record.reserved, "icon": icons[record.titleid],
                 "updated": display_date(updated[record.path.name]) if record.path.name in updated else "",
                 "updated_iso": updated.get(record.path.name, ""), "short_url": host + page_url(record),
+                "released_iso": known[record.titleid][0].released or "",
             }
             if not record.reserved:
                 item.update(format_label=FORMAT_LABELS[artifact_format(record)], sha256=d["sha256"],
@@ -853,7 +863,14 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
         rail.append(("soon", "Coming soon", total - len(available)))
         rail_html = "\n".join(f'  <button type="button" class="tv-rail__item" data-kind="{kind}" tabindex="-1">'
                               f'{label}<span>{count}</span></button>' for kind, label, count in rail if count)
-        data = json.dumps({"apps": tv_apps}, ensure_ascii=False, separators=(",", ":"))
+        # Then the categories, each a section of its own (tv.js reads "cat:<key>").
+        shelf = {key: sum(1 for r in available if r.data["category"] == key) for key in CATEGORIES}
+        if any(shelf.values()):
+            rail_html += '\n  <p class="tv-rail__label">Categories</p>\n' + "\n".join(
+                f'  <button type="button" class="tv-rail__item tv-rail__item--cat" data-kind="cat:{key}" tabindex="-1">'
+                f'{e(label)}<span>{shelf[key]}</span></button>' for key, label in CATEGORIES.items() if shelf[key])
+        data = json.dumps({"apps": tv_apps, "categories": [{"key": key, "label": label} for key, label in CATEGORIES.items()]},
+                          ensure_ascii=False, separators=(",", ":"))
         (root / "tv").mkdir()
         (root / "tv" / "index.html").write_text(tv_template.substitute(
             shared, canonical=e(site_url + base + "tv/"), rail=rail_html,
@@ -865,7 +882,7 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
             data=data.replace("<", "\\u003c"),
         ), encoding="utf-8")
 
-    # 404 page, served by Cloudflare Pages for unknown paths.
+    # 404 page, served by GitHub Pages for unknown paths.
     for target in {out / "404.html", root / "404.html"}:
         write_page(target, title="Not found — PS5 Homebrew Store", description="Page not found.",
                    canonical=site_url + base, body=theme_obj.render("404.html", shared), page_class="page-404")
@@ -899,7 +916,7 @@ def build_site(out: Path, apps_dir: Path, report: Report, base: str = DEFAULT_BA
               github=github, cache=icon_cache, known=known, safety=safety,
               added=added, news=news_items)
 
-    # Cloudflare Pages configuration.
+    # Header and redirect rules, for a host that reads _headers and _redirects; GitHub Pages ignores them.
     csp = ("default-src 'self'; img-src 'self' data:; style-src 'self' https://fonts.googleapis.com; "
            "font-src https://fonts.gstatic.com; script-src 'self'; "
            "connect-src 'self' https://raw.githubusercontent.com; "

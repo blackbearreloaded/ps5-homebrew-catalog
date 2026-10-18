@@ -47,8 +47,19 @@ class SiteBuildTests(unittest.TestCase):
         report = Report()
         with mock.patch.dict("os.environ", {"CF_PAGES_COMMIT_SHA": "abc1234def"}):
             options.setdefault("fetch_icons", False)
+            options.setdefault("site_url", "https://catalog.example")
+            options.setdefault("base", "/")
             count = build_site(self.out, self.apps, report, **options)
         return count, report
+
+    def test_the_default_site_is_prosperostore_net(self):
+        report = Report()
+        with mock.patch.dict("os.environ", {"CF_PAGES_COMMIT_SHA": "abc1234def"}):
+            build_site(self.out, self.apps, report, fetch_icons=False)
+        root = self.out
+        self.assertTrue((root / "index.html").is_file())
+        app = json.loads((root / "api" / "v1" / "apps" / "PPSA01234.json").read_text(encoding="utf-8"))
+        self.assertEqual(app["page"], "https://prosperostore.net/app/PPSA01234/")
 
     def test_builds_pages_feed_and_config(self):
         count, report = self.build()
@@ -99,7 +110,7 @@ class SiteBuildTests(unittest.TestCase):
         self.assertIn('<a class="notice"', page)
         self.assertIn('href="https://github.com/blackbearreloaded/ProsperoStore"', page)
         tv = (self.out / "tv" / "index.html").read_text(encoding="utf-8")
-        self.assertIn('data-comments="https://raw.githubusercontent.com/blackbearreloaded/ps5-homebrew-catalog/comments-data/v1/"', tv)
+        self.assertIn('data-comments="https://raw.githubusercontent.com/darkxex/ps5-homebrew-catalog/comments-data/v1/"', tv)
         # The QR library is one of the site's own files and comes before the script that uses it.
         self.assertRegex(tv, r'<script src="/assets/qrcode\.[0-9a-f]+\.js" defer></script>\n<script src="/assets/tv\.')
         self.assertIn('<p class="tv-credit">Maintained by BlackBearReloaded · Built from abc1234 · last updated '
@@ -127,7 +138,7 @@ class SiteBuildTests(unittest.TestCase):
         self.assertEqual((app["schema"], app["status"], app["format"], app["artifact_name"], app["tag"]),
                          (3, "available", "zip", "PPSA01234.zip", "01.000.000"))
         self.assertEqual(app["sha256"], "a" * 64)                      # every record field is there
-        self.assertEqual(app["page"], "https://homebrew.page/app/PPSA01234/")
+        self.assertEqual(app["page"], "https://catalog.example/app/PPSA01234/")
         self.assertEqual(app["release_url"], "https://github.com/example/example-app/releases/tag/01.000.000")
         # An offline build knows no release facts and has no icons; the fields are present and null.
         self.assertEqual([app[k] for k in ("size", "released", "prerelease", "content_version", "icon", "icon_small",
@@ -154,14 +165,14 @@ class SiteBuildTests(unittest.TestCase):
         self.assertIn("/api/*\n  Access-Control-Allow-Origin: *", (self.out / "_headers").read_text(encoding="utf-8"))
         # Likes and comments come from the comments branch: the page says where, and may fetch from there.
         home = (self.out / "index.html").read_text(encoding="utf-8")
-        self.assertIn('data-comments="https://raw.githubusercontent.com/blackbearreloaded/ps5-homebrew-catalog/comments-data/v1/"', home)
+        self.assertIn('data-comments="https://raw.githubusercontent.com/darkxex/ps5-homebrew-catalog/comments-data/v1/"', home)
         self.assertNotIn("data-likes-for", home)   # likes are on the "Most liked" shelf, which the script makes
         detail = (self.out / "app" / "PPSA01234" / "index.html").read_text(encoding="utf-8")
         self.assertIn('data-comments-for="PPSA01234"', detail)
         # The Like and Comment buttons come right after the release facts, before the description.
         self.assertLess(detail.index('data-react="likes"'), detail.index('class="article"'))
         self.assertIn('data-react="comments"', detail)
-        self.assertIn('href="https://github.com/blackbearreloaded/ps5-homebrew-catalog/discussions?discussions_q=PPSA01234"', detail)
+        self.assertIn('href="https://github.com/darkxex/ps5-homebrew-catalog/discussions?discussions_q=PPSA01234"', detail)
         self.assertIn("connect-src 'self' https://raw.githubusercontent.com;", (self.out / "_headers").read_text(encoding="utf-8"))
         self.assertIn("/api/*/manifest.sig\n  Content-Type: application/octet-stream",
                       (self.out / "_headers").read_text(encoding="utf-8"))
@@ -176,9 +187,9 @@ class SiteBuildTests(unittest.TestCase):
         self.assertFalse((api / "manifest.sig").exists())
 
     def test_a_mirror_of_the_api_links_pages_to_the_website(self):
-        self.build(site_url="https://owner.github.io", base="/catalog/", pages_url="https://homebrew.page/")
+        self.build(site_url="https://owner.github.io", base="/catalog/", pages_url="https://catalog.example/")
         app = json.loads((self.out / "catalog" / "api" / "v1" / "apps" / "PPSA01234.json").read_text(encoding="utf-8"))
-        self.assertEqual(app["page"], "https://homebrew.page/app/PPSA01234/")
+        self.assertEqual(app["page"], "https://catalog.example/app/PPSA01234/")
         index = json.loads((self.out / "catalog" / "api" / "v1" / "index.json").read_text(encoding="utf-8"))
         self.assertEqual(index["count"], 3)
 
@@ -240,8 +251,8 @@ class SiteBuildTests(unittest.TestCase):
         # An icon's address changes with the picture, so no cache can answer it with an older one.
         import hashlib
         fingerprint = hashlib.sha256(png).hexdigest()[:16]
-        self.assertEqual(app["icon"], f"https://homebrew.page/api/v1/icons/PPSA01234.png?v={fingerprint}")
-        self.assertEqual(app["icon_small"], f"https://homebrew.page/api/v1/icons/PPSA01234-256.png?v={fingerprint}")
+        self.assertEqual(app["icon"], f"https://catalog.example/api/v1/icons/PPSA01234.png?v={fingerprint}")
+        self.assertEqual(app["icon_small"], f"https://catalog.example/api/v1/icons/PPSA01234-256.png?v={fingerprint}")
         self.assertEqual((api / "icons" / "PPSA01234-256.png").read_bytes(), b"small")
         # The fingerprint is of the developer's image, so it changes only when that image does.
         import hashlib
@@ -262,13 +273,44 @@ class SiteBuildTests(unittest.TestCase):
         data = json.loads(raw)
         by_id = {a["titleid"]: a for a in data["apps"]}
         self.assertEqual(by_id["PPSA01234"]["name"], "Evil <script>alert(1)</script>")
-        self.assertEqual(by_id["PPSA01234"]["short_url"], "homebrew.page/app/PPSA01234/")
+        self.assertEqual(by_id["PPSA01234"]["short_url"], "catalog.example/app/PPSA01234/")
         self.assertTrue(by_id["PPSA01234"]["steps"][0].startswith("Download PPSA01234.zip"))
         self.assertTrue(by_id["PPSA05555"]["soon"])
         self.assertNotIn("sha256", by_id["PPSA05555"])
         self.assertIn('data-kind="soon"', html)
         self.assertIn('href="/tv/?layout=tv"', (self.out / "index.html").read_text(encoding="utf-8"))
         self.assertIn('href="/?layout=web"', html)
+
+    def test_categories(self):
+        self.build()
+        home = (self.out / "index.html").read_text(encoding="utf-8")
+        self.assertIn('data-category="utilities" data-category-rank="8"', home)
+        self.assertIn('data-category-label="Utilities"', home)
+        self.assertIn("data-cats", home)
+        page = (self.out / "app" / "PPSA04321" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('href="/?category=utilities">Utilities</a>', page)
+        self.assertIn("<dt>Category</dt><dd>Utilities</dd>", page)
+        tv = (self.out / "tv" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('data-kind="cat:utilities"', tv)
+        self.assertNotIn('data-kind="cat:emulators"', tv)  # a category without apps gets no entry
+        raw = tv.split('<script type="application/json" id="tv-data">', 1)[1].split("</script>", 1)[0]
+        data = json.loads(raw)
+        self.assertEqual(data["categories"][0], {"key": "console-ports", "label": "Console game ports"})
+        self.assertEqual({a["category_label"] for a in data["apps"]}, {"Utilities", "Homebrew games"})
+        # The API carries the key as an added field: same paths, same schema.
+        index = json.loads((self.out / "api" / "v1" / "index.json").read_text(encoding="utf-8"))
+        self.assertEqual(index["schema"], 3)
+        self.assertEqual({a["category"] for a in index["apps"]}, {"utilities", "homebrew-games"})
+        app = json.loads((self.out / "api" / "v1" / "apps" / "PPSA04321.json").read_text(encoding="utf-8"))
+        self.assertEqual(app["category"], "utilities")
+
+    def test_tiles_carry_listing_and_release_dates(self):
+        self.build()
+        home = (self.out / "index.html").read_text(encoding="utf-8")
+        self.assertIn("data-added=", home)
+        self.assertIn("data-released=", home)
+        tv = (self.out / "tv" / "index.html").read_text(encoding="utf-8")
+        self.assertIn('"released_iso":', tv)
 
     def test_feed(self):
         self.build()
@@ -277,7 +319,7 @@ class SiteBuildTests(unittest.TestCase):
         self.assertEqual(feed["source"]["commit"], "abc1234def")
         self.assertEqual([a["titleid"] for a in feed["apps"]], ["PPSA01234", "PPSA04321"])
         self.assertEqual([a["format"] for a in feed["apps"]], ["zip", "ffpkg"])
-        self.assertTrue(feed["apps"][0]["page"].endswith("homebrew.page/app/PPSA01234/"))
+        self.assertTrue(feed["apps"][0]["page"].endswith("catalog.example/app/PPSA01234/"))
         self.assertEqual([a["titleid"] for a in feed["coming_soon"]], ["PPSA05555"])
         self.assertIsNone(feed["coming_soon"][0]["artifact_url"])
         self.assertIsNone(feed["coming_soon"][0]["source_repo"])

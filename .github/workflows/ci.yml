@@ -1,9 +1,12 @@
 name: CI
 
-# A pull request runs the tests. Publishing is started by hand (Actions > CI > Run workflow on
-# main): a merge starts nothing, so several merges can go out together in one run.
+# A pull request runs the tests. Every merge to main publishes the site; a run started by hand
+# (Actions > CI > Run workflow on main) publishes it again without a merge. Merges made close
+# together each start a run, and they go out one after another.
 on:
   pull_request:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -36,7 +39,7 @@ jobs:
     name: Verify changed records
     # Before publishing: every record that changed since the commit that is online is verified
     # in full, which also covers commits that did not come through a pull request.
-    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -49,10 +52,13 @@ jobs:
         with:
           python-version: '3.13'
       - name: Find the commit that is online
+        env:
+          OWNER: ${{ github.repository_owner }}
+          REPOSITORY: ${{ github.event.repository.name }}
         # The store API's index names the commit it was built from. When it cannot be read, or
         # that commit is not in this history, BEFORE stays empty and every record is verified.
         run: |
-          online=$(curl -fsS --retry 2 https://homebrew.page/api/v1/index.json \
+          online=$(curl -fsS --retry 2 https://prosperostore.net/api/v1/index.json \
             | python3 -c 'import json, sys; print(json.load(sys.stdin).get("commit", ""))' || true)
           if [[ $online =~ ^[0-9a-f]{40}$ ]] && git merge-base --is-ancestor "$online" "$GITHUB_SHA" 2>/dev/null; then
             echo "BEFORE=$online" >> "$GITHUB_ENV"
@@ -67,7 +73,7 @@ jobs:
     # Writes a small summary per listed release for the site's safety labels. It downloads and
     # reads files nobody has reviewed, so it has no secrets, and the deploy job reads its output
     # only as data. A release is scanned once: summaries are kept by the file's sha256.
-    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     needs: tests
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -94,27 +100,28 @@ jobs:
           retention-days: 7
 
   deploy:
-    name: Deploy website to Cloudflare Pages
-    # Only trusted code on main reaches this job, and only in a run started by hand: it never
-    # runs for pull requests or for a merge.
-    # deploy-fallback.yml repeats these steps for an Actions outage: change both together.
-    # It is skipped until the CLOUDFLARE_PAGES_PROJECT repository variable exists.
+    name: Build and sign the website
+    # Only trusted code on main reaches this job, after a merge or in a run started by hand:
+    # it never runs for pull requests. It is the job that holds the signing key (in the
+    # environment still named cloudflare-pages). The website and its store API go to the
+    # repository's GitHub Pages site, published by the next job.
     # The scan job may fail or be skipped: the site is then built without safety labels.
     needs: [tests, verify, scan]
     if: >-
       always() && github.ref == 'refs/heads/main'
-      && github.event_name == 'workflow_dispatch'
+      && github.event_name != 'pull_request'
       && needs.tests.result == 'success'
       && (needs.verify.result == 'success' || needs.verify.result == 'skipped')
-      && vars.CLOUDFLARE_PAGES_PROJECT != ''
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     environment:
       name: cloudflare-pages
-      url: https://homebrew.page/
     concurrency:
-      group: deploy-cloudflare-pages
+      group: deploy-website
       cancel-in-progress: false
+    env:
+      OWNER: ${{ github.repository_owner }}
+      REPOSITORY: ${{ github.event.repository.name }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -138,71 +145,25 @@ jobs:
         with:
           name: scans
           path: scans
-      - run: python3 -m catalog build --out dist --icon-cache .icon-cache --scans scans
+      - name: Build the website
+        run: >-
+          python3 -m catalog build --out site-build --icon-cache .icon-cache --scans scans
+          --site-url https://prosperostore.net --base /
         env:
           GITHUB_TOKEN: ${{ github.token }}   # read-only: raises the API rate limit for release facts
       - name: Sign the store API
-        # The only step that sees the signing key. It fails rather than publish a catalog
+        # The only steps that see the signing key. They fail rather than publish a catalog
         # that consoles would refuse: unsigned, or signed with a key that isn't in keys/.
-        run: python3 -m catalog sign --out dist --require
+        run: python3 -m catalog sign --out site-build --base / --require
         env:
           CATALOG_SIGNING_KEY: ${{ secrets.CATALOG_SIGNING_KEY }}
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
-        with:
-          node-version: '22'
-      - name: Upload to Cloudflare Pages
-        # This repository's Actions logs are public. Wrangler's output can
-        # mention account details, so only a redacted error summary is printed.
-        run: |
-          # Create the Pages project on first use; this fails harmlessly when it exists.
-          npx --yes wrangler@4.143.0 pages project create "$PROJECT" --production-branch main \
-              > "$RUNNER_TEMP/wrangler-create.log" 2>&1 && echo "Created Pages project." || true
-          if npx --yes wrangler@4.143.0 pages deploy dist \
-              --project-name "$PROJECT" --branch main \
-              --commit-hash "$GITHUB_SHA" --commit-dirty=false \
-              > "$RUNNER_TEMP/wrangler.log" 2>&1; then
-            echo "Deployed to Cloudflare Pages."
-          else
-            echo "::error::Cloudflare Pages deployment failed. Redacted wrangler errors:"
-            python3 -m catalog.redact "$RUNNER_TEMP/wrangler.log"
-            exit 1
-          fi
-        env:
-          PROJECT: ${{ vars.CLOUDFLARE_PAGES_PROJECT }}
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          WRANGLER_SEND_METRICS: 'false'
-      # The mirror: the store API once more, built for this repository's GitHub Pages address, for
-      # consoles on networks that can't reach the main site. Only the API is published there (JSON,
-      # icons, signature); its `page` links name the website. Its files differ from the main
-      # site's (icon addresses), so it has a manifest and a signature of its own, from the same key.
-      - name: Build the API mirror
-        run: >-
-          python3 -m catalog build --out mirror --icon-cache .icon-cache --scans scans
-          --site-url "https://${OWNER}.github.io" --base "/${REPOSITORY}/" --pages-url https://homebrew.page/
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-          OWNER: ${{ github.repository_owner }}
-          REPOSITORY: ${{ github.event.repository.name }}
-      - name: Sign the mirror's API
-        run: python3 -m catalog sign --out mirror --base "/${REPOSITORY}/" --require
-        env:
-          CATALOG_SIGNING_KEY: ${{ secrets.CATALOG_SIGNING_KEY }}
-          REPOSITORY: ${{ github.event.repository.name }}
-      - name: Keep only the API for the mirror
-        run: |
-          mkdir pages
-          cp -r "mirror/${REPOSITORY}/api" pages/api
-          cp site/mirror/index.html pages/index.html
-          touch pages/.nojekyll
-        env:
-          REPOSITORY: ${{ github.event.repository.name }}
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
-          path: pages
+          path: site-build
 
-  mirror:
-    name: Publish the API mirror to GitHub Pages
+
+  pages:
+    name: Publish the website to GitHub Pages
     # Publishes what the deploy job built and signed; it holds no secrets itself.
     needs: deploy
     if: needs.deploy.result == 'success'

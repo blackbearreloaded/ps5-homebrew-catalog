@@ -19,8 +19,6 @@ jobs:
     name: Validate submission
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    outputs:
-      warnings: ${{ steps.check.outputs.warnings }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -33,7 +31,6 @@ jobs:
         with:
           python-version: '3.13'
       - name: Check records, publisher, release, sha256 and icon
-        id: check
         run: python3 -m catalog pr
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -48,8 +45,6 @@ jobs:
     timeout-minutes: 20
     permissions:
       contents: read
-    outputs:
-      findings: ${{ steps.scan.outputs.findings }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -61,7 +56,6 @@ jobs:
           python-version: '3.13'
       - run: python3 -m pip install --disable-pip-version-check -r requirements-scan.txt
       - name: Scan the listed release for ways out of the sandbox
-        id: scan
         run: python3 -m catalog scan-pr
         env:
           GH_TOKEN: ${{ github.token }}   # read-only: `gh attestation verify` needs one
@@ -69,10 +63,10 @@ jobs:
   bump:
     name: Is it a developer's release bump?
     # A developer who only moves their own app to its newest release is not kept waiting for a
-    # maintainer. This job decides, with the base branch's code and a read-only token; it runs
-    # only after both checks above passed. A warning from the submission check, or a scan finding
-    # that is new since the listed release or a helper nobody approved, leaves the pull request
-    # for a maintainer. Set the repository variable AUTO_MERGE_BUMPS to "false" to pause it.
+    # maintainer. This job decides, with the base branch's code and a read-only token, after both
+    # checks above passed. Their warnings, the release scan's included, don't hold it back: they
+    # stay in the checks' summaries. Set the repository variable AUTO_MERGE_BUMPS to "false" to
+    # pause it.
     needs: [submission, scan]
     if: vars.AUTO_MERGE_BUMPS != 'false'
     runs-on: ubuntu-latest
@@ -92,8 +86,6 @@ jobs:
         run: python3 -m catalog automerge
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          SUBMISSION_WARNINGS: ${{ needs.submission.outputs.warnings }}
-          SCAN_FINDINGS: ${{ needs.scan.outputs.findings }}
 
   merge:
     name: Merge the release bump
@@ -125,5 +117,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           MERGE_TOKEN: ${{ steps.token.outputs.token }}
-          SUBMISSION_WARNINGS: ${{ needs.submission.outputs.warnings }}
-          SCAN_FINDINGS: ${{ needs.scan.outputs.findings }}

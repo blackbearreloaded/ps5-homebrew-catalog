@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA99921",
+  "name": "Genesis Plus GX PS5",
+  "kind": "app",
+  "category": "emulators",
+  "description": "Genesis Plus GX (Mega Drive, Sega CD, Master System, Game Gear) as a native PS5 app.",
+  "license": null,
+  "author": "MisterTemaki",
+  "version": null,
+  "source_repo": null,
+  "artifact_url": null,
+  "sha256": null,
+  "icon_url": null
+}

@@ -233,3 +233,9 @@ body.in-detail .tv-hints [data-grid-only] { display: none; }
 .tv-logo__mark { position: relative; width: 1.5rem; height: 1.5rem; margin: 0 0.3rem; border-radius: 23%; background: var(--gold); box-shadow: none; transform: rotate(45deg); }
 .tv-logo__mark::after { content: ""; position: absolute; top: 27%; right: 27%; bottom: 27%; left: 27%; border-radius: 20%; background: var(--bg); }
 .tv-logo__word { letter-spacing: 0.12em; text-transform: uppercase; font-size: 1.1rem; }
+
+/* The categories under the sections: a smaller step, and a rail that scrolls when it is taller than the screen. */
+.tv-rail { overflow-y: auto; scrollbar-width: none; }
+.tv-rail::-webkit-scrollbar { display: none; }
+.tv-rail__label { margin: 0.7rem 1rem 0.15rem; font: 700 0.72rem/1 var(--body); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+.tv-rail__item--cat { padding: 0.45rem 1rem; font-size: 0.95rem; }

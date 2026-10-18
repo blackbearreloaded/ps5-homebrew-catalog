@@ -25,8 +25,22 @@ Before merging a submission, a maintainer confirms:
 - **Provenance.** The repository contains the app's source, or clearly states
   where it lives. Repackaged or rebranded copies of someone else's app are not
   listed without the original developer's consent.
+- **A distinct app.** A fork or derivative of an app that is already listed is
+  accepted only when it is substantially different for the user: a different
+  core or engine, a different purpose, or features the listed app doesn't have
+  and won't take. A new name, theme, skin, icon, default settings or bundled
+  content alone is not enough, and neither is a rebuild of the same source.
+  The way in for such changes is the original project: open a pull request
+  there, where you get the credit. When the original project is no longer
+  maintained, a maintained fork may take its place. Two ports of the same
+  upstream project by different developers are judged the same way: the later
+  one must differ for the user. The submission check notes when a repository
+  is a fork of a listed app, or when a name contains a listed app's name.
 - **Honesty.** The name, description, kind and icon describe the app accurately
-  and don't imitate another listing or an official product.
+  and don't imitate another listing or an official product. A derivative may
+  name the project it builds on in its description, but not in its name (not
+  "ProsperoEden Switch UI"), so it can't be mistaken for an edition of the
+  original.
 - **Scope.** The app is native PS5 homebrew: built for the PS5 and installed
   as its own title (`eboot.bin`, `sce_sys/`). ELF payloads, PS4 packages,
   backports, emulator ROMs and web pages are out of scope. Pirated commercial content, tools whose
@@ -66,8 +80,9 @@ A reservation (a record whose `artifact_url`, `source_repo` and `icon_url` are
 - A reservation that hasn't changed for 180 days is flagged by the
   health check. Maintainers ask the holder in an issue and release the title ID
   if there's no reply within 14 days.
-- Reservations get the same honesty and scope review as listings: no
-  impersonation, no squatting on other projects' names or IDs.
+- Reservations get the same honesty, scope and distinct-app review as
+  listings: no impersonation, no squatting on other projects' names or IDs,
+  and no reservation for a fork that wouldn't be listed.
 
 ## Updates
 

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 
 from .github import GitHub, GitHubError
@@ -59,6 +60,44 @@ def is_bump(old: Record, new: Record, github: GitHub, report: Report, name: str)
         report.notice(name, f"updates {new.titleid} to the newest release of {new.owner}/{new.repo}; "
                             "allowed from any account")
     return bump
+
+
+def derivative_notes(new: Record, listed: list[Record], github: GitHub) -> list[str]:
+    """What a reviewer should ask about a new listing that builds on an app already in the catalog.
+
+    The review policy lists a fork or derivative only when it is a distinct app, and a derivative
+    names what it builds on in its description, not in its name. These are notes for the reviewer,
+    never errors: a fork that adds a renderer or features of its own is welcome.
+    """
+    notes = []
+    others = [r for r in listed if r.titleid != new.titleid]
+    if not new.reserved:
+        try:
+            repo = github.repo(new.owner, new.repo) or {}
+        except GitHubError:
+            repo = {}
+        if not isinstance(repo, dict):
+            repo = {}
+        if repo.get("fork"):
+            listed_repos = {(r.owner.casefold(), r.repo.casefold()): r for r in others if not r.reserved}
+            upstreams = [u.get("full_name") for u in (repo.get("parent") or {}, repo.get("source") or {})]
+            upstreams = [u for u in dict.fromkeys(upstreams) if u and "/" in u]
+            match = next(((u, listed_repos[tuple(u.casefold().split("/", 1))]) for u in upstreams
+                          if tuple(u.casefold().split("/", 1)) in listed_repos), None)
+            if match:
+                notes.append(f"its repository is a fork of {match[0]}, which is listed as {match[1].data['name']} "
+                             f"({match[1].titleid}): the review policy lists it only as a distinct app, so ask "
+                             "what it does that the listed app doesn't")
+            else:
+                notes.append(f"its repository is a fork of {upstreams[0] if upstreams else 'another repository'}: "
+                             "check that it is a distinct app, not a rebuild or a new name and theme")
+    for other in others:
+        name = other.data["name"]
+        if (len(name) >= 4 and name.casefold() != new.data["name"].casefold()
+                and re.search(rf"(?<!\w){re.escape(name)}(?!\w)", new.data["name"], re.IGNORECASE)):
+            notes.append(f"its name contains {name!r}, the name of {other.titleid}: a derivative names the app "
+                         "it builds on in its description, not in its name")
+    return notes
 
 
 def check_publisher(author: str, maintainer: bool, old: Record | None, new: Record,

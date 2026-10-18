@@ -2,6 +2,7 @@
   "titleid": "PPSA77711",
   "name": "Stremio",
   "kind": "app",
+  "category": "video",
   "description": "Unofficial Stremio client for the PS5",
   "license": "GPL-3.0",
   "author": "Argyris Vazaios",

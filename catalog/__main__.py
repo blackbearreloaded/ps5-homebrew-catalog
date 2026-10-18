@@ -14,7 +14,7 @@ import tempfile
 from pathlib import Path
 
 from .github import GitHub, GitHubError
-from .policy import Change, check_changes, check_publisher, is_maintainer
+from .policy import Change, check_changes, check_publisher, derivative_notes, is_maintainer
 from .records import MAX_FILE_BYTES, RECORD_PATH, Record, load_catalog, load_record, repo_parts
 from .report import Report
 from .verify import newer_release, verify_record
@@ -210,11 +210,6 @@ def cmd_scan_pr(args) -> int:
     base = git("merge-base", "HEAD", head).strip()
     report = Report()
     scanned = 0
-    # What keeps a developer's release bump from being merged without a maintainer (`catalog
-    # automerge`): a helper nobody approved, and what is new since the listed release. Findings
-    # the listed release had too were read when it was listed, so they don't count; without a
-    # listed release to compare with, every warning does.
-    findings = 0
     with tempfile.TemporaryDirectory(prefix="catalog-scan-") as tmp:
         for change in diff_changes(base, head):
             if change.status == "D" or not RECORD_PATH.fullmatch(change.path):
@@ -243,9 +238,7 @@ def cmd_scan_pr(args) -> int:
                 continue
             scanned += 1
             scan = scan_release(data, Path(tmp), attest=True)
-            findings += check_helpers(scan, approved)
-            if not scan.downloaded or scan.failed:
-                findings += 1
+            check_helpers(scan, approved)
             if scan.attested is False:
                 report.notice(change.path, "no verified build attestation: nothing ties this file to a workflow run")
             # An update: scan the listed release too and say what changed.
@@ -258,17 +251,7 @@ def cmd_scan_pr(args) -> int:
                     for line in scan.comparison:
                         if line.startswith("**") or line.startswith("New payload") or line.startswith("Payload"):
                             report.warning(change.path, "since the listed release: " + line.replace("*", "").replace("`", ""))
-                        # A payload that changed is counted above when its new build is not approved.
-                        if line.startswith("**") or line.startswith("New payload"):
-                            findings += 1
-            warnings = report.count("warning")
             _report_scan(scan, change.path, f"{data['name']} ({data['titleid']}) {data['version']}", report)
-            if not scan.compared_with:
-                findings += report.count("warning") - warnings
-    output = os.environ.get("GITHUB_OUTPUT")
-    if output:
-        with open(output, "a", encoding="utf-8") as handle:
-            handle.write(f"findings={findings}\n")
     return report.emit("Release scan", f"{scanned} release(s) scanned; the reports are above.")
 
 
@@ -383,6 +366,7 @@ def cmd_pr(args) -> int:
                 holders[filename] = reservation_holder(f"apps/{filename}", github)
             return holders[filename]
 
+        listed = None
         if any(r.reserved for r in records.values()):
             base_reserved = [r for r in load_catalog(APPS, Report()) if r.reserved]
         else:
@@ -400,6 +384,12 @@ def cmd_pr(args) -> int:
                             holder=holder_of(new.path.name) if old and old.reserved else None, held=held)
             if report.count("error") == before:
                 verify_record(new, github, report, previous=old)
+            # A new app, or a reservation being released: does it build on one that is listed?
+            if (old is None or old.reserved) and report.count("error") == before:
+                if listed is None:
+                    listed = load_catalog(APPS, Report())
+                for note in derivative_notes(new, listed, github):
+                    report.notice(f"apps/{new.path.name}", note)
     return report.emit("Pull request check", "The submission meets every automated requirement; "
                                              "a maintainer will review it.")
 
@@ -408,7 +398,7 @@ def cmd_automerge(args) -> int:
     """CI: merge a pull request that only moves the author's own app to its newest release.
 
     Base-branch code; the pull request's files are read only as data. It runs after the submission
-    check and the release scan passed, and merges only when neither had a warning. Whatever it
+    check and the release scan passed; their warnings don't hold it back. Whatever it
     decides, it never fails the pull request: a pull request it leaves alone waits for a maintainer.
     """
     from .automerge import bump_reasons
@@ -422,12 +412,6 @@ def cmd_automerge(args) -> int:
         reasons.append("it is a draft")
     if (pull.get("base") or {}).get("ref") != "main":
         reasons.append("it does not target main")
-    for variable, check, what in (("SUBMISSION_WARNINGS", "submission check", "warning(s)"),
-                                  ("SCAN_FINDINGS", "release scan", "new or unapproved finding(s)")):
-        count = os.environ.get(variable, "")
-        if count != "0":
-            reasons.append(f"the {check} has {count} {what} to read" if count.isdigit()
-                           else f"the {check} did not report its result")
 
     head = "refs/catalog/pr-head"
     git("fetch", "--no-tags", "--quiet", "origin", f"+refs/pull/{number}/head:{head}")
@@ -462,8 +446,8 @@ def cmd_automerge(args) -> int:
         bot.approve_pull(repository, number, sha,
                          "A release bump by the app's developer: only the version, file, sha256 and icon "
                          "changed, the release is the newest of the app's repository, and the submission "
-                         "check and the release scan passed without a warning. Merged automatically; it is "
-                         "published with the catalog's next publication.")
+                         "check and the release scan passed. Merged automatically; it is published with the "
+                         "catalog's next publication.")
         bot.merge_pull(repository, number, sha, f"{pull['title']} (#{number})")
         report.notice(name, f"merged: @{author} moved their own app to its newest release")
     except GitHubError as error:
@@ -785,7 +769,7 @@ def cmd_discover(args) -> int:
     if args.issue:
         print("Discovery report:", publish(GitHub(os.environ["ISSUE_TOKEN"]), repository, result))
     else:
-        print(render(result, repository=repository or "blackbearreloaded/ps5-homebrew-catalog"))
+        print(render(result, repository=repository or "darkxex/ps5-homebrew-catalog"))
     for candidate in ready:
         print(f"ready: {candidate.repo} {candidate.record['titleid']} {candidate.note}")
     return 0

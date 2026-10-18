@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA99731",
+  "name": "BZT Orbit",
+  "kind": "game",
+  "category": "console-ports",
+  "description": "Ivraskel: a dedicated native PS5 port project for Metroid Prime (GameCube). Bring your own disc image. Early development; no playable release or download. No game code or assets included.",
+  "license": null,
+  "author": "BaZZtian",
+  "version": "00.000.001",
+  "source_repo": null,
+  "artifact_url": null,
+  "sha256": null,
+  "icon_url": null
+}

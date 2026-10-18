@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA90210",
+  "name": "Prospero Themes",
+  "kind": "app",
+  "category": "utilities",
+  "description": "Theme manager for the PS5 home screen: download community themes, preview and apply .p5theme packs, import them from USB and restore the originals.",
+  "license": "GPL-3.0",
+  "author": "Darkatek7",
+  "version": "01.000.008",
+  "source_repo": "https://github.com/Darkatek7/ProsperoThemes",
+  "artifact_url": "https://github.com/Darkatek7/ProsperoThemes/releases/download/01.000.008/PPSA90210.zip",
+  "sha256": "6abe1f3ec3b9c2f63ecee0284e6cf07b4ed4c8d9a0356b7f8b75e2ccdfc8dd77",
+  "icon_url": "https://raw.githubusercontent.com/Darkatek7/ProsperoThemes/01.000.008/ThemeApp/sce_sys/icon0.png"
+}

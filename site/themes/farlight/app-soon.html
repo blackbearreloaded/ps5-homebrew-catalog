@@ -5,7 +5,7 @@
     <div class="page__main">
       <a class="back" href="$base"><svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>All apps</a>
       <div class="page__cover"><img src="$icon" alt="Coming soon" width="512" height="512"><span class="page__sheen" aria-hidden="true"></span></div>
-      <p class="kicker kicker--plain">$kind_label</p>
+      <p class="kicker kicker--plain"><a href="${base}?category=$category">$category_label</a></p>
       <h1 class="page__title" id="app-title">$name</h1>
       <p class="page__line">$author<span class="sep" aria-hidden="true">·</span>Reserved <time datetime="$updated_iso">$updated</time></p>
       <ul class="chips" aria-label="Status">

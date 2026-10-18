@@ -2,6 +2,7 @@
   "titleid": "PPSA99039",
   "name": "EVO Player",
   "kind": "app",
+  "category": "video",
   "description": "Media player for PS5 that plays video from USB or internal storage, with hardware decoding up to 4K, 10-bit HDR and surround audio.",
   "license": "GPL-3.0",
   "author": "Sain Saji",

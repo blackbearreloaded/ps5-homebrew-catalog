@@ -2,6 +2,7 @@
   "titleid": "PPSA99773",
   "name": "PShare",
   "kind": "app",
+  "category": "utilities",
   "description": "Native PS5 homebrew app that sends media gallery items to Discord, Telegram, catbox.moe, a USB drive, a shared folder on your PC or a dozen other places, automatically",
   "license": "GPL-3.0",
   "author": "StonedModder",

@@ -2,6 +2,7 @@
   "titleid": "PPSA99350",
   "name": "Steam Remote Play",
   "kind": "app",
+  "category": "streaming",
   "description": "An unofficial Steam Remote Play client for PS5.",
   "license": "GPL-3.0",
   "author": "jmelovich",

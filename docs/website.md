@@ -1,14 +1,14 @@
 # Website
 
-The store at <https://homebrew.page/> is a static site generated from
-`apps/` by `python3 -m catalog build` and deployed to Cloudflare Pages by GitHub
-Actions when a maintainer starts the CI workflow on `main` by hand. There is no server-side code, database or tracking.
+The store at <https://prosperostore.net/> is a static site generated from
+`apps/` by `python3 -m catalog build` and published to the repository's GitHub Pages site by GitHub
+Actions after every merge to `main`. There is no server-side code, database or tracking.
 
 ## What the build produces
 
 ```text
 dist/
-├── _headers, _redirects        Cloudflare Pages security headers, caching, redirects
+├── _headers, _redirects        header and redirect rules (GitHub Pages ignores them)
 ├── 404.html, robots.txt
 ├── index.html                  the catalog: Discover, and a section each for apps, games, tools and coming soon
 ├── tv/                         TV mode: the catalog as a 10-foot interface
@@ -20,8 +20,11 @@ dist/
 
 - **One catalog page, as a store front.** `/` opens on **Discover**: a stage
   that shows one app big (the five newest in turn, eight seconds each, or the
-  tile under the pointer) over shelves: New and updated, Apps, Games, Tools,
-  Coming soon. The tabs in the top bar switch to a section, which is a grid of
+  tile under the pointer) over shelves: New in the catalog (apps listed in the
+  last thirty days), Recently updated (apps with a release published after
+  they were listed, by the release's date), Most liked, one shelf per
+  category, Coming soon. Editing a listing, such as a new category or a
+  corrected description, doesn't make an app "updated". The tabs in the top bar switch to a section, which is a grid of
   the same tiles. The section, the search and the order live in the URL
   (`?section=games&q=…&sort=updated`), so any view can be linked. The old
   `/list/` and `?view=list` addresses open the catalog. The site used to live
@@ -84,9 +87,9 @@ dist/
   When the files can't be read the page keeps only that link.
 - The page of an app withdrawn in the last 30 days redirects to the front page,
   and its API file is replaced by one that says `"status": "withdrawn"`.
-  Cloudflare Pages keeps serving a file for a while after a deployment drops
+  A host can keep serving a file for a while after a deployment drops
   it; the redirect at that address takes over at once.
-- The build fails, and Cloudflare keeps the previous deployment, if any record
+- The build fails, and the previous deployment stays online, if any record
   is invalid.
 
 ## TV mode
@@ -142,17 +145,17 @@ the [store API](api.md).
 {
   "schema": 1,
   "name": "PS5 Homebrew Catalog",
-  "homepage": "https://homebrew.page/",
+  "homepage": "https://prosperostore.net/",
   "source": { "repository": "https://github.com/…/ps5-homebrew-catalog", "commit": "<sha>" },
   "apps": [
-    { "…all eleven record fields…": "",
+    { "…all twelve record fields…": "",
       "format": "zip | ffpkg | ffpfsc",
       "updated": "2026-09-28T22:30:46-04:00",
-      "page": "https://homebrew.page/app/PPSA01234/",
-      "icon": "https://homebrew.page/assets/icon-PPSA01234.<hash>.webp" }
+      "page": "https://prosperostore.net/app/PPSA01234/",
+      "icon": "https://prosperostore.net/assets/icon-PPSA01234.<hash>.webp" }
   ],
   "coming_soon": [
-    { "…all eleven fields, links and sha256 null…": "", "updated": "…", "page": "…", "icon": "…" }
+    { "…all twelve fields, links and sha256 null…": "", "updated": "…", "page": "…", "icon": "…" }
   ]
 }
 ```
@@ -193,97 +196,22 @@ feed and canonical links), `--out`.
 
 ## Deployment
 
-The **Deploy website to Cloudflare Pages** job in [CI](../.github/workflows/ci.yml)
-builds `dist/` and uploads it with Cloudflare's Direct Upload (`wrangler pages
-deploy`). It runs only on `main`, after the tests and the record verification
-pass, so a broken or unverified catalog is never published. Cloudflare has no
-access to this repository.
+Every merge to `main` (or a run started by hand: Actions > CI > Run workflow on
+`main`) runs the tests and
+verifies the changed records, then the **Build and sign the website** job builds
+the site for `https://prosperostore.net/`, signs the store API with `CATALOG_SIGNING_KEY` (a
+secret of the environment still named `cloudflare-pages`, which accepts only
+`main`), and the **Publish the website to GitHub Pages** job publishes it. A
+broken or unverified catalog is never published, and a failed run leaves the
+last good site online.
 
-### What stays private
+One-time setup, by the repository's owner:
 
-- **Nothing about the Cloudflare account is in the repository.** The API token
-  and account ID are GitHub encrypted secrets. They aren't stored in files or
-  history, they're masked in logs, and pull requests and forks can't read them.
-- **The secrets reach only the deploy job.** They're environment secrets of
-  `cloudflare-pages`, and that environment accepts only the `main` branch. The
-  pull request workflows never use it.
-- **Public logs stay clean.** Actions logs of a public repository are
-  world-readable, so the deploy step keeps wrangler's output out of the log and
-  prints only success, or on failure the error codes and messages with account
-  IDs, emails, URLs and quoted values masked (`catalog/redact.py`). Wrangler
-  telemetry is off.
-- **The token can do one thing.** It can edit Cloudflare Pages in one account.
-  It can't read DNS, billing or anything else, and you can revoke it at any time.
-- **The site reveals nothing about the account.** Visitors see `homebrew.page`
-  and the project's `*.pages.dev` name. Keep WHOIS privacy on for the domain;
-  Cloudflare Registrar redacts owner details by default.
+- **Settings → Pages:** source **GitHub Actions**, custom domain `prosperostore.net`
+  (with its DNS pointing at GitHub Pages) and **Enforce HTTPS**.
+- **Settings → Environments:** `github-pages` allows deployments from `main`;
+  the environment that holds `CATALOG_SIGNING_KEY` allows only `main`.
 
-### API mirror
-
-After the site is uploaded, the same job builds the store API once more for
-this repository's GitHub Pages address, signs it, and a second job publishes
-it there. It exists for consoles whose network blocks the main site
-([Store API: mirror](api.md#mirror)). Only the API is published; the mirror's
-front page is one static file, `site/mirror/index.html`. GitHub Pages must be
-enabled for the repository with "GitHub Actions" as its source.
-
-### Fallback deploy
-
-When GitHub's hosted runners are down, merges reach `main` but the site stays
-on the previous build. [Deploy fallback](../.github/workflows/deploy-fallback.yml)
-runs the same deploy on a machine the maintainer controls.
-
-- **It never runs by itself.** Its only trigger is a manual start, the job
-  requires the repository owner and `main`, and it targets a runner labelled
-  `catalog-fallback`. No pull request, push or schedule can reach that runner.
-- **No runner is kept registered.** The maintainer registers one for a single
-  job (`config.sh --ephemeral --labels catalog-fallback`), starts it, runs the
-  workflow, and the runner unregisters itself when the job ends. Never install
-  it as a service: a standing self-hosted runner on a public repository is the
-  risk, not this file.
-- **The secrets stay in GitHub** and reach the job through the
-  `cloudflare-pages` environment, as in the normal deploy.
-- **The machine needs** Python 3 with Pillow and `cryptography`, `git` and
-  `curl`; Node is fetched by the workflow.
-
-```sh
-cd ~/actions-runner
-./config.sh --unattended --ephemeral --replace --name fallback --labels catalog-fallback \
-    --url https://github.com/<owner>/ps5-homebrew-catalog \
-    --token "$(gh api -X POST repos/<owner>/ps5-homebrew-catalog/actions/runners/registration-token -q .token)"
-./run.sh &                                   # "Listening for Jobs"
-gh workflow run deploy-fallback.yml --repo <owner>/ps5-homebrew-catalog
-```
-
-The workflow repeats the deploy job of `ci.yml`; change both together.
-
-### One-time setup
-
-1. **No project to create by hand.** The deploy job creates the Pages project
-   (named after `CLOUDFLARE_PAGES_PROJECT`) on its first run. Don't use the
-   dashboard's "Connect to Git", which installs Cloudflare's GitHub app and
-   links the accounts.
-2. **Create an API token.** Go to **My Profile → API Tokens → Create Token →
-   Custom token**:
-   - Permissions: **Account → Cloudflare Pages → Edit** (nothing else)
-   - Account resources: **Include → your account**
-   - TTL: optional; for example one year, with a reminder to rotate it
-3. **Find the account ID.** It's shown in the Workers & Pages overview sidebar,
-   and in the dashboard URL.
-4. **Add them to GitHub**, not to the repository files. In the repository's
-   **Settings → Environments → New environment**, create `cloudflare-pages`:
-   - **Deployment branches and tags:** Selected branches → `main`
-   - **Environment secrets:** `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`
-5. **Switch deployment on.** Under **Settings → Secrets and variables → Actions
-   → Variables**, add the repository variable `CLOUDFLARE_PAGES_PROJECT` =
-   `homebrew-page`. The deploy job is skipped while this variable is missing.
-6. **Deploy.** Go to **Actions → CI → Run workflow** on `main`. Check
-   `https://homebrew-page.pages.dev/`. If the name is taken on `pages.dev`,
-   Cloudflare adds a suffix; the project's page in the dashboard shows the address.
-7. **Connect the domain.** In the Pages project, go to **Custom domains → Set up
-   a domain →** `homebrew.page`. An apex domain needs its DNS on Cloudflare; the
-   certificate and records are then created automatically.
-
-After that, every merge to `main` goes live within a couple of minutes. A failed
-build or upload leaves the last good deployment online. To stop deployments,
-delete the variable; to cut access entirely, revoke the token.
+GitHub Pages ignores `_headers` and `_redirects`: the site has no custom
+security headers or cache rules there, and a withdrawn app's page answers with
+the 404 page.

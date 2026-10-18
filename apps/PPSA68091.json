@@ -2,6 +2,7 @@
   "titleid": "PPSA68091",
   "name": "Ruffle Flash",
   "kind": "app",
+  "category": "emulators",
   "description": "PS5 Port of Ruffle Flash Emulator.",
   "license": "GPL-3.0",
   "author": "AZiZ",

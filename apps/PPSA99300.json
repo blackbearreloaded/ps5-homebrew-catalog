@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA99300",
+  "name": "Spider-Man: Edge of Time",
+  "kind": "game",
+  "category": "console-ports",
+  "description": "Unofficial native PS5 port of Spider-Man: Edge of Time. Requires game files from your own copy.",
+  "license": "MIT",
+  "author": "KongaTime",
+  "version": "V.1.1.1",
+  "source_repo": "https://github.com/KongaTime/PS5_EdgeOfTimeTitle",
+  "artifact_url": "https://github.com/KongaTime/PS5_EdgeOfTimeTitle/releases/download/V.1.1.1/Spider.Man.Edge.Of.Time.V.1.1.1.zip",
+  "sha256": "efed4c5f81c9ae9160e3830bd7385e96f89e499b0135d7655c762f80399b37ba",
+  "icon_url": "https://raw.githubusercontent.com/KongaTime/PS5_EdgeOfTimeTitle/d42a03ad351fb8c0e69f7c9685535ac0595703fb/ps5/sce_sys/icon0.png"
+}

@@ -2,6 +2,7 @@
   "titleid": "PPSA92280",
   "name": "Capy Mobile",
   "kind": "app",
+  "category": "emulators",
   "description": "Java phone games (J2ME) on the PS5: a native homebrew emulator app",
   "license": "GPL-3.0",
   "author": "Khalifa Al-Khatri",
