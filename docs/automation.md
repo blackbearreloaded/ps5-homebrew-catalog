@@ -73,21 +73,25 @@ Dependabot.
 The CI workflow does run PR code (tests), with the standard read-only
 `pull_request` token and no secrets.
 
-## Automatic merge of a developer's release bump
+## Automatic merge of a developer's pull request
 
-A developer who publishes a new release and updates their own record is not kept waiting for a
-maintainer. After the submission check and the release scan have both passed, two more jobs of
+A developer who publishes a new release and updates their own record, or who already has an app
+in the catalog and adds another of their own, is not kept waiting for a maintainer. After the submission check and the release scan have both passed, two more jobs of
 the same workflow run `python3 -m catalog automerge`, and the pull request is approved and
 squash-merged by the catalog's GitHub App when **all** of this holds:
 
-- it changes exactly one file, an existing `apps/<TITLEID>.json`: a new app, a removal or any
-  other file always waits for a maintainer;
-- only `version`, `artifact_url`, `sha256` and `icon_url` differ from the listed record, the
-  file is a new one, it is a release file of the same `source_repo`, and a changed icon stays
-  in that repository;
-- the release is the **newest** one of that repository;
-- the author owns `source_repo`, or is a public member of the organization that owns it. The
-  bot's own update pull requests and bumps sent by other accounts wait for a maintainer;
+- it changes exactly one file, an `apps/<TITLEID>.json`: a removal or any other file always
+  waits for a maintainer;
+- **a release bump** (the file exists): only `version`, `artifact_url`, `sha256` and `icon_url`
+  differ from the listed record, the file is a new one, it is a release file of the same
+  `source_repo`, a changed icon stays in that repository, and the release is the **newest** one
+  of that repository;
+- **a new app** (the file is added, and is not a reservation): the file is a release file of its
+  `source_repo`, its icon is in that repository, and the author already has an app in the
+  catalog, as the owner of its repository or a public member of the organization that owns it;
+- the author owns the app's `source_repo`, or is a public member of the organization that owns
+  it. The bot's own update pull requests and pull requests sent by other accounts wait for a
+  maintainer;
 - it is not a draft, it targets `main`, and it did not change while it was being checked: the
   approval and the merge name the commit that was checked, and GitHub refuses them otherwise;
 - the submission check and the release scan both passed. Their warnings do not hold it back:
