@@ -6,9 +6,9 @@
   "description": "Home-screen ROM launcher that shows every system's games as cartridges and discs with box art and starts each in the right emulator.",
   "license": "GPL-3.0",
   "author": "SkaRift",
-  "version": "1.1",
+  "version": "1.1.1",
   "source_repo": "https://github.com/SkaRift/JewelCase",
-  "artifact_url": "https://github.com/SkaRift/JewelCase/releases/download/v1.1/PPSA75837.zip",
-  "sha256": "e6831366698d5ebf41a3bf05105782376281768e950b56857e96a9a3b1e43ff5",
-  "icon_url": "https://raw.githubusercontent.com/SkaRift/JewelCase/v1.1/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/SkaRift/JewelCase/releases/download/v1.1.1/PPSA75837.zip",
+  "sha256": "4d908862fcb4d4dbb5c9d6d950beeef46fe2755a01c30291cfea9a99ec462fb2",
+  "icon_url": "https://raw.githubusercontent.com/SkaRift/JewelCase/v1.1.1/sce_sys/icon0.png"
 }
