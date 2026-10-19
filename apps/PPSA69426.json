@@ -6,9 +6,9 @@
   "description": "Set your PS5's light colour and ps5-signal's startup tune, and manage the suite: start, update and autoload ps5-signal, ps5-exporter and ps5-homeassistant, and link the PS5 to Home Assistant.",
   "license": "GPL-3.0-or-later",
   "author": "Marice",
-  "version": "00.002.000",
+  "version": "00.003.000",
   "source_repo": "https://github.com/Marice/ps5-signal-companion",
-  "artifact_url": "https://github.com/Marice/ps5-signal-companion/releases/download/v00.002.000/SignalCompanion-PS5-00.002.000.zip",
-  "sha256": "32424f7f20dab79577e4ea54a52dd383ed8800dfcc2f9fc100965ea6398b6e13",
-  "icon_url": "https://raw.githubusercontent.com/Marice/ps5-signal-companion/v00.002.000/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/Marice/ps5-signal-companion/releases/download/v00.003.000/SignalCompanion-PS5-00.003.000.zip",
+  "sha256": "39e501e83b7fb52b510c4d818d063bc952c37fd521b06fa28854a49a9816232a",
+  "icon_url": "https://raw.githubusercontent.com/Marice/ps5-signal-companion/v00.003.000/sce_sys/icon0.png"
 }
