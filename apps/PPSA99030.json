@@ -3,7 +3,7 @@
   "name": "Forever Launcher",
   "kind": "app",
   "category": "utilities",
-  "description": "Battle.net launcher for World of Warcraft (Retail, Classic and Forever) with a built-in add-on manager; press Options for the Forever menu and L3+R3 for the on-screen keyboard.",
+  "description": "Battle.net launcher for World of Warcraft with an add-on manager and Voice-to-Text for WoW chat; Options opens the Forever menu, hold the touchpad to dictate.",
   "license": "GPL-3.0",
   "author": "bizkut",
   "version": "01.000.015",
