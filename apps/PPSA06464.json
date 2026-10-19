@@ -6,9 +6,9 @@
   "description": "Play the Commodore 64 on PS5: stream and control a C64 Ultimate, or use the built-in VICE emulator, with Assembly64 search.",
   "license": "GPL-3.0",
   "author": "dantaipan",
-  "version": null,
-  "source_repo": null,
-  "artifact_url": null,
-  "sha256": null,
-  "icon_url": null
+  "version": "01.000.000",
+  "source_repo": "https://github.com/dantaipan/PS64",
+  "artifact_url": "https://github.com/dantaipan/PS64/releases/download/01.000.000/PPSA06464.zip",
+  "sha256": "c9927e906e0631d1e62fe99f48e56e21a6f055e340b85699eaba1ac3ce4b3f0f",
+  "icon_url": "https://raw.githubusercontent.com/dantaipan/PS64/01.000.000/ps5/native/sce_sys/icon0.png"
 }
