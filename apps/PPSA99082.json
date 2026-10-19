@@ -6,9 +6,9 @@
   "description": "Experimental native PS5 GeForce NOW client: a working, console-tested prototype with hardware decoding and GPU presentation.",
   "license": "GPL-3.0",
   "author": "Portablelle",
-  "version": "0.1",
-  "source_repo": "https://github.com/Portablelle/OpenNOW-PS5",
-  "artifact_url": "https://github.com/Portablelle/OpenNOW-PS5/releases/download/0.1/OpenNOW-PS5-0.1.zip",
-  "sha256": "34c773dedda97d1503144eee50f9234ff1b4170a6ff68ed0bb0f59dd2ba87309",
-  "icon_url": "https://raw.githubusercontent.com/Portablelle/OpenNOW-PS5/0.1/sce_sys/icon0.png"
+  "version": "0.3.0",
+  "source_repo": "https://github.com/OpenCloudGaming/OpenNOW-PS5",
+  "artifact_url": "https://github.com/OpenCloudGaming/OpenNOW-PS5/releases/download/0.3.0/OpenNOW-PS5-0.3.0.zip",
+  "sha256": "027ad6f1cf77fa605927b9523e755505d7a64b0b89b1c7b14b949ac0dc0040c2",
+  "icon_url": "https://raw.githubusercontent.com/Portablelle/OpenNOW-PS5/main/sce_sys/icon0.png"
 }
