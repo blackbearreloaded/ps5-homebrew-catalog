@@ -6,9 +6,9 @@
   "description": "A Beat Saber-style rhythm game for PS VR2 and Sense controllers that turns any MP3 into note maps on the console.",
   "license": "GPL-3.0",
   "author": "shwan-ps5",
-  "version": null,
-  "source_repo": null,
-  "artifact_url": null,
-  "sha256": null,
-  "icon_url": null
+  "version": "01.000.000",
+  "source_repo": "https://github.com/shwan-ps5/pulse",
+  "artifact_url": "https://github.com/shwan-ps5/pulse/releases/download/01.000.000/Pulse-01.000.000.zip",
+  "sha256": "9103d3d61dfcd41f20b5646e42c7c47c3f0a72b422bb0f1ff6b983389dff14fb",
+  "icon_url": "https://raw.githubusercontent.com/shwan-ps5/pulse/01.000.000/ps5/art/icon0.png"
 }
