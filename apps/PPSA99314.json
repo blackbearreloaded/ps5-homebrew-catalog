@@ -6,9 +6,9 @@
   "description": "Eternal Darkness: Sanity's Requiem (GameCube) for PlayStation 5, recompiled to run natively at 4K and up to 120 fps with widescreen and HD texture packs. Bring your own European disc.",
   "license": "GPL-3.0",
   "author": "Gary Riches",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "source_repo": "https://github.com/griches/PS5_EternalDarkness",
-  "artifact_url": "https://github.com/griches/PS5_EternalDarkness/releases/download/v0.9.4/EternalDarkness-PS5-0.9.4.zip",
-  "sha256": "1a28f7a92d7dea3ef001bde53fe3d62cbf53688fed4f50fc3da7fd8420d40712",
-  "icon_url": "https://raw.githubusercontent.com/griches/PS5_EternalDarkness/v0.9.4/ps5/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/griches/PS5_EternalDarkness/releases/download/v0.9.5/EternalDarkness-PS5-0.9.5.zip",
+  "sha256": "b467dbd86b2a53223f5c4e209d4025371aa911bfaf37985a9a783310aafcb465",
+  "icon_url": "https://raw.githubusercontent.com/griches/PS5_EternalDarkness/v0.9.5/ps5/sce_sys/icon0.png"
 }
