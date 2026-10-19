@@ -5,7 +5,7 @@
   "category": "streaming",
   "description": "Experimental native PS5 GeForce NOW client: a working, console-tested prototype with hardware decoding and GPU presentation.",
   "license": "GPL-3.0",
-  "author": "Portablelle",
+  "author": "OpenCloudGaming",
   "version": "0.3.0",
   "source_repo": "https://github.com/OpenCloudGaming/OpenNOW-PS5",
   "artifact_url": "https://github.com/OpenCloudGaming/OpenNOW-PS5/releases/download/0.3.0/OpenNOW-PS5-0.3.0.zip",
