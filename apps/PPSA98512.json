@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA98512",
+  "name": "FFTARecomp",
+  "kind": "game",
+  "category": "console-ports",
+  "description": "inal Fantasy Tactics Advance, running natively on your PS5 (no ROM is included).",
+  "license": "MIT",
+  "author": "AngelXex",
+  "version": "ps5-v1.0.0",
+  "source_repo": "https://github.com/darkxex/FFTARecomp-PS5",
+  "artifact_url": "https://github.com/darkxex/FFTARecomp-PS5/releases/download/ps5-v1.0.0/PPSA98512.zip",
+  "sha256": "sha256:380a34d5aa9c582f2fe9e8456185f3394ebc2993208c3e9c6439c834e2d429d8",
+  "icon_url": "https://raw.githubusercontent.com/darkxex/FFTARecomp-PS5/main/PS5Port/sce_sys/icon0.png"
+}
