@@ -1,7 +1,9 @@
 """Which pull requests are merged without a maintainer.
 
-Two kinds are: a developer moving their own app to its newest release, and a developer who
-already has an app in the catalog adding another one of their own.
+Three kinds are: a developer moving their own app to its newest release, a developer who
+already has an app in the catalog adding another one of their own, and the catalog bot's own
+pull request that moves apps to their newest release (every record in it checked like a
+developer's own bump).
 
 Everything else waits for a maintainer, and so does anything this module is unsure about: a
 removal, a change to what the app is called or where it comes from, a pull request from an
@@ -14,6 +16,11 @@ from .github import GitHub, GitHubError
 from .policy import REGULAR_FILE_MODE, Change
 from .records import RECORD_PATH, Record
 from .updates import is_release_bump
+
+# The account the catalog's GitHub App acts as, and the one branch it keeps its pending updates on
+# (the withdrawals branch is never merged here).
+UPDATE_BOT = "ps5-catalog-bot[bot]"
+UPDATE_BRANCH = "catalog-update/all"
 
 
 def owns(author: str, record: Record, github: GitHub) -> bool:
@@ -94,13 +101,48 @@ def bump_reasons(author: str, changes: list[Change], old: Record | None, new: Re
         return ["the listed or the proposed record could not be read"]
     if old.reserved or new.reserved:
         return ["it changes a reservation"]
+    return release_bump_reasons(old, new, github, author)
 
+
+def update_pull_reasons(author: str, head_ref: str, from_fork: bool, changes: list[Change],
+                        pairs: list[tuple[Record | None, Record | None]], github: GitHub) -> list[str]:
+    """Why the catalog bot's pull request of pending updates is left for a maintainer.
+
+    It is merged only when it comes from the bot, from its own branch of this repository, and every
+    change is a release bump that passes the same checks as a developer's own bump."""
+    if author != UPDATE_BOT:
+        return [f"@{author} is not the catalog bot"]
+    if head_ref != UPDATE_BRANCH or from_fork:
+        return [f"it is not the bot's {UPDATE_BRANCH} branch of this repository"]
+    if not changes or len(changes) != len(pairs):
+        return ["it changes no app's record"]
+    reasons = []
+    for change, (old, new) in zip(changes, pairs):
+        if not RECORD_PATH.fullmatch(change.path):
+            reasons.append(f"it changes {change.path}, which is not an app's record")
+        elif change.status != "M":
+            reasons.append(f"{change.path}: it adds or removes an app")
+        elif change.mode != REGULAR_FILE_MODE:
+            reasons.append(f"{change.path}: the record is not a regular file")
+        elif old is None or new is None:
+            reasons.append(f"{change.path}: the listed or the proposed record could not be read")
+        elif old.reserved or new.reserved:
+            reasons.append(f"{change.path}: it changes a reservation")
+        else:
+            reasons += [f"{change.path}: {reason}" for reason in release_bump_reasons(old, new, github)]
+    return reasons
+
+
+def release_bump_reasons(old: Record, new: Record, github: GitHub, author: str | None = None) -> list[str]:
+    """Why one record's change is not a plain move to its repository's newest release.
+
+    With an author, it must also be the app's developer; the bot's pull request passes none."""
     reasons = []
     try:
         if not is_release_bump(old, new, github):
             reasons.append("it changes more than the release (version, file, sha256, icon), "
                            f"or the release is not the newest of {new.owner}/{new.repo}")
-        if not owns(author, new, github):
+        if author is not None and not owns(author, new, github):
             reasons.append(f"@{author} does not own {new.owner}/{new.repo}")
     except GitHubError as error:
         return [f"GitHub could not be asked: {error}"]

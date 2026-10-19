@@ -9,7 +9,7 @@ from pathlib import Path
 from unittest import mock
 
 import catalog.__main__ as cli
-from catalog.automerge import bump_reasons, new_app_reasons
+from catalog.automerge import UPDATE_BOT, UPDATE_BRANCH, bump_reasons, new_app_reasons, update_pull_reasons
 from catalog.policy import Change
 from catalog.records import load_catalog, load_record
 from catalog.report import Report
@@ -101,6 +101,56 @@ def second(**fields):
                      "artifact_url": "https://github.com/example/second-app/releases/download/01.000.000/PPSA04321.zip",
                      "icon_url": "https://raw.githubusercontent.com/example/second-app/01.000.000/icon0.png",
                      **fields})
+
+
+class UpdatePullTests(unittest.TestCase):
+    """The catalog bot's pull request of pending updates, several records at once."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+
+    def load(self, name, data):
+        return load_record(write_record(Path(self.tmp.name) / name, data), Report())
+
+    def pair(self, **fields):
+        return self.load("old", record()), self.load("new", record(**{**NEW, **fields}))
+
+    def reasons(self, pairs=None, changes=None, author=UPDATE_BOT, head=UPDATE_BRANCH, fork=False, hub=None):
+        pairs = pairs if pairs is not None else [self.pair(), self.pair()]
+        changes = changes if changes is not None else [Change("M", f"apps/PPSA0123{n}.json", "100644")
+                                                       for n in range(len(pairs))]
+        return update_pull_reasons(author, head, fork, changes, pairs, hub or github())
+
+    def test_the_bots_pull_request_of_release_bumps_is_merged_though_it_changes_several_apps(self):
+        self.assertEqual(self.reasons(), [])
+
+    def test_only_the_bot_from_its_own_branch_of_this_repository(self):
+        self.assertEqual(self.reasons(author="stranger"), ["@stranger is not the catalog bot"])
+        self.assertIn("not the bot's", self.reasons(head="catalog-update/removals")[0])
+        self.assertIn("not the bot's", self.reasons(fork=True)[0])
+
+    def test_one_record_that_is_not_a_plain_bump_holds_back_the_whole_pull_request(self):
+        reasons = self.reasons(pairs=[self.pair(), self.pair(name="Another Name")])
+        self.assertEqual(len(reasons), 1)
+        self.assertTrue(reasons[0].startswith("apps/PPSA01231.json: it changes more than the release"))
+
+    def test_a_removal_a_new_app_or_a_file_that_is_not_a_record_holds_it_back(self):
+        pairs = [self.pair(), self.pair()]
+        for change, fragment in ((Change("D", "apps/PPSA01231.json"), "adds or removes"),
+                                 (Change("A", "apps/PPSA01231.json", "100644"), "adds or removes"),
+                                 (Change("M", "catalog/policy.py", "100644"), "not an app's record"),
+                                 (Change("M", "apps/PPSA01231.json", "100755"), "not a regular file")):
+            with self.subTest(change=change):
+                changes = [Change("M", "apps/PPSA01230.json", "100644"), change]
+                self.assertTrue(any(fragment in r for r in self.reasons(pairs=pairs, changes=changes)))
+
+    def test_an_empty_pull_request_or_an_unreadable_record_is_left_alone(self):
+        self.assertEqual(self.reasons(pairs=[], changes=[]), ["it changes no app's record"])
+        self.assertTrue(any("could not be read" in r for r in self.reasons(pairs=[(None, None)])))
+
+    def test_the_release_must_still_be_the_newest(self):
+        self.assertTrue(any("not the newest" in r for r in self.reasons(hub=github(newest="01.000.020"))))
 
 
 class NewAppReasonsTests(unittest.TestCase):
