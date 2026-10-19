@@ -3,7 +3,7 @@
   "name": "Régie5",
   "kind": "app",
   "category": "video",
-  "description": "A TV remote for your self-hosted media stack: Sonarr, Radarr, Seerr and Jellyfin at a glance, with request approval, playback diagnosis and an optional cleanup.",
+  "description": "A TV remote for your self-hosted media stack: Sonarr, Radarr, Seerr and Jellyfin, Emby or Plex at a glance, with request approval, playback diagnosis and an optional cleanup.",
   "license": "GPL-3.0",
   "author": "Vivian",
   "version": "0.7.0",
