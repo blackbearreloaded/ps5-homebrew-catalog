@@ -6,9 +6,9 @@
   "description": "A Philips CD-i emulator (SAME_CDI) with a cover-wheel library, NAS support, 4K picture filters and game info; bring your own BIOS and games.",
   "license": "GPL-3.0",
   "author": "mortaljinx",
-  "version": "1.21",
+  "version": "1.22",
   "source_repo": "https://github.com/mortaljinx/Seedee5",
-  "artifact_url": "https://github.com/mortaljinx/Seedee5/releases/download/v1.21/Seedee5-1.21.zip",
-  "sha256": "df06ad7a4c0b03f0dc80a9251138d613793f5425bc4a6ab8cac3b02188b3efbb",
-  "icon_url": "https://raw.githubusercontent.com/mortaljinx/Seedee5/v1.21/title/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/mortaljinx/Seedee5/releases/download/v1.22/Seedee5-1.22.zip",
+  "sha256": "28f46951e0b2aa044aada0e5d93a180ba6c613494f0387fa01aa55585297936e",
+  "icon_url": "https://raw.githubusercontent.com/mortaljinx/Seedee5/v1.22/title/sce_sys/icon0.png"
 }
