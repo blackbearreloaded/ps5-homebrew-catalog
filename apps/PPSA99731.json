@@ -1,14 +1,14 @@
 {
   "titleid": "PPSA99731",
-  "name": "PRIMEPHAZON PS5",
+  "name": "PhazonPrime",
   "kind": "game",
   "category": "console-ports",
-  "description": "Ivraskel: a dedicated native PS5 port project for Metroid Prime (GameCube). Bring your own disc image. Early development; no playable release or download. No game code or assets included.",
-  "license": null,
+  "description": "Native Metroid Prime engine port for PS5 using Metaforce classic. PAL GM8P01 rev0; bring your own ISO. Public prerelease with known issues.",
+  "license": "GPL-3.0",
   "author": "BaZZtian",
-  "version": "00.000.001",
-  "source_repo": null,
-  "artifact_url": null,
-  "sha256": null,
-  "icon_url": null
+  "version": "0.1.32",
+  "source_repo": "https://github.com/BaZZtian/PS5-PhazonPrime",
+  "artifact_url": "https://github.com/BaZZtian/PS5-PhazonPrime/releases/download/v0.1.32/PhazonPrime-0.1.32.zip",
+  "sha256": "93c84009fc7b44b35b7b7dd2b183c30e347147bbedef03412164950559ede93a",
+  "icon_url": "https://raw.githubusercontent.com/BaZZtian/PS5-PhazonPrime/v0.1.32/ps5/art/icon0.png"
 }
