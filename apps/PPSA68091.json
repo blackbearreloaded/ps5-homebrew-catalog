@@ -6,9 +6,9 @@
   "description": "PS5 Port of Ruffle Flash Emulator.",
   "license": "GPL-3.0",
   "author": "AZiZ",
-  "version": "1.2.0",
+  "version": "v1.3.0",
   "source_repo": "https://github.com/ZiZc3/Ruffle-Flash-PS5",
-  "artifact_url": "https://github.com/ZiZc3/Ruffle-Flash-PS5/releases/download/1.2.0/PPSA68091.zip",
-  "sha256": "b34b40b69da30dafce4ea67ee312a55b6bd9b07b59849741253b2c46147076be",
-  "icon_url": "https://raw.githubusercontent.com/ZiZc3/Ruffle-Flash-PS5/1.2.0/ps5/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/ZiZc3/Ruffle-Flash-PS5/releases/download/v1.3.0/PPSA68091.zip",
+  "sha256": "29ad7ac81979400da84ec70341be02f3e31c513cfc4a6307fdd9ed98162d3da0",
+  "icon_url": "https://raw.githubusercontent.com/ZiZc3/Ruffle-Flash-PS5/v1.3.0/ps5/sce_sys/icon0.png"
 }
