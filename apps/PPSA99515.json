@@ -3,7 +3,7 @@
   "name": "Emby5",
   "kind": "app",
   "category": "video",
-  "description": "A native Emby client for PlayStation 5 with media playback and optional Seerr requests.",
+  "description": "A native Emby/Jellufin client for PlayStation 5 with media playback, optional Seerr requests, IPTV and VOD",
   "license": "GPL-3.0",
   "author": "bornaradusin",
   "version": "1.2.6",
