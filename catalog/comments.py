@@ -218,27 +218,38 @@ def list_nodes(github: GitHub, owner: str, name: str) -> list[dict]:
         after = page["pageInfo"]["endCursor"]
 
 
-def apply(actions: list[tuple], github: GitHub, repository: str, categories: dict[str, str]) -> None:
-    """Carry the plan out. A failure raises GitHubError and leaves the rest for the next run."""
-    created = False
+def apply(actions: list[tuple], github: GitHub, repository: str, categories: dict[str, str]) -> list[str]:
+    """Carry the plan out, and say what GitHub refused. A refused action doesn't hold up the rest;
+    after a refused creation no more are tried (GitHub stops a long row of them part-way), and the
+    next run tries again."""
+    refused: list[str] = []
+    created, creating = False, True
     for action in actions:
         kind, subject = action[0], action[1]
-        if kind == "create":
-            if created:
-                time.sleep(PAUSE)
-            github.graphql(CREATE, {"repository": repository, "category": categories[ACTIVE],
-                                    "title": thread_title(subject), "body": thread_body(subject)})
-            created = True
-        elif kind == "rename":
-            github.graphql(UPDATE, {"id": subject.id, "title": action[2]})
-        elif kind == "restore":
-            github.graphql(UPDATE, {"id": subject.id, "category": categories[ACTIVE]})
-            if subject.locked:
-                github.graphql(UNLOCK, {"id": subject.id})
-        elif kind == "withdraw":
-            if WITHDRAWN in categories:
-                github.graphql(UPDATE, {"id": subject.id, "category": categories[WITHDRAWN]})
-            if not subject.locked:
-                github.graphql(LOCK, {"id": subject.id})
-        else:
-            raise GitHubError(f"unknown action {kind}")
+        if kind == "create" and not creating:
+            continue
+        try:
+            if kind == "create":
+                if created:
+                    time.sleep(PAUSE)
+                github.graphql(CREATE, {"repository": repository, "category": categories[ACTIVE],
+                                        "title": thread_title(subject), "body": thread_body(subject)})
+                created = True
+            elif kind == "rename":
+                github.graphql(UPDATE, {"id": subject.id, "title": action[2]})
+            elif kind == "restore":
+                github.graphql(UPDATE, {"id": subject.id, "category": categories[ACTIVE]})
+                if subject.locked:
+                    github.graphql(UNLOCK, {"id": subject.id})
+            elif kind == "withdraw":
+                if WITHDRAWN in categories:
+                    github.graphql(UPDATE, {"id": subject.id, "category": categories[WITHDRAWN]})
+                if not subject.locked:
+                    github.graphql(LOCK, {"id": subject.id})
+            else:
+                raise ValueError(f"unknown action {kind}")
+        except GitHubError as error:
+            refused.append(f"could not {describe(action)}: {error}")
+            if kind == "create":
+                creating = False
+    return refused

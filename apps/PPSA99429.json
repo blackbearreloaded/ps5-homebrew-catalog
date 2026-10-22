@@ -3,12 +3,12 @@
   "name": "ApricotGS",
   "kind": "game",
   "category": "console-ports",
-  "description": "Native PS5 player for two RPG editions with 3D selection and early private gameplay. Public preparation and release are in progress; users supply their own game data.",
-  "license": null,
+  "description": "Experimental native PS5 player for HeartGold and SoulSilver with a two-edition cartridge launcher; prepare your own supported game dump on PC. No game data included.",
+  "license": "GPL-3.0-or-later AND LGPL-2.1-or-later AND MIT AND CC-BY-4.0",
   "author": "BaZZtian",
-  "version": null,
-  "source_repo": null,
-  "artifact_url": null,
-  "sha256": null,
-  "icon_url": null
+  "version": "0.0.1",
+  "source_repo": "https://github.com/BaZZtian/PS5-ApricotGS",
+  "artifact_url": "https://github.com/BaZZtian/PS5-ApricotGS/releases/download/v0.0.1/ApricotGS-v0.0.1-PS5.zip",
+  "sha256": "6a6e3fb5a2b37f05b87b70c804801d3e548dc222aa8136a8b5c68e2bbbf0dae4",
+  "icon_url": "https://raw.githubusercontent.com/BaZZtian/PS5-ApricotGS/4d05fceefec018041e2f3425e18381724d344a08/sce_sys/icon0.png"
 }

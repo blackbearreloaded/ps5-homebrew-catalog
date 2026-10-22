@@ -95,6 +95,32 @@ class PlanTests(unittest.TestCase):
         self.assertEqual(calls[4][1], {"id": "D_3", "category": "C_gone"})
 
 
+    def test_a_refused_action_does_not_hold_up_the_rest(self):
+        calls = []
+        refuse = {"D_1", "PPSA02222"}
+
+        def graphql(query, variables):
+            calls.append((query, variables))
+            if variables.get("id") in refuse or variables.get("title", "").endswith("(PPSA02222)"):
+                raise comments.GitHubError("Resource not accessible by integration")
+            return {}
+
+        threads = comments.read_threads([node(1, "PPSA01111", title="Old name (PPSA01111)"), node(4, "PPSA04444")])
+        categories = {comments.ACTIVE: "C_active", comments.WITHDRAWN: "C_gone"}
+        with mock.patch.object(comments.time, "sleep"):
+            refused = comments.apply([("rename", threads["PPSA01111"], "New name (PPSA01111)"),
+                                      ("create", listed("PPSA01234")), ("create", listed("PPSA02222")),
+                                      ("create", listed("PPSA03333")), ("withdraw", threads["PPSA04444"])],
+                                     mock.Mock(graphql=graphql), "R_1", categories)
+        # The rename is refused and the creations go on; once a creation is refused no more are
+        # tried, and the withdrawal still happens.
+        self.assertEqual([(q, v.get("title") or v.get("id")) for q, v in calls], [
+            (comments.UPDATE, "New name (PPSA01111)"), (comments.CREATE, "Example App (PPSA01234)"),
+            (comments.CREATE, "Example App (PPSA02222)"), (comments.UPDATE, "D_4"), (comments.LOCK, "D_4")])
+        self.assertEqual(len(refused), 2)
+        self.assertIn("rename discussion #1", refused[0])
+        self.assertIn("Resource not accessible by integration", refused[1])
+
 class PayloadTests(unittest.TestCase):
     def test_index_and_one_file_per_listed_app_with_a_discussion(self):
         threads = comments.read_threads([
