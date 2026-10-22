@@ -7,8 +7,8 @@
   "license": "GPL-3.0",
   "author": "premohq",
   "version": "5.0.0",
-  "source_repo": "https://github.com/premohq/PS5CEMU-HAR",
-  "artifact_url": "https://github.com/premohq/PS5CEMU-HAR/releases/download/v5.0.0/PS5-ECAM-v5.0.0.zip",
+  "source_repo": "https://github.com/premohq/PS5-ECAM",
+  "artifact_url": "https://github.com/premohq/PS5-ECAM/releases/download/v5.0.0/PS5-ECAM-v5.0.0.zip",
   "sha256": "5e29977effb819b884630aaeda212e10b082b243a72c6440b21ed7d286432299",
-  "icon_url": "https://raw.githubusercontent.com/premohq/PS5CEMU-HAR/v5.0.0/sce_sys/icon0.png"
+  "icon_url": "https://raw.githubusercontent.com/premohq/PS5-ECAM/v5.0.0/sce_sys/icon0.png"
 }
