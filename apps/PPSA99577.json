@@ -6,9 +6,9 @@
   "description": "Turns a picture into a textured 3D mesh (GLB) on the PS5 GPU with TRELLIS.2, with a web interface and a TV dashboard. Model weights are not included.",
   "license": "GPL-3.0",
   "author": "nikay99",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "source_repo": "https://github.com/nikay99/PS5MG",
-  "artifact_url": "https://github.com/nikay99/PS5MG/releases/download/v0.1.1/PPSA99577.zip",
-  "sha256": "c216a0b25226bff721de0130fc7f7022497310d8e9f6a9e21b64c28367f67470",
-  "icon_url": "https://raw.githubusercontent.com/nikay99/PS5MG/v0.1.1/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/nikay99/PS5MG/releases/download/v0.2.0/PPSA99577.zip",
+  "sha256": "36a925044b8b56c1b36c1db0f53fb7b360f535059a1d90d880748d933b1676c4",
+  "icon_url": "https://raw.githubusercontent.com/nikay99/PS5MG/v0.2.0/sce_sys/icon0.png"
 }
