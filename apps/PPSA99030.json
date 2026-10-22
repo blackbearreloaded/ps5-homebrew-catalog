@@ -6,9 +6,9 @@
   "description": "Battle.net launcher for World of Warcraft (Retail, Classic and Forever) with a built-in add-on manager; press Options for the Forever menu and L3+R3 for the on-screen keyboard.",
   "license": "GPL-3.0",
   "author": "bizkut",
-  "version": "01.000.016",
+  "version": "01.000.018",
   "source_repo": "https://github.com/bizkut/ps5-forever",
-  "artifact_url": "https://github.com/bizkut/ps5-forever/releases/download/01.000.016/PPSA99030.zip",
-  "sha256": "e0aa23ed56eb6d010f9a7855449d51feb604964385b743598548335f046f3469",
-  "icon_url": "https://raw.githubusercontent.com/bizkut/ps5-forever/01.000.016/ps5/title/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/bizkut/ps5-forever/releases/download/01.000.018/PPSA99030.zip",
+  "sha256": "0ca7b1fc76c85c67fc43f397f920487742bcf74f08e740895ff34759829c8c2a",
+  "icon_url": "https://raw.githubusercontent.com/bizkut/ps5-forever/01.000.018/ps5/title/sce_sys/icon0.png"
 }
