@@ -4,7 +4,7 @@
   "kind": "game",
   "category": "pc-ports",
   "description": "Apotris is a block stacking game for the Gameboy Advance! It features satisfying graphics, responsive controls and a large amount of customization so that you can tailor the game to your preferences!",
-  "license": "GPL-3.0",
+  "license": "AGPL-3.0",
   "author": "AngelXex",
   "version": "v1.0.0",
   "source_repo": "https://github.com/darkxex/Apotris-PS5",
