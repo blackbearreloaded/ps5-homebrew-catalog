@@ -1,9 +1,9 @@
 {
   "titleid": "PPSA99360",
-  "name": "PS5CEMU-HAR",
+  "name": "PS5-ECAM",
   "kind": "app",
   "category": "emulators",
-  "description": "Wii U and 3DS emulation for jailbroken PS5, built on Cemu and Azahar, with one launcher for both.",
+  "description": "Wii U, 3DS, DS and Switch emulation for jailbroken PS5, built on Cemu, Azahar, melonDS and Eden, with one launcher for all four.",
   "license": "GPL-3.0",
   "author": "premohq",
   "version": "5.0.0",
