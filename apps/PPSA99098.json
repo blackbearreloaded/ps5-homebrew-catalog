@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA99098",
+  "name": "Elifoot 98",
+  "kind": "game",
+  "category": "pc-ports",
+  "description": "Elifoot 98, the 1998 Windows 3.1 football manager, running under DOSBox Pure with a DualSense menu for saves, patches, and the cheat scanner.",
+  "license": "GPL-3.0",
+  "author": "kaizerfcm",
+  "version": "01.000.000",
+  "source_repo": "https://github.com/kaizerfcm/elifoot98-ps5",
+  "artifact_url": "https://github.com/kaizerfcm/elifoot98-ps5/releases/download/01.000.000/PPSA99098.zip",
+  "sha256": "d5f501bdfa938a65d817aa2405f948d95a580785861a4d17bc58f56956ac1497",
+  "icon_url": "https://raw.githubusercontent.com/kaizerfcm/elifoot98-ps5/01.000.000/sce_sys/icon0.png"
+}
