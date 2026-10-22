@@ -6,9 +6,9 @@
   "description": "Wii U and 3DS emulation for jailbroken PS5, built on Cemu and Azahar, with one launcher for both.",
   "license": "GPL-3.0",
   "author": "premohq",
-  "version": "4.0.1",
+  "version": "5.0.0",
   "source_repo": "https://github.com/premohq/PS5CEMU-HAR",
-  "artifact_url": "https://github.com/premohq/PS5CEMU-HAR/releases/download/v4.0.1/PS5CEMU-HAR-v4.0.1.zip",
-  "sha256": "5d441d73957276e0d2f92bd2f56c70e33020a75483075aaf03cea9ae05028816",
-  "icon_url": "https://raw.githubusercontent.com/premohq/PS5CEMU-HAR/v4.0.1/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/premohq/PS5CEMU-HAR/releases/download/v5.0.0/PS5-ECAM-v5.0.0.zip",
+  "sha256": "5e29977effb819b884630aaeda212e10b082b243a72c6440b21ed7d286432299",
+  "icon_url": "https://raw.githubusercontent.com/premohq/PS5CEMU-HAR/v5.0.0/sce_sys/icon0.png"
 }
