@@ -3,7 +3,7 @@
   "name": "PC5",
   "kind": "app",
   "category": "games",
-  "description": "Launcher for PC games through Wine, DXVK and VKD3D-Proton: install games from USB with automatic covers, play from a carousel, with DualSense vibration, light bar and adaptive triggers. Games that need a launcher to start (Rockstar, EA, Ubisoft, Steam) are not supported.",
+  "description": "Runs PC games via Wine, DXVK and VKD3D-Proton: USB installs, auto covers, carousel, DualSense vibration, light bar, adaptive triggers. Games that need launchers are not supported.",
   "license": "GPL-3.0-or-later",
   "author": "bornaradusin",
   "version": "01.000.000",
