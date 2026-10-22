@@ -1,0 +1,15 @@
+
+{
+  "titleid": "PPSA99001",
+  "name": "ProsperoRadio",
+  "kind": "app",
+  "category": "music",
+  "description": "Internet radio player for PlayStation 5 featuring thousands of stations worldwide, Radio Browser integration, favourites, DualSense controls, native audio playback, and a modern OpenGL interface.",
+  "license": "GPL-3.0-or-later",
+  "author": "bornaradusin",
+  "version": "01.000.010",
+  "source_repo": "https://github.com/bornaradusin/ProsperoRadio",
+  "artifact_url": "https://github.com/bornaradusin/ProsperoRadio/releases/download/01.000.010/PPSA99001.zip",
+  "sha256": "cadcb62e3a55ed0f81fa449dd53a9e52edbc2ebb1cb0e4148c9b1d7a3085e370",
+  "icon_url": "https://raw.githubusercontent.com/bornaradusin/ProsperoRadio/01.000.010/sce_sys/icon0.png"
+}
