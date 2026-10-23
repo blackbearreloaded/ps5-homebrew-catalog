@@ -6,9 +6,9 @@
   "description": "Picture to textured 3D mesh (TRELLIS.2) on the PS5 GPU, with a web page and TV dashboard. Model files not included: one command on your PC fetches and copies them, see the README.",
   "license": "GPL-3.0",
   "author": "nikay99",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "source_repo": "https://github.com/nikay99/PS5MG",
-  "artifact_url": "https://github.com/nikay99/PS5MG/releases/download/v0.2.3/PPSA99577.zip",
-  "sha256": "fe935e0dc91f76132116cfeb960f71847b0225f2f722217f35c91d9f661f9f27",
-  "icon_url": "https://raw.githubusercontent.com/nikay99/PS5MG/v0.2.3/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/nikay99/PS5MG/releases/download/v0.2.4/PPSA99577.zip",
+  "sha256": "6bbd909e7ae2a43b6514909cbc0aec26e0c8d51e005ac42cba88229fd496d263",
+  "icon_url": "https://raw.githubusercontent.com/nikay99/PS5MG/v0.2.4/sce_sys/icon0.png"
 }
