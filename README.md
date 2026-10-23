@@ -96,7 +96,8 @@ Read **[Submitting an app](docs/submitting.md)**. In short:
    at the moment ([artifact formats](docs/artifact-formats.md)).
 2. Publish it in a GitHub release of your public repository, **tagged with the
    app's version** (e.g. `v1.2.0`). The tag is the version the catalog shows.
-3. Add `apps/<TITLEID>.json` from the account that owns that repository.
+3. Add `apps/<TITLEID>.json` from the account that owns that repository. From any other
+   account the pull request is accepted only after a maintainer approves it by hand.
 4. Open a pull request and fix anything the checks report.
 
 Not sure why your app isn't listed yet? See
@@ -218,7 +219,7 @@ check and may be released. Details are in
 | --- | :---: | :---: | :---: |
 | JSON format, fields, text, URLs, uniqueness | ✓ | ✓ | ✓ |
 | Only `apps/<TITLEID>.json` or `apps/<TITLEID>-<owner>.json` changed, one app per PR | ✓ | | |
-| Submitter owns the source repository | ✓ | | |
+| Submitter owns the source repository (otherwise a warning: a maintainer approves by hand) | ✓ | | |
 | Reservations: only the reserving account may change them, 5 per account | ✓ | | |
 | Reservations unchanged for 180 days (report only) | | | ✓ |
 | Release, asset and license exist and match | ✓ | ✓ | ✓ |

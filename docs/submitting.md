@@ -36,8 +36,11 @@ then reviews and merges it.
   repository is the simplest choice. The site and the store show icons at up
   to 512 px; a larger image is scaled down, and one that isn't square is
   cropped to a square on the website.
-- The pull request must come from the **account that owns the repository**. For
-  an organization's repository, your membership of that organization must be
+- The pull request should come from the **account that owns the repository**. To
+  list an app from someone else's repository, open it from your own account: the check passes
+  with a warning and the `third-party` label, and a maintainer approves it by hand (it is never merged automatically,
+  and may be declined without the developer's consent). An app that is already listed can be
+  changed only by its owner, or by the account that listed it (again with manual approval). For an organization's repository, your membership of that organization must be
   [public](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-your-membership-in-organizations/publicizing-or-hiding-organization-membership).
 
 ## 1. Choose a title ID
@@ -132,7 +135,8 @@ asset; it doesn't download the file.
 
 ## 6. Open the pull request
 
-Open it from the account that owns `source_repo`, changing only your one record.
+Open it from the account that owns `source_repo` (from another account it waits for a
+maintainer), changing only your one record.
 The **Validate submission** check reports every problem it finds in the job
 summary. Push fixes to the same branch; the check reruns automatically.
 
@@ -222,7 +226,8 @@ A `.ffpkg` or `.ffpfsc` image isn't accepted yet; use a `.zip`
 
 | Message contains | Fix |
 | --- | --- |
-| `does not own` | Open the PR from the repository owner's account, or make your organization membership public. |
+| `does not own` (warning) | You don't own `source_repo`: a maintainer must approve the pull request by hand. Open it from the owner's account, or make your organization membership public, to avoid the wait. |
+| `only its owner or the account` | The app is already listed; only the owner of its repository, or the account that listed it, can change it. |
 | `sha256 does not match` | Recompute the digest of the exact asset in `artifact_url`. |
 | `artifact_url must be` | Link a specific release asset ending in `.zip`. |
 | `version must match the release tag` | Set `version` to the tag in `artifact_url`, optionally without its leading `v`. |

@@ -26,6 +26,10 @@ def make_record(owner="example"):
     return Record(Path("PPSA01234.json"), data)
 
 
+def warnings(report):
+    return [m for level, _, m in report.items if level == "warning"]
+
+
 def errors(report):
     return [m for level, _, m in report.items if level == "error"]
 
@@ -83,6 +87,7 @@ class PublisherTests(unittest.TestCase):
         report = Report()
         check_publisher(author, maintainer, old, new or make_record(), github or FakeGitHub(), report,
                         holder=holder, held=held)
+        self.warned = warnings(report)
         return errors(report)
 
     def test_anyone_may_reserve_within_the_limit(self):
@@ -99,9 +104,9 @@ class PublisherTests(unittest.TestCase):
         self.assertTrue(any("could not determine" in e
                             for e in self.check("example", old=RESERVED, new=RESERVED, holder=None)))
 
-    def test_releasing_still_requires_repository_ownership(self):
-        self.assertTrue(any("does not own" in e
-                            for e in self.check("holder", old=RESERVED, new=make_record("someone"), holder="holder")))
+    def test_releasing_to_someone_elses_repository_needs_a_maintainer(self):
+        self.assertEqual(self.check("holder", old=RESERVED, new=make_record("someone"), holder="holder"), [])
+        self.assertTrue(any("does not own" in w for w in self.warned))
 
     def test_release_cannot_become_a_reservation(self):
         self.assertTrue(any("already released" in e for e in self.check("example", old=make_record(), new=RESERVED)))
@@ -109,13 +114,31 @@ class PublisherTests(unittest.TestCase):
     def test_repository_owner_may_publish(self):
         self.assertEqual(self.check("Example"), [])
 
-    def test_stranger_rejected(self):
-        self.assertTrue(any("does not own" in e for e in self.check("mallory")))
+    def test_someone_elses_repository_passes_with_a_warning_for_the_maintainer(self):
+        self.assertEqual(self.check("mallory"), [])
+        self.assertTrue(any("a maintainer must approve" in w for w in self.warned))
+        self.check("Example")
+        self.assertEqual(self.warned, [])
+
+    def test_changing_an_app_listed_under_someone_else_is_rejected(self):
+        old = make_record("example")
+        changed = Record(old.path, dict(old.data, description="Another sentence about the app."))
+        self.assertTrue(any("only its owner or the account" in e for e in self.check("mallory", old, changed)))
+        self.assertTrue(any("only its owner or the account" in e
+                            for e in self.check("mallory", old, changed, holder="someone")))
+        self.assertEqual(self.check("example", old, changed), [])
+
+    def test_the_account_that_listed_someone_elses_app_may_update_it_with_a_warning(self):
+        old = make_record("example")
+        changed = Record(old.path, dict(old.data, description="Another sentence about the app."))
+        self.assertEqual(self.check("Mallory", old, changed, holder="mallory"), [])
+        self.assertTrue(any("a maintainer must approve" in w for w in self.warned))
 
     def test_public_org_member_accepted(self):
         github = FakeGitHub("Organization", {"alice"})
         self.assertEqual(self.check("alice", github=github), [])
-        self.assertTrue(self.check("bob", github=github))
+        self.assertEqual(self.check("bob", github=github), [])
+        self.assertTrue(any("does not own" in w for w in self.warned))
 
     def test_title_id_cannot_change_owner(self):
         old, new = make_record("example"), make_record("mallory")

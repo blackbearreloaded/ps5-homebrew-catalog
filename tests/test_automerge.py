@@ -85,9 +85,27 @@ class BumpReasonsTests(unittest.TestCase):
 
     def test_a_reservation_and_an_unreadable_record_are_left_for_a_maintainer(self):
         held = self.load("held", reservation(titleid="PPSA01234"))
-        self.assertEqual(self.reasons(old=held), ["it changes a reservation"])
+        self.assertEqual(self.reasons(old=held, new=held), ["it changes a reservation"])
         self.assertEqual(bump_reasons("example", MODIFIED, None, None, github()),
                          ["the listed or the proposed record could not be read"])
+
+    def test_the_holder_releasing_their_reservation_is_merged(self):
+        held = self.load("held", reservation(titleid="PPSA01234"))
+        new = self.load("new", record(**NEW))
+        self.assertEqual(bump_reasons("example", MODIFIED, held, new, github(), "example"), [])
+        self.assertEqual(bump_reasons("Example", MODIFIED, held, new, github(), "example"), [])
+
+    def test_a_reservation_released_by_someone_else_or_unknown_is_left_for_a_maintainer(self):
+        held = self.load("held", reservation(titleid="PPSA01234"))
+        new = self.load("new", record(**NEW))
+        self.assertEqual(bump_reasons("example", MODIFIED, held, new, github(), "other"),
+                         ["the title ID is reserved by @other, not @example"])
+        self.assertEqual(bump_reasons("example", MODIFIED, held, new, github(), None),
+                         ["could not determine who reserved the title ID"])
+        self.assertEqual(bump_reasons("example", MODIFIED, held, new, github(newest="01.000.020"), "example"),
+                         ["the release is not the newest of example/example-app"])
+        self.assertEqual(bump_reasons("stranger", MODIFIED, held, new, github(), "stranger"),
+                         ["@stranger does not own example/example-app"])
 
     def test_a_github_failure_is_left_for_a_maintainer(self):
         hub = github()

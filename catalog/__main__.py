@@ -15,7 +15,8 @@ from pathlib import Path
 
 from .automerge import UPDATE_BRANCH
 from .github import GitHub, GitHubError
-from .policy import Change, check_changes, check_publisher, derivative_notes, is_maintainer
+from .policy import (THIRD_PARTY_WARNING, Change, check_changes, check_publisher, derivative_notes,
+                     is_maintainer)
 from .records import (MAX_FILE_BYTES, RECORD_PATH, Record, icon_source, load_catalog, load_record, record_id,
                       repo_parts)
 from .report import Report
@@ -391,7 +392,7 @@ def cmd_pr(args) -> int:
             held = sum(1 for r in base_reserved if r.path.name != new.path.name
                        and (holder_of(r.path.name) or "").casefold() == author.casefold())
             check_publisher(author, maintainer, old, new, github, report,
-                            holder=holder_of(new.path.name) if old and old.reserved else None, held=held)
+                            holder=holder_of(new.path.name) if old else None, held=held)
             if report.count("error") == before:
                 verify_record(new, github, report, previous=old)
             # A new app, or a reservation being released: does it build on one that is listed?
@@ -400,13 +401,18 @@ def cmd_pr(args) -> int:
                     listed = load_catalog(APPS, Report())
                 for note in derivative_notes(new, listed, github):
                     report.notice(f"apps/{new.path.name}", note)
+    output = os.environ.get("GITHUB_OUTPUT")
+    if output:
+        third_party = any(level == "warning" and THIRD_PARTY_WARNING in message for level, _, message in report.items)
+        with open(output, "a", encoding="utf-8") as handle:
+            handle.write(f"third_party={'true' if third_party else 'false'}\n")
     return report.emit("Pull request check", "The submission meets every automated requirement; "
                                              "a maintainer will review it.")
 
 
 def cmd_automerge(args) -> int:
-    """CI: merge a pull request that moves the author's own app to its newest release, or adds
-    another app of theirs when they already have one in the catalog.
+    """CI: merge a pull request that moves the author's own app to its newest release, releases
+    the title ID they reserved, or adds another app of theirs when they already have one in the catalog.
 
     Base-branch code; the pull request's files are read only as data. It runs after the submission
     check and the release scan passed; their warnings don't hold it back. Whatever it
@@ -461,7 +467,9 @@ def cmd_automerge(args) -> int:
         if adds:
             reasons += new_app_reasons(author, changes, new, load_catalog(APPS, Report()), GitHub())
         else:
-            reasons += bump_reasons(author, changes, old, new, GitHub())
+            hub = GitHub()
+            holder = reservation_holder(changes[0].path, hub) if old and old.reserved else None
+            reasons += bump_reasons(author, changes, old, new, hub, holder)
 
     output = os.environ.get("GITHUB_OUTPUT")
     if output:

@@ -29,9 +29,18 @@ For a pull request the checker:
 2. **Validates the merged catalog.** It applies the PR's records on top of the
    current `main` and checks every record's format plus catalog-wide uniqueness
    of names, artifact URLs and digests. See [Metadata format](metadata.md).
-3. **Confirms the publisher.** The PR author must own `source_repo`, or be a
-   public member of the organization that owns it. A record's title ID can't be
-   moved to a different repository owner by a community PR. One exception: a
+3. **Confirms the publisher.** The PR author should own `source_repo`, or be a
+   public member of the organization that owns it. Another account may list
+   someone else's repository: the check then passes with a **warning** ("a
+   maintainer must approve listing another developer's app by hand"), and the
+   pull request waits for a maintainer, who approves it by hand. A small job of the same
+   workflow, "Mark a third-party submission", puts the `third-party` label on it so it stands
+   out in the list (it needs the catalog App's `Pull requests: write` permission, nothing
+   more), and takes it off if the pull request stops being one. The
+   [automatic merge](#automatic-merge-of-a-developers-pull-request) never takes it. This is
+   only for listing an app: an app that is already listed can be changed only by its
+   owner or by the account whose commit listed it (still by hand, never automatically), and its title ID can't be moved to a different repository owner by a community PR.
+   One exception: a
    change that only moves a listed app to its repository's **newest release**
    (`version`, `artifact_url`, `sha256` and `icon_url`, same `source_repo`) is
    accepted from any account, because the repository's owner published that
@@ -75,8 +84,9 @@ The CI workflow does run PR code (tests), with the standard read-only
 
 ## Automatic merge of a developer's pull request
 
-A developer who publishes a new release and updates their own record, or who already has an app
-in the catalog and adds another of their own, is not kept waiting for a maintainer. After the submission check and the release scan have both passed, two more jobs of
+A developer who publishes a new release and updates their own record, who releases the title ID
+they reserved, or who already has an app in the catalog and adds another of their own, is not
+kept waiting for a maintainer. After the submission check and the release scan have both passed, two more jobs of
 the same workflow run `python3 -m catalog automerge`, and the pull request is approved and
 squash-merged by the catalog's GitHub App when **all** of this holds:
 
@@ -86,12 +96,16 @@ squash-merged by the catalog's GitHub App when **all** of this holds:
   `description` differ from the listed record, the file is a new one, it is a release file of the same
   `source_repo`, a changed icon stays in that repository, and the release is the **newest** one
   of that repository;
+- **a reservation released** (the file exists and was a reservation): the author is the account
+  whose commit added the reservation, owns the new `source_repo` (or is a public member of its
+  organization), the release is the **newest** of that repository, the file is a release file of
+  it and the icon is in it. A reservation that stays a reservation waits for a maintainer;
 - **a new app** (the file is added, and is not a reservation): the file is a release file of its
   `source_repo`, its icon is in that repository, and the author already has an app in the
   catalog, as the owner of its repository or a public member of the organization that owns it;
 - the author owns the app's `source_repo`, or is a public member of the organization that owns
-  it. The bot's own update pull requests and pull requests sent by other accounts wait for a
-  maintainer;
+  it. The bot's own update pull requests do not need this. A pull request for a repository
+  that belongs to someone else always waits for a maintainer, whatever else it changes;
 - it is not a draft, it targets `main`, and it did not change while it was being checked: the
   approval and the merge name the commit that was checked, and GitHub refuses them otherwise;
 - the submission check and the release scan both passed. Their warnings do not hold it back:

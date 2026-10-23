@@ -100,14 +100,21 @@ def derivative_notes(new: Record, listed: list[Record], github: GitHub) -> list[
     return notes
 
 
+# Said by the publisher check when the author does not own the app's repository; the workflow
+# turns it into the "third-party" label (see THIRD_PARTY_LABEL).
+THIRD_PARTY_WARNING = "a maintainer must approve"
+THIRD_PARTY_LABEL = "third-party"
+
+
 def check_publisher(author: str, maintainer: bool, old: Record | None, new: Record,
                     github: GitHub, report: Report, holder: str | None = None, held: int = 0) -> None:
     """Decide whether the PR author may create or change this record.
 
     Releases belong to the owner of source_repo (or public members of that
     organization). Reservations have no source_repo; they belong to the account
-    that added them (holder, from the file's git history). held is how many
-    other reservations the author already holds.
+    that added them (holder, from the file's git history), and so does a listing
+    of someone else's repository. held is how many other reservations the author
+    already holds.
     """
     name = f"apps/{new.path.name}"
     if old and old.reserved:
@@ -150,5 +157,13 @@ def check_publisher(author: str, maintainer: bool, old: Record | None, new: Reco
     except GitHubError as error:
         report.error(name, f"could not confirm the publisher: {error}")
         return
-    report.error(name, f"@{author} does not own {new.owner}/{new.repo}; open the pull request from "
-                       f"the {new.owner} account or make your membership of {new.owner} public")
+    if old and not old.reserved and (holder is None or holder.casefold() != author.casefold()):
+        # A listed app is changed by its owner, or by the account that listed it (holder, from the file's
+        # git history); anyone else may only move it to its newest release (above).
+        report.error(name, f"{new.titleid} is listed under {old.owner}; only its owner or the account "
+                           "that listed it can change it, apart from moving it to the newest release")
+        return
+    # Someone else's repository may be listed, but only a maintainer can approve it: the check
+    # passes with this warning and the auto-merge never takes such a pull request.
+    report.warning(name, f"@{author} does not own {new.owner}/{new.repo}; {THIRD_PARTY_WARNING} "
+                         "listing another developer's app by hand")

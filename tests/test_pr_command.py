@@ -57,13 +57,16 @@ class PullRequestCommandTests(unittest.TestCase):
 
     def run_pr(self, event, commit_author="example"):
         verified = []
+        self.output = self.clone.parent / "output.txt"
+        self.output.write_text("", encoding="utf-8")
         github = mock.Mock(account_type=lambda login: "User", commit_author=lambda repo, sha: commit_author)
         with mock.patch.object(cli, "ROOT", self.clone), \
                 mock.patch.object(cli, "APPS", self.clone / "apps"), \
                 mock.patch.object(cli, "verify_record", lambda r, g, rep, previous=None: verified.append(r.titleid)), \
                 mock.patch.object(cli, "GitHub", lambda: github), \
                 mock.patch.dict(os.environ, {"GITHUB_EVENT_PATH": str(event), "GITHUB_STEP_SUMMARY": "",
-                                             "GITHUB_REPOSITORY": "owner/catalog"}), \
+                                             "GITHUB_REPOSITORY": "owner/catalog",
+                                             "GITHUB_OUTPUT": str(self.output)}), \
                 mock.patch("sys.stdout"), mock.patch("sys.stderr"):
             status = cli.main(["pr"])
         return status, verified
@@ -78,9 +81,15 @@ class PullRequestCommandTests(unittest.TestCase):
         event = self.open_pr("example", "NONE", {"apps/PPSA04321.json": self.new_record()})
         self.assertEqual(self.run_pr(event), (0, ["PPSA04321"]))
 
-    def test_stranger_submission_fails_without_verification(self):
+    def test_someone_elses_repository_passes_the_check_and_waits_for_a_maintainer(self):
         event = self.open_pr("mallory", "NONE", {"apps/PPSA04321.json": self.new_record()})
-        self.assertEqual(self.run_pr(event), (1, []))
+        self.assertEqual(self.run_pr(event), (0, ["PPSA04321"]))
+        self.assertIn("third_party=true", self.output.read_text(encoding="utf-8"))
+
+    def test_the_owners_submission_is_not_marked_third_party(self):
+        event = self.open_pr("example", "NONE", {"apps/PPSA04321.json": self.new_record()})
+        self.run_pr(event)
+        self.assertIn("third_party=false", self.output.read_text(encoding="utf-8"))
 
     def test_branch_in_this_repository_counts_as_maintainer(self):
         # Only accounts and apps with write access (the catalog bot's discovery job) can push branches here.
