@@ -4,7 +4,7 @@
   "kind": "app",
   "category": "emulators",
   "description": "Experimental Xbox 360 emulator for PlayStation 5, built on Xenia Canary with native audio, DualSense input and RADV Vulkan graphics.",
-  "license": "GPL-3.0-or-later",
+  "license": "MIT",
   "author": "BrinooTk",
   "version": "v1.0.2",
   "source_repo": "https://github.com/BrinooTk/PS5X360",
