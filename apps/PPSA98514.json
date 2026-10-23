@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA98514",
+  "name": "DevilutionX",
+  "kind": "game",
+  "category": "pc-ports",
+  "description": "native PS5 build of DevilutionX, as an installed title (PPSA98514). It is a separate port from the payload one in Packaging/ps5 and does not replace it.",
+  "license": "GPL-3.0",
+  "author": "AngelXex",
+  "version": "ps5-v1.0.0",
+  "source_repo": "https://github.com/darkxex/DevilutionXPS5",
+  "artifact_url": "https://github.com/darkxex/DevilutionXPS5/releases/download/ps5-v1.0.0/DevilutionX-PS5-1.0.0.zip",
+  "sha256": "b921871c14ee5f17ebf2a783e74b914e9bd27b08d02d2ee5cce37652c1ca6fd9",
+  "icon_url": "https://raw.githubusercontent.com/darkxex/DevilutionXPS5/master/ps5port/sce_sys/icon0.png"
+}
