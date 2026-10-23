@@ -3,12 +3,12 @@
   "name": "Home5",
   "kind": "app",
   "category": "utilities",
-  "description": "Home Assistant on the PS5: rooms, lights, blinds, thermostats and scenes with the DualSense. L2/R2 dim lights and the light bar follows them.",
+  "description": "Home Assistant on the PS5: your own rooms of lights, blinds, thermostats, scenes and sensors, with the DualSense. L2/R2 dim lights and the light bar follows them.",
   "license": "GPL-3.0-or-later",
   "author": "bornaradusin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "source_repo": "https://github.com/bornaradusin/Home5",
-  "artifact_url": "https://github.com/bornaradusin/Home5/releases/download/1.0.0/PPSA11019.zip",
-  "sha256": "dd4a53a45d0bc73674c1c1b4ffe863f0eaa82455b738cab59bb3421dfe96f30a",
-  "icon_url": "https://raw.githubusercontent.com/bornaradusin/Home5/1.0.0/art/icon0.png"
+  "artifact_url": "https://github.com/bornaradusin/Home5/releases/download/1.0.1/PPSA11019.zip",
+  "sha256": "67f67f74a1cf93bd26b3a852fb4a986b0e127099fe5ee0e0d570c57da15a8351",
+  "icon_url": "https://raw.githubusercontent.com/bornaradusin/Home5/1.0.1/art/icon0.png"
 }
