@@ -3,7 +3,7 @@
   "name": "PS5X360",
   "kind": "app",
   "category": "emulators",
-  "description": "An Xbox 360 emulator for PS5 by BrinooTk, built on Xenia Canary. Put your own games (folders, ISO or GOD) in its assets/roms folder, or pick another folder in Settings. Still early: some games run well, others crash.",
+  "description": "Experimental Xbox 360 emulator for PlayStation 5, built on Xenia Canary with native audio, DualSense input and RADV Vulkan graphics.",
   "license": "GPL-3.0-or-later",
   "author": "BrinooTk",
   "version": "v1.0.2",
