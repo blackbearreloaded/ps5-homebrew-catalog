@@ -15,7 +15,8 @@ from pathlib import Path
 
 from .automerge import UPDATE_BRANCH
 from .github import GitHub, GitHubError
-from .policy import Change, check_changes, check_publisher, derivative_notes, is_maintainer
+from .policy import (THIRD_PARTY_WARNING, Change, check_changes, check_publisher, derivative_notes,
+                     is_maintainer)
 from .records import (MAX_FILE_BYTES, RECORD_PATH, Record, icon_source, load_catalog, load_record, record_id,
                       repo_parts)
 from .report import Report
@@ -335,6 +336,40 @@ def reservation_holder(record_path: str, github: GitHub) -> str | None:
         return None
 
 
+def is_curator(author: str, github: GitHub) -> bool:
+    """True when a commit of the author added an app whose repository belongs to someone else.
+
+    Only a maintainer merges such a pull request, so listing another developer's app is how an
+    account earns the role. The commits are narrowed locally (the login in the commit's author
+    name or e-mail, which covers GitHub's no-reply addresses) and only those are confirmed through
+    the API, so an account whose commits don't show its login simply isn't a curator.
+    """
+    repository = os.environ.get("GITHUB_REPOSITORY")
+    if not repository:
+        return False
+    login = author.casefold()
+    log = git("log", "--diff-filter=A", "--format=\x1e%H\x1f%ae\x1f%an", "--name-only", "--", "apps")
+    for chunk in log.split("\x1e")[1:]:
+        header, _, files = chunk.partition("\n")
+        sha, email, name = header.split("\x1f")
+        if login not in f"{email} {name}".casefold():
+            continue
+        for filename in files.split():
+            path = ROOT / filename
+            if not path.is_file():
+                continue
+            listed = load_record(path, Report())
+            if listed is None or listed.reserved or listed.owner.casefold() == login:
+                continue
+            try:
+                if (github.commit_author(repository, sha) or "").casefold() == login:
+                    return True
+            except GitHubError:
+                pass
+            break
+    return False
+
+
 def cmd_pr(args) -> int:
     """Validate a pull request using this (base-branch) code; PR files are read only as data."""
     event = json.loads(Path(os.environ["GITHUB_EVENT_PATH"]).read_text(encoding="utf-8"))
@@ -345,16 +380,19 @@ def cmd_pr(args) -> int:
     head_repo = ((pull.get("head") or {}).get("repo") or {}).get("full_name")
     same_repository = bool(head_repo) and head_repo == ((pull.get("base") or {}).get("repo") or {}).get("full_name")
     maintainer = is_maintainer(pull["author_association"]) or same_repository
+    github = GitHub()
+    curator = not maintainer and is_curator(author, github)
     report = Report()
     if maintainer:
         report.notice("pull request", f"@{author} is a maintainer; community-only rules are relaxed")
+    elif curator:
+        report.notice("pull request", f"@{author} is a curator; a maintainer still approves every change by hand")
 
     head = "refs/catalog/pr-head"
     git("fetch", "--no-tags", "--quiet", "origin", f"+refs/pull/{pull['number']}/head:{head}")
     base = git("merge-base", "HEAD", head).strip()
     record_changes = check_changes(diff_changes(base, head), maintainer, report)
 
-    github = GitHub()
     with tempfile.TemporaryDirectory(prefix="catalog-pr-") as tmp:
         candidate = Path(tmp) / "apps"
         shutil.copytree(APPS, candidate)
@@ -391,7 +429,7 @@ def cmd_pr(args) -> int:
             held = sum(1 for r in base_reserved if r.path.name != new.path.name
                        and (holder_of(r.path.name) or "").casefold() == author.casefold())
             check_publisher(author, maintainer, old, new, github, report,
-                            holder=holder_of(new.path.name) if old and old.reserved else None, held=held)
+                            holder=holder_of(new.path.name) if old else None, held=held, curator=curator)
             if report.count("error") == before:
                 verify_record(new, github, report, previous=old)
             # A new app, or a reservation being released: does it build on one that is listed?
@@ -400,13 +438,18 @@ def cmd_pr(args) -> int:
                     listed = load_catalog(APPS, Report())
                 for note in derivative_notes(new, listed, github):
                     report.notice(f"apps/{new.path.name}", note)
+    output = os.environ.get("GITHUB_OUTPUT")
+    if output:
+        third_party = any(level == "warning" and THIRD_PARTY_WARNING in message for level, _, message in report.items)
+        with open(output, "a", encoding="utf-8") as handle:
+            handle.write(f"third_party={'true' if third_party else 'false'}\n")
     return report.emit("Pull request check", "The submission meets every automated requirement; "
                                              "a maintainer will review it.")
 
 
 def cmd_automerge(args) -> int:
-    """CI: merge a pull request that moves the author's own app to its newest release, or adds
-    another app of theirs when they already have one in the catalog.
+    """CI: merge a pull request that moves the author's own app to its newest release, releases
+    the title ID they reserved, or adds another app of theirs when they already have one in the catalog.
 
     Base-branch code; the pull request's files are read only as data. It runs after the submission
     check and the release scan passed; their warnings don't hold it back. Whatever it
@@ -461,7 +504,9 @@ def cmd_automerge(args) -> int:
         if adds:
             reasons += new_app_reasons(author, changes, new, load_catalog(APPS, Report()), GitHub())
         else:
-            reasons += bump_reasons(author, changes, old, new, GitHub())
+            hub = GitHub()
+            holder = reservation_holder(changes[0].path, hub) if old and old.reserved else None
+            reasons += bump_reasons(author, changes, old, new, hub, holder)
 
     output = os.environ.get("GITHUB_OUTPUT")
     if output:

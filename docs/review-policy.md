@@ -20,11 +20,15 @@ under the stated title ID and publisher.
 
 Before merging a submission, a maintainer confirms:
 
-- **Publisher.** The submitter owns the source repository (automated), and the
-  `author` field credibly names the developer rather than someone else's brand.
+- **Publisher.** The submitter owns the source repository (automated). When they
+  don't, the check passes with a warning and the pull request is never merged
+  automatically: a maintainer approves it by hand. The owner's permission is not needed,
+  as long as the repository's license allows redistribution (checked by the release
+  check). The `author` field must name the actual developer, not the submitter.
 - **Provenance.** The repository contains the app's source, or clearly states
-  where it lives. Repackaged or rebranded copies of someone else's app are not
-  listed without the original developer's consent.
+  where it lives. Repackaged or rebranded copies of someone else's app that
+  hide where it came from are not listed; the original developer's app, credited to them,
+  is.
 - **A distinct app.** A fork or derivative of an app that is already listed is
   accepted only when it is substantially different for the user: a different
   core or engine, a different purpose, or features the listed app doesn't have

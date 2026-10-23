@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA99131",
+  "name": "PSP5",
+  "kind": "app",
+  "category": "emulators",
+  "description": "Native PSP port for the ps5 based on PPSSPP.",
+  "license": "MIT",
+  "author": "tsuramatsu1",
+  "version": "v1.000.100",
+  "source_repo": "https://github.com/tsuramatsu1/psp5",
+  "artifact_url": "https://github.com/tsuramatsu1/psp5/releases/download/v1.000.100/PPSA99131.zip",
+  "sha256": "7944efe11211fe0299d4c68234fe3739e0f43f5ef076ee02c55c314828762c97",
+  "icon_url": "https://raw.githubusercontent.com/tsuramatsu1/psp5/master/sce_sys/icon0.png"
+}

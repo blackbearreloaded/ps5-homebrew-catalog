@@ -19,6 +19,8 @@ jobs:
     name: Validate submission
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    outputs:
+      third_party: ${{ steps.check.outputs.third_party }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -31,9 +33,41 @@ jobs:
         with:
           python-version: '3.13'
       - name: Check records, publisher, release, sha256 and icon
+        id: check
         run: python3 -m catalog pr
         env:
           GITHUB_TOKEN: ${{ github.token }}
+
+  label:
+    name: Mark a third-party submission
+    # A pull request that lists an app from a repository its author does not own is never merged
+    # by the bot. This puts the "third-party" label on it (and takes it off once it no longer
+    # applies) so a maintainer sees it in the list. The App token is limited to pull requests.
+    needs: [submission]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: catalog-bot
+    steps:
+      - id: token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.CATALOG_BOT_CLIENT_ID }}
+          private-key: ${{ secrets.CATALOG_BOT_PRIVATE_KEY }}
+          permission-pull-requests: write
+      - name: Add or remove the label
+        run: |
+          if [ "$THIRD_PARTY" = "true" ]; then
+            gh label create third-party --repo "$REPO" --color d93f0b \
+              --description "Lists an app from a repository its author does not own; a maintainer approves it by hand" || true
+            gh pr edit "$NUMBER" --repo "$REPO" --add-label third-party
+          else
+            gh pr edit "$NUMBER" --repo "$REPO" --remove-label third-party || true
+          fi
+        env:
+          GH_TOKEN: ${{ steps.token.outputs.token }}
+          REPO: ${{ github.repository }}
+          NUMBER: ${{ github.event.pull_request.number }}
+          THIRD_PARTY: ${{ needs.submission.outputs.third_party }}
 
   scan:
     name: Scan the release

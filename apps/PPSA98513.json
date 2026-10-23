@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA98513",
+  "name": "Apotris",
+  "kind": "game",
+  "category": "pc-ports",
+  "description": "Apotris is a block stacking game for the Gameboy Advance! It features satisfying graphics, responsive controls and a large amount of customization so that you can tailor the game to your preferences!",
+  "license": "AGPL-3.0",
+  "author": "AngelXex",
+  "version": "v1.0.0",
+  "source_repo": "https://github.com/darkxex/Apotris-PS5",
+  "artifact_url": "https://github.com/darkxex/Apotris-PS5/releases/download/v1.0.0/PPSA98513.zip",
+  "sha256": "b4630a93ba9eab9507877b28d344a21cbb8d7a8ec98eec989fe0c1f921a9fdae",
+  "icon_url": "https://raw.githubusercontent.com/darkxex/Apotris-PS5/main/sprites/logo512.png"
+}

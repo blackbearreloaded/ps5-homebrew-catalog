@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA94003",
+  "name": "Bedlam 2: Absolute Bedlam (PS5)",
+  "kind": "game",
+  "category": "pc-ports",
+  "description": "Native PS5 port; user supplies game files in /data/Bedlam2PS5/content; saves and generated files persist in /data/Bedlam2PS5/saves.",
+  "license": "Unlicensed",
+  "author": "GOREslinger",
+  "version": "01.000.000-rc.4",
+  "source_repo": "https://github.com/ChaDea1/Bedlam2-PS5",
+  "artifact_url": "https://github.com/ChaDea1/Bedlam2-PS5/releases/download/01.000.000-rc.4/PPSA94003.zip",
+  "sha256": "cdd390a425e3fd651e0b9f90a0df0ae16a487f1607d6266471d9ef2853c0a229",
+  "icon_url": "https://raw.githubusercontent.com/ChaDea1/Bedlam2-PS5/01.000.000-rc.4/PPSA94003/sce_sys/icon0.png"
+}

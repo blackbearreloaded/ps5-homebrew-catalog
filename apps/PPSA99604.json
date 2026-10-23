@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA99604",
+  "name": "GETSU-SAN",
+  "kind": "game",
+  "category": "pc-ports",
+  "description": "GTA San Andreas for PS5: my GTA-specific Sahin/Prospero Win integration; supply legally obtained classic PC files separately, complete setup and select Joypad; upstream credits and licenses retained.",
+  "license": "GPL-3.0",
+  "author": "CHI-GETSU",
+  "version": "v0.1.0-beta",
+  "source_repo": "https://github.com/CHI-GETSU/GTA-SA-PS5-Homebrew",
+  "artifact_url": "https://github.com/CHI-GETSU/GTA-SA-PS5-Homebrew/releases/download/v0.1.0-beta/GTA-SA-PS5-PPSA99604-TEST.zip",
+  "sha256": "4aa16e1a012d07a92f29d4607e6d13d5a440b40fba4193b8afc9bfc6575206ee",
+  "icon_url": "https://raw.githubusercontent.com/CHI-GETSU/GTA-SA-PS5-Homebrew/v0.1.0-beta/sahin/sce_sys/icon0.png"
+}

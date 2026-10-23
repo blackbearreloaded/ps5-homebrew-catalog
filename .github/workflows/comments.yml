@@ -1,15 +1,18 @@
 name: Comments
 
 # One GitHub Discussion per listed app holds its comments, and its upvotes are the app's
-# likes (catalog/comments.py). Every hour, and whenever someone comments,
-# this creates the discussions that are missing, locks those of withdrawn apps, and writes what
-# the website and the store show (likes, counts, the latest comments) to the branch
+# likes (catalog/comments.py). Every hour, whenever someone comments, and whenever a push to main
+# changes a record (a merged pull request or a direct push alike), this creates the discussions
+# that are missing, locks those of withdrawn apps, and writes what the website and the store show (likes, counts, the latest comments) to the branch
 # comments-data, which holds nothing else. main is never written to. An upvote starts no
 # workflow, so likes are as fresh as the timer. It does nothing until Discussions are on and have
 # a category "App comments".
 on:
   schedule:
     - cron: '11 * * * *'
+  push:
+    branches: [main]
+    paths: ['apps/**']
   discussion_comment:
     types: [created, edited, deleted]
   workflow_dispatch:

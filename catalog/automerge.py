@@ -1,7 +1,8 @@
 """Which pull requests are merged without a maintainer.
 
-Three kinds are: a developer moving their own app to its newest release, a developer who
-already has an app in the catalog adding another one of their own, and the catalog bot's own
+Four kinds are: a developer moving their own app to its newest release, a developer releasing
+the title ID they reserved, a developer who already has an app in the catalog adding another one
+of their own, and the catalog bot's own
 pull request that moves apps to their newest release (every record in it checked like a
 developer's own bump).
 
@@ -15,7 +16,7 @@ from __future__ import annotations
 from .github import GitHub, GitHubError
 from .policy import REGULAR_FILE_MODE, Change
 from .records import RECORD_PATH, Record
-from .updates import is_release_bump
+from .updates import is_release_bump, newest_release
 
 # The account the catalog's GitHub App acts as, and the one branch it keeps its pending updates on
 # (the withdrawals branch is never merged here).
@@ -79,12 +80,38 @@ def new_app_reasons(author: str, changes: list[Change], new: Record | None, list
     return reasons
 
 
+def release_reservation_reasons(author: str, holder: str | None, new: Record, github: GitHub) -> list[str]:
+    """Why a reservation's first release is not the holder's own, newest release of their repository."""
+    if new.reserved:
+        return ["it changes a reservation"]
+    if holder is None:
+        return ["could not determine who reserved the title ID"]
+    if holder.casefold() != author.casefold():
+        return [f"the title ID is reserved by @{holder}, not @{author}"]
+    reasons = []
+    try:
+        if not owns(author, new, github):
+            return [f"@{author} does not own {new.owner}/{new.repo}"]
+        release = newest_release(github, new.owner, new.repo)
+        if not release or release.get("tag_name") != new.tag:
+            reasons.append(f"the release is not the newest of {new.owner}/{new.repo}")
+    except GitHubError as error:
+        return [f"GitHub could not be asked: {error}"]
+    if not new.data["artifact_url"].startswith(new.data["source_repo"].rstrip("/") + "/releases/download/"):
+        reasons.append("the file is not a release file of the app's repository")
+    icons = f"https://raw.githubusercontent.com/{new.owner}/{new.repo}/"
+    if new.data["icon_url"] and not new.data["icon_url"].casefold().startswith(icons.casefold()):
+        reasons.append("the icon is at an address outside the app's repository")
+    return reasons
+
+
 def bump_reasons(author: str, changes: list[Change], old: Record | None, new: Record | None,
-                 github: GitHub) -> list[str]:
+                 github: GitHub, holder: str | None = None) -> list[str]:
     """Why this pull request is left for a maintainer; an empty list means it may be merged.
 
     old and new are the listed record and the proposed one, for a pull request whose only change
-    is one modified record; they are None otherwise or when a record could not be read.
+    is one modified record; they are None otherwise or when a record could not be read. holder is
+    who reserved the title ID, when old is a reservation.
     """
     if len(changes) != 1:
         return [f"it changes {len(changes)} files; a release bump changes one record"]
@@ -99,7 +126,9 @@ def bump_reasons(author: str, changes: list[Change], old: Record | None, new: Re
         return ["the record is not a regular file"]
     if old is None or new is None:
         return ["the listed or the proposed record could not be read"]
-    if old.reserved or new.reserved:
+    if old.reserved:
+        return release_reservation_reasons(author, holder, new, github)
+    if new.reserved:
         return ["it changes a reservation"]
     return release_bump_reasons(old, new, github, author)
 
