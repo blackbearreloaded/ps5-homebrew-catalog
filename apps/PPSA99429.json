@@ -6,9 +6,9 @@
   "description": "Experimental native PS5 player for HeartGold and SoulSilver with a two-edition cartridge launcher; prepare your own supported game dump on PC. No game data included.",
   "license": "GPL-3.0-or-later AND LGPL-2.1-or-later AND MIT AND CC-BY-4.0",
   "author": "BaZZtian",
-  "version": "0.0.2",
+  "version": "0.2.23",
   "source_repo": "https://github.com/BaZZtian/PS5-ApricotGS",
-  "artifact_url": "https://github.com/BaZZtian/PS5-ApricotGS/releases/download/v0.0.2/ApricotGS-v0.0.2-PS5.zip",
-  "sha256": "9525fd7c2f00e0dab0d7e5ffa96c1fffbc4898af57cfe115e748ca24a63ee8df",
+  "artifact_url": "https://github.com/BaZZtian/PS5-ApricotGS/releases/download/v0.2.23/ApricotGS-v0.2.23-PS5.zip",
+  "sha256": "c8a81d7fa66e2973ff0a6bd8501fd238ecbaab2f18477b1bea1429e8ab7a7730",
   "icon_url": "https://raw.githubusercontent.com/BaZZtian/PS5-ApricotGS/0510cab8636f0555e7347a3ed9188e2fa9ee5fc3/sce_sys/icon0.png"
 }
