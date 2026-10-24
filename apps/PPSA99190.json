@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA99190",
+  "name": "PSCord",
+  "kind": "app",
+  "category": "utilities",
+  "description": "Native PS5 chat client for servers, direct messages and voice channels; early development, no release or download yet.",
+  "license": null,
+  "author": "Desstann",
+  "version": null,
+  "source_repo": null,
+  "artifact_url": null,
+  "sha256": null,
+  "icon_url": null
+}
