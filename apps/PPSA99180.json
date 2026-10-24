@@ -4,7 +4,7 @@
   "kind": "app",
   "category": "utilities",
   "description": "Converts debug/fake .pkg files on the console into ShadowMount folders or .ffpfsc / .exfat images.",
-  "license": "Unlicensed",
+  "license": "GPL-3.0-or-later",
   "author": "desstannoz",
   "version": "01.026.000",
   "source_repo": "https://github.com/desstannoz/ps5-pkg-folderizer",
