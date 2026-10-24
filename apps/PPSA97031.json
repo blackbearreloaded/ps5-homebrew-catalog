@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA97031",
+  "name": "Playden",
+  "kind": "app",
+  "category": "emulators",
+  "description": "Plays your Steam games on the PS5: sign in to Steam, download your Windows games and run each one through Wine as its own title.",
+  "license": "GPL-3.0",
+  "author": "leolobato",
+  "version": null,
+  "source_repo": null,
+  "artifact_url": null,
+  "sha256": null,
+  "icon_url": null
+}
