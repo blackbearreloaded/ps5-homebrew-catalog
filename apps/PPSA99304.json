@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA99304",
+  "name": "BattleStar",
+  "kind": "game",
+  "category": "homebrew-games",
+  "description": "A native PS5 arcade space shooter with banked twin cannons, twelve enemy waves, capital-ship bosses and weapon pickups.",
+  "license": "Unlicensed",
+  "author": "futurepr0n",
+  "version": null,
+  "source_repo": null,
+  "artifact_url": null,
+  "sha256": null,
+  "icon_url": null
+}

@@ -23,6 +23,9 @@ from .updates import is_release_bump, newest_release
 UPDATE_BOT = "ps5-catalog-bot[bot]"
 UPDATE_BRANCH = "catalog-update/all"
 
+# Fields a developer who owns the repository may also change in a release bump.
+OWNER_FIELDS = ("description", "license")
+
 
 def owns(author: str, record: Record, github: GitHub) -> bool:
     """True when the author is the owner of the app's repository, or a public member of the owning organization."""
@@ -168,15 +171,18 @@ def release_bump_reasons(old: Record, new: Record, github: GitHub, author: str |
     With an author, it must also be the app's developer; the bot's pull request passes none."""
     reasons = []
     try:
-        # The description may change only with an author, who must also own the repository.
-        if not is_release_bump(old, new, github, ("description",) if author is not None else ()):
-            reasons.append("it changes more than the release (version, file, sha256, icon, description), "
+        # The description and the license may change only with an author, who must also own the repository.
+        if not is_release_bump(old, new, github, OWNER_FIELDS if author is not None else ()):
+            reasons.append("it changes more than the release (version, file, sha256, icon, description, license), "
                            f"or the release is not the newest of {new.owner}/{new.repo}")
         if author is not None and not owns(author, new, github):
             reasons.append(f"@{author} does not own {new.owner}/{new.repo}")
     except GitHubError as error:
         return [f"GitHub could not be asked: {error}"]
-    if old.data["sha256"] == new.data["sha256"] or old.data["artifact_url"] == new.data["artifact_url"]:
+    same_file = old.data["sha256"] == new.data["sha256"] or old.data["artifact_url"] == new.data["artifact_url"]
+    # An owner may correct the description or license of the release already listed.
+    corrects_text = author is not None and any(old.data[f] != new.data[f] for f in OWNER_FIELDS)
+    if same_file and not (corrects_text and old.data == {**new.data, **{f: old.data[f] for f in OWNER_FIELDS}}):
         reasons.append("it does not point at a new file")
     if not new.data["artifact_url"].startswith(new.data["source_repo"].rstrip("/") + "/releases/download/"):
         reasons.append("the file is not a release file of the app's repository")

@@ -63,7 +63,7 @@ class BumpReasonsTests(unittest.TestCase):
                          ["the record is not a regular file"])
 
     def test_a_change_beyond_the_release_is_left_for_a_maintainer(self):
-        for fields in ({"name": "Another Name"}, {"author": "Someone"}, {"kind": "game"}, {"license": "MIT"}):
+        for fields in ({"name": "Another Name"}, {"author": "Someone"}, {"kind": "game"}):
             with self.subTest(fields=fields):
                 new = self.load("changed", record(**{**NEW, **fields}))
                 self.assertIn("more than the release", self.reasons(new=new)[0])
@@ -72,6 +72,19 @@ class BumpReasonsTests(unittest.TestCase):
         new = self.load("changed", record(**{**NEW, "description": "Another sentence about the app."}))
         self.assertEqual(self.reasons(new=new), [])
         self.assertEqual(self.reasons(new=new, author="stranger"), ["@stranger does not own example/example-app"])
+
+    def test_a_new_license_is_merged_only_for_the_owner(self):
+        new = self.load("changed", record(**{**NEW, "license": "MIT"}))
+        self.assertEqual(self.reasons(new=new), [])
+        self.assertEqual(self.reasons(new=new, author="stranger"), ["@stranger does not own example/example-app"])
+
+    def test_the_owner_may_correct_the_license_of_the_release_already_listed(self):
+        old = self.load("old", record(**NEW))
+        new = self.load("new", record(**{**NEW, "license": "MIT"}))
+        self.assertEqual(self.reasons(old=old, new=new), [])
+        self.assertEqual(self.reasons(old=old, new=new, author="stranger"),
+                         ["@stranger does not own example/example-app"])
+        self.assertEqual(self.reasons(old=old, new=old), ["it does not point at a new file"])
 
     def test_a_release_that_is_not_the_newest_is_left_for_a_maintainer(self):
         self.assertIn("not the newest", self.reasons(hub=github(newest="01.000.020"))[0])
