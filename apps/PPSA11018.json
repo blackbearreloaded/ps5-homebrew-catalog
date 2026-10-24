@@ -3,7 +3,7 @@
   "name": "PC5",
   "kind": "app",
   "category": "pc-ports",
-  "description": "Runs PC games via Wine, DXVK and VKD3D-Proton: USB installs, auto covers, home screen tiles, video playback, 30 to 60 fps frame generation, DualSense features. Games that need launchers are not supported.",
+  "description": "Runs PC games via Wine, DXVK and VKD3D-Proton: USB installs, auto covers, home screen tiles, video playback, 30 to 60 fps frame generation, DualSense features. Games needing launchers unsupported.",
   "license": "LGPL-2.1",
   "author": "bornaradusin",
   "version": "v1.3.0",
