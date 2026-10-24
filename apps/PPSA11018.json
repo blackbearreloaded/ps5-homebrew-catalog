@@ -4,7 +4,7 @@
   "kind": "app",
   "category": "pc-ports",
   "description": "Runs PC games via Wine, DXVK and VKD3D-Proton: USB installs, auto covers, video playback, 30 to 60 fps frame generation, DualSense features. Games that need launchers are not supported.",
-  "license": "GPL-3.0-or-later",
+  "license": "LGPL-2.1",
   "author": "bornaradusin",
   "version": "v1.2.0",
   "source_repo": "https://github.com/bornaradusin/PC5",
