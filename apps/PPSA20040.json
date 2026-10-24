@@ -5,7 +5,7 @@
   "category": "pc-ports",
   "description": "Native PS5 port of the Source engine that runs Half-Life 2 from your own steam_legacy game files, with sound and DualSense controls.",
   "license": "GPL-3.0",
-  "author": "gmorb",
+  "author": "Gm0rb",
   "version": "0.1.0-alpha",
   "source_repo": "https://github.com/gmorb/source-port-ps5",
   "artifact_url": "https://github.com/gmorb/source-port-ps5/releases/download/v0.1.0-alpha/PPSA20040.zip",
