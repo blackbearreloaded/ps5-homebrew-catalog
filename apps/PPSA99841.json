@@ -6,9 +6,9 @@
   "description": "Native PS5 library organizer: 3D shelf and catalogue, collections, favourites and emulator libraries with covers. EN/PT.",
   "license": "GPL-3.0",
   "author": "kauansilvalopes",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "source_repo": "https://github.com/kauansilvalopes/estante",
-  "artifact_url": "https://github.com/kauansilvalopes/estante/releases/download/v0.5.1/Estante-v0.5.1-PPSA99841.zip",
-  "sha256": "737228f27bcbcc367bcb80370334067cf18749c81e3e62dcd0a935d75fbe2e11",
-  "icon_url": "https://raw.githubusercontent.com/kauansilvalopes/estante/v0.5.1/estante-sce/icon0.png"
+  "artifact_url": "https://github.com/kauansilvalopes/estante/releases/download/v0.5.2/Estante-v0.5.2-PPSA99841.zip",
+  "sha256": "c763f279e3a166e28ac43d1eba65437ee8d706aa76709372866c95e95377b66f",
+  "icon_url": "https://raw.githubusercontent.com/kauansilvalopes/estante/v0.5.2/estante-sce/icon0.png"
 }
