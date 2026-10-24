@@ -6,9 +6,9 @@
   "description": "Runs PC games via Wine, DXVK and VKD3D-Proton: USB installs, auto covers, video playback, 30 to 60 fps frame generation, DualSense features. Games that need launchers are not supported.",
   "license": "LGPL-2.1",
   "author": "bornaradusin",
-  "version": "v1.2.0",
+  "version": "v1.2.1",
   "source_repo": "https://github.com/bornaradusin/PC5",
-  "artifact_url": "https://github.com/bornaradusin/PC5/releases/download/v1.2.0/PPSA11018.zip",
-  "sha256": "75e1e6bee9ae56d5e1bc286a0f0d3452144cffd9d6513174a79fd0957d61bf5b",
-  "icon_url": "https://raw.githubusercontent.com/bornaradusin/PC5/v1.2.0/art/icon0.png"
+  "artifact_url": "https://github.com/bornaradusin/PC5/releases/download/v1.2.1/PPSA11018.zip",
+  "sha256": "6741533e3e5c63b46346cf519dfb4b6d00bb6268090e9bfbaee1d420994a5631",
+  "icon_url": "https://raw.githubusercontent.com/bornaradusin/PC5/v1.2.1/art/icon0.png"
 }
