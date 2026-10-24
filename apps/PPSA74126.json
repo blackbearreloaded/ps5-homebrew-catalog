@@ -6,9 +6,9 @@
   "description": "Unofficial native Stremio client for PS5 with Prospero UI, add-on sync, torrent streaming, offline downloads, enhanced playback stability and sortable high-resolution download artwork.",
   "license": "GPL-3.0",
   "author": "LoZazaMastro",
-  "version": "0.5.18",
+  "version": "0.5.20",
   "source_repo": "https://github.com/LoZazaMastro/Stremio-Plus",
-  "artifact_url": "https://github.com/LoZazaMastro/Stremio-Plus/releases/download/0.5.18/PPSA74126.zip",
-  "sha256": "1d261af1a999ce754e2110022f068db5b96eb4e61d0cb9b661e4f2750f85b7c3",
-  "icon_url": "https://raw.githubusercontent.com/LoZazaMastro/Stremio-Plus/0.5.18/app/sce_sys/icon0.png"
+  "artifact_url": "https://github.com/LoZazaMastro/Stremio-Plus/releases/download/0.5.20/PPSA74126.zip",
+  "sha256": "95f24d39bb4466cffa3873e43131d56e4c834fc91b833460df3362763935ee3a",
+  "icon_url": "https://raw.githubusercontent.com/LoZazaMastro/Stremio-Plus/0.5.20/app/sce_sys/icon0.png"
 }

@@ -4,11 +4,11 @@
   "kind": "app",
   "category": "ai",
   "description": "Local AI endpoint for PS5 built on ts5, a from-scratch Vulkan LLM engine, serving an OpenAI-compatible API on your network.",
-  "license": "GPL-3.0",
+  "license": "Unlicensed",
   "author": "ThatRetiredDude",
-  "version": null,
-  "source_repo": null,
-  "artifact_url": null,
-  "sha256": null,
-  "icon_url": null
+  "version": "01.000.001",
+  "source_repo": "https://github.com/ThatRetiredDude/TokenStation5",
+  "artifact_url": "https://github.com/ThatRetiredDude/TokenStation5/releases/download/01.000.001/PPSA99555.zip",
+  "sha256": "33cb888269d8afb94ec9de78fb7ceb827b1a987388925eb045b205f50304b68f",
+  "icon_url": "https://github.com/ThatRetiredDude/TokenStation5/raw/01.000.001/ps5/sce_sys/icon0.png"
 }
