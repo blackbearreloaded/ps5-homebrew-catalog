@@ -4,11 +4,11 @@
   "kind": "game",
   "category": "pc-ports",
   "description": "Native PS5 port of I Wanna Be The Guy: Remastered on a new GameMaker 8 runtime, with Tribute mode, full DualSense support and 16 languages.",
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-or-later AND LicenseRef-Game-Content",
   "author": "kaizerfcm",
   "version": "1.6.6.6",
   "source_repo": "https://github.com/kaizerfcm/iwbtg-remastered-tribute-edition",
   "artifact_url": "https://github.com/kaizerfcm/iwbtg-remastered-tribute-edition/releases/download/v1.6.6.6/IWBTGR-TributeEdition-PS5-PPSA99099.zip",
-  "sha256": "17cf048c82c7cd05043a82c609d2fc2c55259ebd91332ac8dfee53fb526a8efc",
+  "sha256": "323a638bc60c63fbba29964d3054f712a522fdd747560df565938977b3a4806a",
   "icon_url": "https://raw.githubusercontent.com/kaizerfcm/iwbtg-remastered-tribute-edition/v1.6.6.6/sce_sys/icon0.png"
 }
