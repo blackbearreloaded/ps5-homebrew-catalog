@@ -1,0 +1,14 @@
+{
+  "titleid": "PPSA77305",
+  "name": "PSteroid5",
+  "kind": "game",
+  "category": "homebrew-games",
+  "description": "Vector Asteroids with online high scores, co-op rooms, a shared MMO world with browser players, a public ship hangar and a controller ship editor.",
+  "license": "GPL-3.0-or-later",
+  "author": "futurepr0n",
+  "version": "01.000.000",
+  "source_repo": "https://github.com/futurepr0n/PSteroid5",
+  "artifact_url": "https://github.com/futurepr0n/PSteroid5/releases/download/01.000.000/PPSA77305.zip",
+  "sha256": "4ed9d0121f00460bcea681265a4f195fc3cf80a90fdb3bda746f5e5ff8f65410",
+  "icon_url": "https://raw.githubusercontent.com/futurepr0n/PSteroid5/01.000.000/ps5/sce_sys/icon0.png"
+}
